@@ -1,0 +1,513 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\c#proj\\PatternsHits\\EduBank\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{C3428C04-7380-4D91-870F-97EA00B5E800}|Common\\Common.csproj|d:\\c#proj\\patternshits\\edubank\\common\\swaggerauthorizefilter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C3428C04-7380-4D91-870F-97EA00B5E800}|Common\\Common.csproj|solutionrelative:common\\swaggerauthorizefilter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C3428C04-7380-4D91-870F-97EA00B5E800}|Common\\Common.csproj|d:\\c#proj\\patternshits\\edubank\\common\\baseentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C3428C04-7380-4D91-870F-97EA00B5E800}|Common\\Common.csproj|solutionrelative:common\\baseentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C3428C04-7380-4D91-870F-97EA00B5E800}|Common\\Common.csproj|d:\\c#proj\\patternshits\\edubank\\common\\httpcontextextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C3428C04-7380-4D91-870F-97EA00B5E800}|Common\\Common.csproj|solutionrelative:common\\httpcontextextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6DEBE20D-9C42-4447-99DC-DB1385542565}|WebApplication1\\AuthWeb.csproj|d:\\c#proj\\patternshits\\edubank\\webapplication1\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6DEBE20D-9C42-4447-99DC-DB1385542565}|WebApplication1\\AuthWeb.csproj|solutionrelative:webapplication1\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6DEBE20D-9C42-4447-99DC-DB1385542565}|WebApplication1\\AuthWeb.csproj|d:\\c#proj\\patternshits\\edubank\\webapplication1\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6DEBE20D-9C42-4447-99DC-DB1385542565}|WebApplication1\\AuthWeb.csproj|solutionrelative:webapplication1\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6DEBE20D-9C42-4447-99DC-DB1385542565}|WebApplication1\\AuthWeb.csproj|d:\\c#proj\\patternshits\\edubank\\webapplication1\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6DEBE20D-9C42-4447-99DC-DB1385542565}|WebApplication1\\AuthWeb.csproj|solutionrelative:webapplication1\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{827F54FF-3FD0-4434-BF66-C7DB0E199E85}|Domain\\Domain.csproj|d:\\c#proj\\patternshits\\edubank\\domain\\entities\\refreshtokken.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{827F54FF-3FD0-4434-BF66-C7DB0E199E85}|Domain\\Domain.csproj|solutionrelative:domain\\entities\\refreshtokken.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{827F54FF-3FD0-4434-BF66-C7DB0E199E85}|Domain\\Domain.csproj|d:\\c#proj\\patternshits\\edubank\\domain\\entities\\aplicationuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{827F54FF-3FD0-4434-BF66-C7DB0E199E85}|Domain\\Domain.csproj|solutionrelative:domain\\entities\\aplicationuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49A2CB07-2C60-4241-9783-4598546AB940}|Application\\Application.csproj|d:\\c#proj\\patternshits\\edubank\\application\\services\\interfaces\\iauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{49A2CB07-2C60-4241-9783-4598546AB940}|Application\\Application.csproj|solutionrelative:application\\services\\interfaces\\iauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49A2CB07-2C60-4241-9783-4598546AB940}|Application\\Application.csproj|d:\\c#proj\\patternshits\\edubank\\application\\services\\implementations\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{49A2CB07-2C60-4241-9783-4598546AB940}|Application\\Application.csproj|solutionrelative:application\\services\\implementations\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49A2CB07-2C60-4241-9783-4598546AB940}|Application\\Application.csproj|d:\\c#proj\\patternshits\\edubank\\application\\dtos\\userdtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{49A2CB07-2C60-4241-9783-4598546AB940}|Application\\Application.csproj|solutionrelative:application\\dtos\\userdtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49A2CB07-2C60-4241-9783-4598546AB940}|Application\\Application.csproj|d:\\c#proj\\patternshits\\edubank\\application\\services\\implementations\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{49A2CB07-2C60-4241-9783-4598546AB940}|Application\\Application.csproj|solutionrelative:application\\services\\implementations\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49A2CB07-2C60-4241-9783-4598546AB940}|Application\\Application.csproj|d:\\c#proj\\patternshits\\edubank\\application\\services\\implementations\\jwtservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{49A2CB07-2C60-4241-9783-4598546AB940}|Application\\Application.csproj|solutionrelative:application\\services\\implementations\\jwtservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49A2CB07-2C60-4241-9783-4598546AB940}|Application\\Application.csproj|d:\\c#proj\\patternshits\\edubank\\application\\services\\interfaces\\ijwtservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{49A2CB07-2C60-4241-9783-4598546AB940}|Application\\Application.csproj|solutionrelative:application\\services\\interfaces\\ijwtservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49A2CB07-2C60-4241-9783-4598546AB940}|Application\\Application.csproj|d:\\c#proj\\patternshits\\edubank\\application\\services\\interfaces\\iuserservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{49A2CB07-2C60-4241-9783-4598546AB940}|Application\\Application.csproj|solutionrelative:application\\services\\interfaces\\iuserservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49A2CB07-2C60-4241-9783-4598546AB940}|Application\\Application.csproj|d:\\c#proj\\patternshits\\edubank\\application\\validators\\uservalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{49A2CB07-2C60-4241-9783-4598546AB940}|Application\\Application.csproj|solutionrelative:application\\validators\\uservalidator.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49A2CB07-2C60-4241-9783-4598546AB940}|Application\\Application.csproj|d:\\c#proj\\patternshits\\edubank\\application\\profiles\\usermapprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{49A2CB07-2C60-4241-9783-4598546AB940}|Application\\Application.csproj|solutionrelative:application\\profiles\\usermapprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C3428C04-7380-4D91-870F-97EA00B5E800}|Common\\Common.csproj|d:\\c#proj\\patternshits\\edubank\\common\\options\\jwtoptions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C3428C04-7380-4D91-870F-97EA00B5E800}|Common\\Common.csproj|solutionrelative:common\\options\\jwtoptions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6DEBE20D-9C42-4447-99DC-DB1385542565}|WebApplication1\\AuthWeb.csproj|d:\\c#proj\\patternshits\\edubank\\webapplication1\\options\\jwtoptions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6DEBE20D-9C42-4447-99DC-DB1385542565}|WebApplication1\\AuthWeb.csproj|solutionrelative:webapplication1\\options\\jwtoptions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C3428C04-7380-4D91-870F-97EA00B5E800}|Common\\Common.csproj|d:\\c#proj\\patternshits\\edubank\\common\\enums\\roles.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C3428C04-7380-4D91-870F-97EA00B5E800}|Common\\Common.csproj|solutionrelative:common\\enums\\roles.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BB5A0AD-338D-49FB-AFF0-1F38ED57CFA2}|Infrastructure\\Infrastructure.csproj|d:\\c#proj\\patternshits\\edubank\\infrastructure\\userdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9BB5A0AD-338D-49FB-AFF0-1F38ED57CFA2}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\userdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6DEBE20D-9C42-4447-99DC-DB1385542565}|WebApplication1\\AuthWeb.csproj|d:\\c#proj\\patternshits\\edubank\\webapplication1\\options\\rabbitmqoptions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6DEBE20D-9C42-4447-99DC-DB1385542565}|WebApplication1\\AuthWeb.csproj|solutionrelative:webapplication1\\options\\rabbitmqoptions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6DEBE20D-9C42-4447-99DC-DB1385542565}|WebApplication1\\AuthWeb.csproj|d:\\c#proj\\patternshits\\edubank\\webapplication1\\options\\identityoptions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6DEBE20D-9C42-4447-99DC-DB1385542565}|WebApplication1\\AuthWeb.csproj|solutionrelative:webapplication1\\options\\identityoptions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6DEBE20D-9C42-4447-99DC-DB1385542565}|WebApplication1\\AuthWeb.csproj|d:\\c#proj\\patternshits\\edubank\\webapplication1\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{6DEBE20D-9C42-4447-99DC-DB1385542565}|WebApplication1\\AuthWeb.csproj|solutionrelative:webapplication1\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C3428C04-7380-4D91-870F-97EA00B5E800}|Common\\Common.csproj|d:\\c#proj\\patternshits\\edubank\\common\\common.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{C3428C04-7380-4D91-870F-97EA00B5E800}|Common\\Common.csproj|solutionrelative:common\\common.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6DEBE20D-9C42-4447-99DC-DB1385542565}|WebApplication1\\AuthWeb.csproj|d:\\c#proj\\patternshits\\edubank\\webapplication1\\authweb.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{6DEBE20D-9C42-4447-99DC-DB1385542565}|WebApplication1\\AuthWeb.csproj|solutionrelative:webapplication1\\authweb.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49A2CB07-2C60-4241-9783-4598546AB940}|Application\\Application.csproj|d:\\c#proj\\patternshits\\edubank\\application\\application.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{49A2CB07-2C60-4241-9783-4598546AB940}|Application\\Application.csproj|solutionrelative:application\\application.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{827F54FF-3FD0-4434-BF66-C7DB0E199E85}|Domain\\Domain.csproj|d:\\c#proj\\patternshits\\edubank\\domain\\domain.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{827F54FF-3FD0-4434-BF66-C7DB0E199E85}|Domain\\Domain.csproj|solutionrelative:domain\\domain.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9BB5A0AD-338D-49FB-AFF0-1F38ED57CFA2}|Infrastructure\\Infrastructure.csproj|d:\\c#proj\\patternshits\\edubank\\infrastructure\\infrastructure.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{9BB5A0AD-338D-49FB-AFF0-1F38ED57CFA2}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\infrastructure.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 15,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:130:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{605322a2-17ae-43f4-b60f-766556e46c87}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{e1b7d1f8-9b3c-49b1-8f4f-bfc63a88835d}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "UserController.cs",
+              "DocumentMoniker": "D:\\c#proj\\PatternsHits\\EduBank\\WebApplication1\\Controllers\\UserController.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Controllers\\UserController.cs",
+              "ToolTip": "D:\\c#proj\\PatternsHits\\EduBank\\WebApplication1\\Controllers\\UserController.cs",
+              "RelativeToolTip": "WebApplication1\\Controllers\\UserController.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAA1wDMAAABKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T14:51:25.694Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "D:\\c#proj\\PatternsHits\\EduBank\\WebApplication1\\Controllers\\AuthController.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Controllers\\AuthController.cs",
+              "ToolTip": "D:\\c#proj\\PatternsHits\\EduBank\\WebApplication1\\Controllers\\AuthController.cs",
+              "RelativeToolTip": "WebApplication1\\Controllers\\AuthController.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAQwDUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T14:50:56.21Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "UserService.cs",
+              "DocumentMoniker": "D:\\c#proj\\PatternsHits\\EduBank\\Application\\Services\\Implementations\\UserService.cs",
+              "RelativeDocumentMoniker": "Application\\Services\\Implementations\\UserService.cs",
+              "ToolTip": "D:\\c#proj\\PatternsHits\\EduBank\\Application\\Services\\Implementations\\UserService.cs",
+              "RelativeToolTip": "Application\\Services\\Implementations\\UserService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T14:17:40.313Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "AuthService.cs",
+              "DocumentMoniker": "D:\\c#proj\\PatternsHits\\EduBank\\Application\\Services\\Implementations\\AuthService.cs",
+              "RelativeDocumentMoniker": "Application\\Services\\Implementations\\AuthService.cs",
+              "ToolTip": "D:\\c#proj\\PatternsHits\\EduBank\\Application\\Services\\Implementations\\AuthService.cs",
+              "RelativeToolTip": "Application\\Services\\Implementations\\AuthService.cs",
+              "ViewState": "AgIAAGgAAAAAAAAAAAAcwIkAAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T14:11:32.814Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "IAuthService.cs",
+              "DocumentMoniker": "D:\\c#proj\\PatternsHits\\EduBank\\Application\\Services\\Interfaces\\IAuthService.cs",
+              "RelativeDocumentMoniker": "Application\\Services\\Interfaces\\IAuthService.cs",
+              "ToolTip": "D:\\c#proj\\PatternsHits\\EduBank\\Application\\Services\\Interfaces\\IAuthService.cs",
+              "RelativeToolTip": "Application\\Services\\Interfaces\\IAuthService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwBIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T14:10:35.1Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\c#proj\\PatternsHits\\EduBank\\WebApplication1\\Program.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Program.cs",
+              "ToolTip": "D:\\c#proj\\PatternsHits\\EduBank\\WebApplication1\\Program.cs",
+              "RelativeToolTip": "WebApplication1\\Program.cs",
+              "ViewState": "AgIAAEAAAAAAAAAAAAAUwDsAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T12:28:29.816Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "RefreshTokken.cs",
+              "DocumentMoniker": "D:\\c#proj\\PatternsHits\\EduBank\\Domain\\Entities\\RefreshTokken.cs",
+              "RelativeDocumentMoniker": "Domain\\Entities\\RefreshTokken.cs",
+              "ToolTip": "D:\\c#proj\\PatternsHits\\EduBank\\Domain\\Entities\\RefreshTokken.cs",
+              "RelativeToolTip": "Domain\\Entities\\RefreshTokken.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T13:27:15.942Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "BaseEntity.cs",
+              "DocumentMoniker": "D:\\c#proj\\PatternsHits\\EduBank\\Common\\BaseEntity.cs",
+              "RelativeDocumentMoniker": "Common\\BaseEntity.cs",
+              "ToolTip": "D:\\c#proj\\PatternsHits\\EduBank\\Common\\BaseEntity.cs",
+              "RelativeToolTip": "Common\\BaseEntity.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T13:23:07.157Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "SwaggerAuthorizeFilter.cs",
+              "DocumentMoniker": "D:\\c#proj\\PatternsHits\\EduBank\\Common\\SwaggerAuthorizeFilter.cs",
+              "RelativeDocumentMoniker": "Common\\SwaggerAuthorizeFilter.cs",
+              "ToolTip": "D:\\c#proj\\PatternsHits\\EduBank\\Common\\SwaggerAuthorizeFilter.cs",
+              "RelativeToolTip": "Common\\SwaggerAuthorizeFilter.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T12:56:55.7Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "HttpContextExtensions.cs",
+              "DocumentMoniker": "D:\\c#proj\\PatternsHits\\EduBank\\Common\\HttpContextExtensions.cs",
+              "RelativeDocumentMoniker": "Common\\HttpContextExtensions.cs",
+              "ToolTip": "D:\\c#proj\\PatternsHits\\EduBank\\Common\\HttpContextExtensions.cs",
+              "RelativeToolTip": "Common\\HttpContextExtensions.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T15:09:33.033Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "JwtService.cs",
+              "DocumentMoniker": "D:\\c#proj\\PatternsHits\\EduBank\\Application\\Services\\Implementations\\JwtService.cs",
+              "RelativeDocumentMoniker": "Application\\Services\\Implementations\\JwtService.cs",
+              "ToolTip": "D:\\c#proj\\PatternsHits\\EduBank\\Application\\Services\\Implementations\\JwtService.cs",
+              "RelativeToolTip": "Application\\Services\\Implementations\\JwtService.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAQwFEAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T13:34:13.071Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "IJwtService.cs",
+              "DocumentMoniker": "D:\\c#proj\\PatternsHits\\EduBank\\Application\\Services\\Interfaces\\IJwtService.cs",
+              "RelativeDocumentMoniker": "Application\\Services\\Interfaces\\IJwtService.cs",
+              "ToolTip": "D:\\c#proj\\PatternsHits\\EduBank\\Application\\Services\\Interfaces\\IJwtService.cs",
+              "RelativeToolTip": "Application\\Services\\Interfaces\\IJwtService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T13:52:37.111Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "UserDtos.cs",
+              "DocumentMoniker": "D:\\c#proj\\PatternsHits\\EduBank\\Application\\Dtos\\UserDtos.cs",
+              "RelativeDocumentMoniker": "Application\\Dtos\\UserDtos.cs",
+              "ToolTip": "D:\\c#proj\\PatternsHits\\EduBank\\Application\\Dtos\\UserDtos.cs",
+              "RelativeToolTip": "Application\\Dtos\\UserDtos.cs",
+              "ViewState": "AgIAABcAAAAAAAAAAIA2wDYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T13:35:20.589Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "AplicationUser.cs",
+              "DocumentMoniker": "D:\\c#proj\\PatternsHits\\EduBank\\Domain\\Entities\\AplicationUser.cs",
+              "RelativeDocumentMoniker": "Domain\\Entities\\AplicationUser.cs",
+              "ToolTip": "D:\\c#proj\\PatternsHits\\EduBank\\Domain\\Entities\\AplicationUser.cs",
+              "RelativeToolTip": "Domain\\Entities\\AplicationUser.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T12:34:07.546Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "IUserService.cs",
+              "DocumentMoniker": "D:\\c#proj\\PatternsHits\\EduBank\\Application\\Services\\Interfaces\\IUserService.cs",
+              "RelativeDocumentMoniker": "Application\\Services\\Interfaces\\IUserService.cs",
+              "ToolTip": "D:\\c#proj\\PatternsHits\\EduBank\\Application\\Services\\Interfaces\\IUserService.cs",
+              "RelativeToolTip": "Application\\Services\\Interfaces\\IUserService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T14:11:00.821Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "UserMapProfile.cs",
+              "DocumentMoniker": "D:\\c#proj\\PatternsHits\\EduBank\\Application\\Profiles\\UserMapProfile.cs",
+              "RelativeDocumentMoniker": "Application\\Profiles\\UserMapProfile.cs",
+              "ToolTip": "D:\\c#proj\\PatternsHits\\EduBank\\Application\\Profiles\\UserMapProfile.cs",
+              "RelativeToolTip": "Application\\Profiles\\UserMapProfile.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T13:51:49.923Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "UserValidator.cs",
+              "DocumentMoniker": "D:\\c#proj\\PatternsHits\\EduBank\\Application\\Validators\\UserValidator.cs",
+              "RelativeDocumentMoniker": "Application\\Validators\\UserValidator.cs",
+              "ToolTip": "D:\\c#proj\\PatternsHits\\EduBank\\Application\\Validators\\UserValidator.cs",
+              "RelativeToolTip": "Application\\Validators\\UserValidator.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T13:56:43.007Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "JwtOptions.cs",
+              "DocumentMoniker": "D:\\c#proj\\PatternsHits\\EduBank\\Common\\Options\\JwtOptions.cs",
+              "RelativeDocumentMoniker": "Common\\Options\\JwtOptions.cs",
+              "ToolTip": "D:\\c#proj\\PatternsHits\\EduBank\\Common\\Options\\JwtOptions.cs",
+              "RelativeToolTip": "Common\\Options\\JwtOptions.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T14:34:47.687Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "Roles.cs",
+              "DocumentMoniker": "D:\\c#proj\\PatternsHits\\EduBank\\Common\\Enums\\Roles.cs",
+              "RelativeDocumentMoniker": "Common\\Enums\\Roles.cs",
+              "ToolTip": "D:\\c#proj\\PatternsHits\\EduBank\\Common\\Enums\\Roles.cs",
+              "RelativeToolTip": "Common\\Enums\\Roles.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAAABwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T14:14:24.326Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "JwtOptions.cs",
+              "DocumentMoniker": "D:\\c#proj\\PatternsHits\\EduBank\\WebApplication1\\Options\\JwtOptions.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Options\\JwtOptions.cs",
+              "ToolTip": "D:\\c#proj\\PatternsHits\\EduBank\\WebApplication1\\Options\\JwtOptions.cs",
+              "RelativeToolTip": "WebApplication1\\Options\\JwtOptions.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T13:13:59.637Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "RabbitMqOptions.cs",
+              "DocumentMoniker": "D:\\c#proj\\PatternsHits\\EduBank\\WebApplication1\\Options\\RabbitMqOptions.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Options\\RabbitMqOptions.cs",
+              "ToolTip": "D:\\c#proj\\PatternsHits\\EduBank\\WebApplication1\\Options\\RabbitMqOptions.cs",
+              "RelativeToolTip": "WebApplication1\\Options\\RabbitMqOptions.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T13:14:46.841Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "IdentityOptions.cs",
+              "DocumentMoniker": "D:\\c#proj\\PatternsHits\\EduBank\\WebApplication1\\Options\\IdentityOptions.cs",
+              "RelativeDocumentMoniker": "WebApplication1\\Options\\IdentityOptions.cs",
+              "ToolTip": "D:\\c#proj\\PatternsHits\\EduBank\\WebApplication1\\Options\\IdentityOptions.cs",
+              "RelativeToolTip": "WebApplication1\\Options\\IdentityOptions.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T13:15:24.969Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\c#proj\\PatternsHits\\EduBank\\WebApplication1\\appsettings.json",
+              "RelativeDocumentMoniker": "WebApplication1\\appsettings.json",
+              "ToolTip": "D:\\c#proj\\PatternsHits\\EduBank\\WebApplication1\\appsettings.json",
+              "RelativeToolTip": "WebApplication1\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-02-22T13:08:13.209Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "UserDbContext.cs",
+              "DocumentMoniker": "D:\\c#proj\\PatternsHits\\EduBank\\Infrastructure\\UserDbContext.cs",
+              "RelativeDocumentMoniker": "Infrastructure\\UserDbContext.cs",
+              "ToolTip": "D:\\c#proj\\PatternsHits\\EduBank\\Infrastructure\\UserDbContext.cs",
+              "RelativeToolTip": "Infrastructure\\UserDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-22T12:33:43.789Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "Common.csproj",
+              "DocumentMoniker": "D:\\c#proj\\PatternsHits\\EduBank\\Common\\Common.csproj",
+              "RelativeDocumentMoniker": "Common\\Common.csproj",
+              "ToolTip": "D:\\c#proj\\PatternsHits\\EduBank\\Common\\Common.csproj",
+              "RelativeToolTip": "Common\\Common.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAABOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-02-22T12:57:06.815Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "AuthWeb.csproj",
+              "DocumentMoniker": "D:\\c#proj\\PatternsHits\\EduBank\\WebApplication1\\AuthWeb.csproj",
+              "RelativeDocumentMoniker": "WebApplication1\\AuthWeb.csproj",
+              "ToolTip": "D:\\c#proj\\PatternsHits\\EduBank\\WebApplication1\\AuthWeb.csproj",
+              "RelativeToolTip": "WebApplication1\\AuthWeb.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-02-22T12:43:11.511Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "Application.csproj",
+              "DocumentMoniker": "D:\\c#proj\\PatternsHits\\EduBank\\Application\\Application.csproj",
+              "RelativeDocumentMoniker": "Application\\Application.csproj",
+              "ToolTip": "D:\\c#proj\\PatternsHits\\EduBank\\Application\\Application.csproj",
+              "RelativeToolTip": "Application\\Application.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-02-22T12:43:46.025Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "Domain.csproj",
+              "DocumentMoniker": "D:\\c#proj\\PatternsHits\\EduBank\\Domain\\Domain.csproj",
+              "RelativeDocumentMoniker": "Domain\\Domain.csproj",
+              "ToolTip": "D:\\c#proj\\PatternsHits\\EduBank\\Domain\\Domain.csproj",
+              "RelativeToolTip": "Domain\\Domain.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAA8AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-02-22T12:43:39.962Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "Infrastructure.csproj",
+              "DocumentMoniker": "D:\\c#proj\\PatternsHits\\EduBank\\Infrastructure\\Infrastructure.csproj",
+              "RelativeDocumentMoniker": "Infrastructure\\Infrastructure.csproj",
+              "ToolTip": "D:\\c#proj\\PatternsHits\\EduBank\\Infrastructure\\Infrastructure.csproj",
+              "RelativeToolTip": "Infrastructure\\Infrastructure.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-02-22T12:43:35.051Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
