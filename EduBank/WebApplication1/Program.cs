@@ -5,6 +5,7 @@ using Application.Services.Implementations;
 using Application.Services.Interfaces;
 using Application.Validators;
 using Common.Enums.Common.Enums;
+using Common.Options;
 using Domain.Entities;
 using FluentValidation;
 using MassTransit;
@@ -74,13 +75,9 @@ namespace Web
                     options.TokenValidationParameters =
                         new TokenValidationParameters
                         {
-                            ValidateIssuer = jwtOptions.Access.ValidateIssuer,
-                            ValidateAudience = jwtOptions.Access.ValidateAudience,
-                            ValidateLifetime = jwtOptions.Access.ValidateLifetime,
-                            ValidateIssuerSigningKey = jwtOptions.Access.ValidateIssuerSigningKey,
+                            ValidateIssuer = false,
+                            ValidateAudience = false,
                             IssuerSigningKey = accessKey,
-                            ValidIssuer = jwtOptions.Access.Issuer,
-                            ValidAudience = jwtOptions.Access.Audience
                         };
                 });
 
@@ -90,14 +87,13 @@ namespace Web
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(config =>
             {
-                config.AddSecurityDefinition("bearerAuth",
-                    new OpenApiSecurityScheme
-                    {
-                        Type = SecuritySchemeType.Http,
-                        Scheme = "bearer",
-                        BearerFormat = "JWT",
-                        Description = "JWT Authorization header using the Bearer scheme."
-                    });
+                config.AddSecurityDefinition("bearerAuth", new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    Description = "JWT Authorization header using the Bearer scheme."
+                });
 
                 config.OperationFilter<SwaggerAuthorizeFilter>();
             });
@@ -165,8 +161,9 @@ namespace Web
                     .UseLazyLoadingProxies()
                     .UseNpgsql(
                         builder.Configuration.GetConnectionString("DefaultConnection"),
-                        b => b.MigrationsAssembly("Web")
+                        b => b.MigrationsAssembly("AuthWeb")
                     ));
+
 
             var app = builder.Build();
 
