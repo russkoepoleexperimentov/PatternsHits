@@ -13,7 +13,6 @@ namespace Common.Enums
         {
             public const string Customer = "Customer";
             public const string Employee = "Employee";
-            public const string Admin = "Admin";
         };
 
         [JsonConverter(typeof(JsonStringEnumConverter))]

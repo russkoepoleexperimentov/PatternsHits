@@ -5,6 +5,7 @@ using Application.Services.Implementations;
 using Application.Services.Interfaces;
 using Application.Validators;
 using Common.Enums.Common.Enums;
+using Common.Middlewares;
 using Common.Options;
 using Domain.Entities;
 using FluentValidation;
@@ -118,6 +119,17 @@ namespace Web
                 });
             });
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowFrontend",
+                    policy =>
+                    {
+                        policy.SetIsOriginAllowed(origin => true) 
+                              .AllowAnyHeader()
+                              .AllowAnyMethod()
+                              .AllowCredentials(); 
+                    });
+            });
 
             builder.Services
                 .AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
@@ -197,8 +209,7 @@ namespace Web
                 string[] roles =
                 {
                     RoleNames.Customer,
-                    RoleNames.Employee,
-                    RoleNames.Admin
+                    RoleNames.Employee
                 };
 
                 foreach (var role in roles)
@@ -211,9 +222,11 @@ namespace Web
                 }
             }
 
+
+            app.UseCors("AllowFrontend");
             app.UseSwagger();
             app.UseSwaggerUI();
-
+            app.UseMiddleware<ExceptionCatchMiddleware>();
             app.UseAuthentication();
             app.UseAuthorization();
 
