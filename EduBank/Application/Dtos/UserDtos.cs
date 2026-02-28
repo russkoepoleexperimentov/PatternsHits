@@ -11,7 +11,6 @@ namespace Application.Dtos
         public Guid Id { get; set; }
         public string Credentials { get; set; } = null!;
         public string Email { get; set; } = null!;
-        public string PhoneNumber { get; set; } = null!;
     }
 
     public class UserUpdateDto
@@ -40,12 +39,6 @@ namespace Application.Dtos
     }
 
     public class TokenResponse
-    {
-        public string AccessToken { get; set; } = null!;
-        public string RefreshToken { get; set; } = null!;
-    }
-
-    public class TokenRequest
     {
         public string AccessToken { get; set; } = null!;
         public string RefreshToken { get; set; } = null!;
