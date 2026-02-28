@@ -17,16 +17,7 @@ namespace Core.Infrastructure
                 .HasIndex(a => a.UserId);
 
             modelBuilder.Entity<Transaction>()
-                .HasIndex(t => t.FromAccountId);
-
-            // Преобразование enum в строку
-            modelBuilder.Entity<Transaction>()
-                .Property(t => t.Type)
-                .HasConversion<string>();
-
-            modelBuilder.Entity<Transaction>()
-                .Property(t => t.Status)
-                .HasConversion<string>();
+                .HasIndex(t => t.SourceId);
         }
     }
 }

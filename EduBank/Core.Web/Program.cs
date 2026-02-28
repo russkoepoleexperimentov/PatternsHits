@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using FluentValidation;
+using Core.Application.Dtos;
 
 namespace Core.Web
 {
@@ -70,7 +72,9 @@ namespace Core.Web
 
 
             builder.Services
-                .AddScoped<IAccountService, AccountService>()
+                .AddTransient<IAccountService, AccountService>()
+                .AddTransient<ITransactionService, TransactionService>()
+                .AddScoped<IValidator<CreateTransactionDto>, CreateTransactionValidator>()
                 .AddAutoMapper(typeof(CoreMapProfile));
             //services.AddScoped<ITransactionService, TransactionService>();
 

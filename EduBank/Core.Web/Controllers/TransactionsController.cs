@@ -20,6 +20,7 @@ namespace Core.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateTransaction(CreateTransactionDto dto)
         {
             var currentUserId = HttpContext.GetUserId()!.Value;
@@ -30,6 +31,7 @@ namespace Core.Web.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<IActionResult> GetTransaction(Guid id)
         {
             var currentUserId = HttpContext.GetUserId()!.Value;

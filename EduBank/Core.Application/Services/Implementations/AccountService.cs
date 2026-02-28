@@ -60,11 +60,14 @@ namespace Core.Application.Services.Implementations
         public async Task<List<TransactionDto>> GetAccountTransactionsAsync(Guid accountId, DateTime? from, DateTime? to, Guid currentUserId)
         {
             var account = await GetAccountFromDbAsync(accountId, currentUserId);
-            var transactions = await _context.Transactions.Where(x => x.FromAccountId == accountId).ToListAsync();
+            var transactions = await _context.Transactions.Where(x => 
+                (x.SourceId == accountId && x.SourceType == TransactionObjectType.Account) ||
+                (x.TargetId == accountId && x.TargetType == TransactionObjectType.Account)
+            ).ToListAsync();
             return transactions.Select(_mapper.Map<TransactionDto>).ToList();
         }
 
-        private async Task<Account> GetAccountFromDbAsync(Guid accountId, Guid? ownerId)
+        public async Task<Account> GetAccountFromDbAsync(Guid accountId, Guid? ownerId)
         {
             var account =  await _context.FindAsync<Account>(accountId);
 

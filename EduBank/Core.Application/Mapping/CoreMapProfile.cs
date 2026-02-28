@@ -10,12 +10,12 @@ namespace Core.Application.Mapping
         {
             CreateMap<Account, AccountDto>();
 
-            CreateMap<Transaction, TransactionDto>()
-                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type.ToString().ToLower()))
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
+            CreateMap<Transaction, TransactionDto>();
 
             CreateMap<CreateTransactionDto, Transaction>()
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(_ => TransactionStatus.Pending));
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(_ => TransactionStatus.Pending))
+                .ForMember(dest => dest.ResolutionMessage, opt => opt.MapFrom<string?>(_ => null))
+                .ForMember(dest => dest.ResolvedAt, opt => opt.MapFrom<DateTime?>(_ => null));
         }
     }
 }

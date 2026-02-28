@@ -1,4 +1,5 @@
 ﻿using Core.Application.Dtos;
+using Core.Domain;
 
 namespace Core.Application.Services.Interfaces
 {
@@ -9,5 +10,6 @@ namespace Core.Application.Services.Interfaces
         Task<AccountDto> GetAccountByIdAsync(Guid id, Guid currentUserId);
         Task CloseAccountAsync(Guid id, Guid currentUserId);
         Task<List<TransactionDto>> GetAccountTransactionsAsync(Guid accountId, DateTime? from, DateTime? to, Guid currentUserId);
+        Task<Account> GetAccountFromDbAsync(Guid value, Guid? currentUserId);
     }
 }
