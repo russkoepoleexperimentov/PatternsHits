@@ -14,6 +14,7 @@ namespace Core.Application.Dtos
         public TransactionObjectType TargetType { get; set; }
 
         public decimal Amount { get; set; }
+        public TransactionType DisplayType { get; set; }
         public string Description { get; set; } = null!;
         public TransactionStatus Status { get; set; } // Pending, Completed, Cancelled
         public string? ResolutionMessage { get; set; }
