@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Common.Contracts;
 using Common.Exceptions;
 using Core.Application.Dtos;
 using Core.Application.Services.Interfaces;
@@ -45,7 +46,7 @@ namespace Core.Application.Services.Implementations
                     ApplyWithdraw(transaction, sourceAcc);
                 }
             }
-            else if (transaction.TargetType == TransactionObjectType.RealWorld)
+            else if (transaction.SourceType == TransactionObjectType.RealWorld)
             {
                 // счёт-цель (привязанный к юзеру)
                 if (transaction.TargetType == TransactionObjectType.Account) // пополнение
@@ -115,6 +116,36 @@ namespace Core.Application.Services.Implementations
             }
 
             return account;
+        }
+
+        public async Task<DepositFundsResponse> ProcessDepositFund(DepositFundsCommand command)
+        {
+            try
+            {
+                // ensure existance of target account
+                var targetAcc = await _accountService.GetAccountFromDbAsync(command.AccountId, command.UserId);
+                var transaction = new Transaction()
+                {
+                    SourceId = command.CorrelationId,
+                    SourceType = TransactionObjectType.Credit,
+                    TargetId = targetAcc.Id,
+                    TargetType = TransactionObjectType.Account,
+                    Description = "Кредит",
+                    Amount = command.Amount,
+                    Status = TransactionStatus.Completed,
+                };
+
+                targetAcc.Balance += command.Amount;
+
+                _context.Transactions.Add(transaction);
+                _context.Accounts.Update(targetAcc);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex) { 
+                return new(false, ex.Message);
+            }
+
+            return new(true, null);
         }
     }
 }

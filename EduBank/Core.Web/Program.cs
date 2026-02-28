@@ -13,6 +13,10 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using FluentValidation;
 using Core.Application.Dtos;
+using MassTransit;
+using Web.Options;
+using Core.Application.Consumers;
+using Common.Contracts;
 
 namespace Core.Web
 {
@@ -24,9 +28,19 @@ namespace Core.Web
             // Add services to the container.
 
 
+            builder.Services.Configure<JwtOptions>(
+                builder.Configuration.GetSection("Jwt"));
+
+            builder.Services.Configure<RabbitMqOptions>(
+                builder.Configuration.GetSection("RabbitMq"));
+
             var jwtOptions = builder.Configuration
                 .GetSection("Jwt")
                 .Get<JwtOptions>()!;
+
+            var rabbitOptions = builder.Configuration
+                .GetSection("RabbitMq")
+                .Get<RabbitMqOptions>()!;
 
             builder.Services
                 .AddControllers()
@@ -98,6 +112,30 @@ namespace Core.Web
                         builder.Configuration.GetConnectionString("DefaultConnection"),
                         b => b.MigrationsAssembly("Core.Web")
                     ));
+
+
+
+
+            builder.Services.AddMassTransit(x =>
+            {
+                x.SetKebabCaseEndpointNameFormatter();
+
+                x.AddConsumer<DepositFundsConsumer>();
+                x.AddRequestClient<ProcessExternalPaymentCommand>();
+
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host(rabbitOptions.Host,
+                             rabbitOptions.VirtualHost,
+                             h =>
+                             {
+                                 h.Username(rabbitOptions.Username);
+                                 h.Password(rabbitOptions.Password);
+                             });
+
+                    cfg.ConfigureEndpoints(context);
+                });
+            });
 
 
             var app = builder.Build();
