@@ -70,6 +70,19 @@ namespace Core.Web
                 config.OperationFilter<SwaggerAuthorizeFilter>();
             });
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowFrontend",
+                    policy =>
+                    {
+                        policy.SetIsOriginAllowed(origin => true)  // адрес вашего фронтенда
+                              .AllowAnyHeader()
+                              .AllowAnyMethod()
+                              .AllowCredentials(); // если используете куки / авторизацию
+                    });
+            });
+
+
 
             builder.Services
                 .AddTransient<IAccountService, AccountService>()
@@ -106,6 +119,8 @@ namespace Core.Web
             app.UseAuthorization();
 
             app.MapControllers();
+
+            app.UseCors("AllowFrontend");
 
             app.Run();
         }

@@ -1,0 +1,703 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+4. Repository files, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+<additional_info>
+
+</additional_info>
+
+</file_summary>
+
+<directory_structure>
+App.js
+components/layout/AppLayout.jsx
+components/privateRoute/PrivateRoute.jsx
+components/publicRoute/PublicRoute.jsx
+context/authContext.js
+index.js
+pages/forbidden/ForbiddenPage.jsx
+pages/home/HomePage.jsx
+pages/login/LoginPage.jsx
+pages/notFound/NotFoundPage.jsx
+pages/profile/ProfilePage.jsx
+services/api.js
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="App.js">
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { AuthProvider, useAuth } from './context/authContext';
+import { PrivateRoute } from './components/privateRoute/PrivateRoute';
+import { PublicRoute } from './components/publicRoute/PublicRoute';
+import { AppLayout } from './components/layout/AppLayout';
+import { HomePage } from './pages/home/HomePage';
+import { LoginPage } from './pages/login/LoginPage';
+import { ProfilePage } from './pages/profile/ProfilePage';
+import { NotFoundPage } from './pages/notFound/NotFoundPage';
+import { Spin } from 'antd'; // для индикатора загрузки
+import { ForbiddenPage } from './pages/forbidden/ForbiddenPage';
+
+function AppRoutes() {
+  const { loading } = useAuth();
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', marginTop: 100 }}>
+        <Spin size="large" />
+      </div>
+    );
+  }
+  return (
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <PrivateRoute>
+            <HomePage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/login"
+        element={
+          <PublicRoute>
+            <LoginPage />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          <PrivateRoute>
+            <ProfilePage />
+          </PrivateRoute>
+        }
+      />
+      <Route path="/forbidden" element={<ForbiddenPage/>} />
+      <Route path="*" element={<NotFoundPage />} />
+    </Routes>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <AppLayout>
+          <AppRoutes />
+        </AppLayout>
+      </BrowserRouter>
+    </AuthProvider>
+  );
+}
+
+export default App;
+</file>
+
+<file path="components/layout/AppLayout.jsx">
+import React from 'react';
+import { Layout, Menu } from 'antd';
+import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../../context/authContext';
+
+const { Header, Content, Footer } = Layout;
+
+export const AppLayout = ({ children }) => {
+  const location = useLocation();
+  const { user, logout } = useAuth();
+
+  // Если страница логина – показываем только содержимое (без шапки и футера)
+  if (location.pathname === '/login') {
+    return <>{children}</>;
+  }
+
+  const menuItems = [
+    { key: '/', label: <Link to="/">Главная</Link> },
+    user ? { key: '/profile', label: <Link to="/profile">Профиль</Link> } : null,
+    user
+      ? { key: 'logout', label: <span onClick={logout}>Выйти</span> }
+      : { key: '/login', label: <Link to="/login">Вход</Link> },
+  ].filter(Boolean);
+
+  return (
+    <Layout className="layout" style={{ minHeight: '100vh' }}>
+      <Header>
+        <div className="logo" style={{ float: 'left', color: '#fff', marginRight: 20 }}>
+          MyApp
+        </div>
+        <Menu
+          theme="dark"
+          mode="horizontal"
+          selectedKeys={[location.pathname]}
+          items={menuItems}
+        />
+      </Header>
+      <Content style={{ padding: '0 50px', marginTop: 20 }}>
+        <div className="site-layout-content" style={{ background: '#fff', padding: 24, minHeight: 280 }}>
+          {children}
+        </div>
+      </Content>
+      <Footer style={{ textAlign: 'center' }}>MyApp ©2025</Footer>
+    </Layout>
+  );
+};
+</file>
+
+<file path="components/privateRoute/PrivateRoute.jsx">
+import React from 'react';
+import { Navigate } from 'react-router-dom';
+import { getAccessToken, getRoleFromToken, isRoleAllowed } from '../../services/api';
+
+export const PrivateRoute = ({ children }) => {
+  const token = getAccessToken();
+
+  if (!token) {
+    return <Navigate to="/login" />;
+  }
+
+  const role = getRoleFromToken(token);
+  if (!isRoleAllowed(role)) {
+    return <Navigate to="/forbidden" />;
+  }
+
+  return children;
+};
+</file>
+
+<file path="components/publicRoute/PublicRoute.jsx">
+import React from 'react';
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '../../context/authContext';
+
+export const PublicRoute = ({ children }) => {
+  const { user } = useAuth();
+  // Если пользователь уже авторизован – перенаправляем на главную
+  return user ? <Navigate to="/" /> : children;
+};
+</file>
+
+<file path="context/authContext.js">
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import {
+  apiRequest,
+  setTokens,
+  removeTokens,
+  getAccessToken,
+  getRoleFromToken,
+  isRoleAllowed,
+} from '../services/api';
+
+const AuthContext = createContext(null);
+
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadUser = async () => {
+      const token = getAccessToken();
+      if (token) {
+        const role = getRoleFromToken(token);
+        if (!isRoleAllowed(role)) {
+          // Роль Customer – удаляем токены и не загружаем пользователя
+          removeTokens();
+          setLoading(false);
+          return;
+        }
+        try {
+          const response = await apiRequest('/api/users', { method: 'GET' });
+          if (response.ok) {
+            const userData = await response.json();
+            setUser(userData);
+          } else {
+            removeTokens();
+          }
+        } catch {
+          removeTokens();
+        }
+      }
+      setLoading(false);
+    };
+    loadUser();
+  }, []);
+
+  const login = async (email, password) => {
+    const response = await fetch(`${process.env.REACT_APP_AUTH_API_URL}/api/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      const role = getRoleFromToken(data.accessToken);
+      if (!isRoleAllowed(role)) {
+        // Роль Customer – не пускаем
+        removeTokens();
+        return { success: false, error: 'Доступ запрещён для данной роли' };
+      }
+      setTokens(data.accessToken, data.refreshToken);
+      const userResponse = await apiRequest('/api/users', { method: 'GET' });
+      if (userResponse.ok) {
+        const userData = await userResponse.json();
+        setUser(userData);
+        return { success: true };
+      } else {
+        removeTokens();
+        return { success: false, error: 'Не удалось загрузить данные пользователя' };
+      }
+    } else {
+      const errorData = await response.json().catch(() => ({}));
+      return { success: false, error: errorData.message || 'Ошибка входа' };
+    }
+  };
+
+  const register = async (email, password, credentials) => {
+    const response = await fetch(`${process.env.REACT_APP_AUTH_API_URL}/api/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password, credentials }),
+    });
+
+    if (response.ok) {
+      return { success: true };
+    } else {
+      const errorData = await response.json().catch(() => ({}));
+      return { success: false, error: errorData.message || 'Ошибка регистрации' };
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await apiRequest('/api/auth/logout', { method: 'POST' });
+    } finally {
+      removeTokens();
+      setUser(null);
+    }
+  };
+
+  const updateProfile = async (data) => {
+    const response = await apiRequest('/api/users', {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+    if (response.ok) {
+      const userResponse = await apiRequest('/api/users', { method: 'GET' });
+      const updatedUser = await userResponse.json();
+      setUser(updatedUser);
+      return { success: true };
+    } else {
+      const error = await response.json().catch(() => ({}));
+      return { success: false, error: error.message || 'Ошибка обновления' };
+    }
+  };
+
+  const changePassword = async (oldPassword, newPassword) => {
+    const response = await apiRequest('/api/auth/change-password', {
+      method: 'POST',
+      body: JSON.stringify({ oldPassword, newPassword }),
+    });
+    if (response.ok) {
+      return { success: true };
+    } else {
+      const error = await response.json().catch(() => ({}));
+      return { success: false, error: error.message || 'Ошибка смены пароля' };
+    }
+  };
+
+  const value = {
+    user,
+    login,
+    register,
+    logout,
+    updateProfile,
+    changePassword,
+    loading,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
+
+export const useAuth = () => useContext(AuthContext);
+</file>
+
+<file path="index.js">
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import 'antd/dist/reset.css';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+</file>
+
+<file path="pages/forbidden/ForbiddenPage.jsx">
+import React from 'react';
+import { Result, Button } from 'antd';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../../context/authContext';
+
+export const ForbiddenPage = () => {
+  const { logout } = useAuth();
+  return (
+    <Result
+      status="403"
+      title="403"
+      subTitle="Извините, у вас нет доступа к этой странице."
+      extra={[
+        <Button type="primary" key="home">
+          <Link to="/">На главную</Link>
+        </Button>,
+        <Button key="logout" onClick={logout}>
+          Выйти
+        </Button>,
+      ]}
+    />
+  );
+};
+</file>
+
+<file path="pages/home/HomePage.jsx">
+import React from 'react';
+import { Typography } from 'antd';
+import { useAuth } from '../../context/authContext';
+
+const { Title, Paragraph } = Typography;
+
+export const HomePage = () => {
+  const { user } = useAuth();
+  return (
+    <div>
+      <Title>Добро пожаловать, {user?.credentials}!</Title>
+      <Paragraph>
+        Это главная страница, доступная только авторизованным пользователям.
+      </Paragraph>
+    </div>
+  );
+};
+</file>
+
+<file path="pages/login/LoginPage.jsx">
+import React from 'react';
+import { Form, Input, Button, Card, message } from 'antd';
+import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/authContext';
+
+export const LoginPage = () => {
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
+  const onFinish = async (values) => {
+    const { email, password } = values;
+    const result = await login(email, password);
+    if (result.success) {
+      message.success('Вход выполнен успешно');
+      navigate('/');
+    } else {
+      message.error(result.error || 'Ошибка входа');
+    }
+  };
+
+  return (
+    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '50px' }}>
+      <Card title="Вход в систему" style={{ width: 400 }}>
+        <Form name="login" onFinish={onFinish} autoComplete="off">
+          <Form.Item
+            name="email"
+            rules={[
+              { required: true, message: 'Введите email' },
+              { type: 'email', message: 'Некорректный email' },
+            ]}
+          >
+            <Input prefix={<UserOutlined />} placeholder="Email" />
+          </Form.Item>
+
+          <Form.Item
+            name="password"
+            rules={[{ required: true, message: 'Введите пароль' }]}
+          >
+            <Input.Password prefix={<LockOutlined />} placeholder="Пароль" />
+          </Form.Item>
+
+          <Form.Item>
+            <Button type="primary" htmlType="submit" block>
+              Войти
+            </Button>
+          </Form.Item>
+          <div style={{ textAlign: 'center' }}>
+            Нет аккаунта? <Link to="/register">Зарегистрироваться</Link>
+          </div>
+        </Form>
+      </Card>
+    </div>
+  );
+};
+</file>
+
+<file path="pages/notFound/NotFoundPage.jsx">
+import React from 'react';
+import { Result, Button } from 'antd';
+import { Link } from 'react-router-dom';
+
+export const NotFoundPage = () => {
+  return (
+    <Result
+      status="404"
+      title="404"
+      subTitle="Извините, страница не найдена."
+      extra={<Button type="primary"><Link to="/">Вернуться на главную</Link></Button>}
+    />
+  );
+};
+</file>
+
+<file path="pages/profile/ProfilePage.jsx">
+import React, { useState } from 'react';
+import { Typography, Card, Button, Form, Input, message, Tabs } from 'antd';
+import { useAuth } from '../../context/authContext';
+
+const { Title, Text } = Typography;
+const { TabPane } = Tabs;
+
+export const ProfilePage = () => {
+  const { user, logout, updateProfile, changePassword } = useAuth();
+  const [profileForm] = Form.useForm();
+  const [passwordForm] = Form.useForm();
+  const [updating, setUpdating] = useState(false);
+  const [changing, setChanging] = useState(false);
+
+  const handleUpdateProfile = async (values) => {
+    setUpdating(true);
+    const result = await updateProfile(values);
+    setUpdating(false);
+    if (result.success) {
+      message.success('Профиль обновлён');
+    } else {
+      message.error(result.error);
+    }
+  };
+
+  const handleChangePassword = async (values) => {
+    setChanging(true);
+    const result = await changePassword(values.oldPassword, values.newPassword);
+    setChanging(false);
+    if (result.success) {
+      message.success('Пароль изменён');
+      passwordForm.resetFields();
+    } else {
+      message.error(result.error);
+    }
+  };
+
+  return (
+    <Card style={{ maxWidth: 600, margin: '0 auto' }}>
+      <Title level={2}>Профиль</Title>
+      <Tabs defaultActiveKey="1">
+        <TabPane tab="Основное" key="1">
+          <div style={{ marginBottom: 20 }}>
+            <Text strong>Email: </Text> <Text>{user?.email}</Text><br />
+            <Text strong>Имя: </Text> <Text>{user?.credentials}</Text>
+          </div>
+          <Form
+            form={profileForm}
+            layout="vertical"
+            onFinish={handleUpdateProfile}
+            initialValues={{ email: user?.email, credentials: user?.credentials }}
+          >
+            <Form.Item
+              name="email"
+              label="Email"
+              rules={[{ required: true, type: 'email', message: 'Введите корректный email' }]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              name="credentials"
+              label="Имя"
+              rules={[{ required: true, message: 'Введите имя' }]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit" loading={updating}>
+                Обновить профиль
+              </Button>
+            </Form.Item>
+          </Form>
+        </TabPane>
+        <TabPane tab="Смена пароля" key="2">
+          <Form
+            form={passwordForm}
+            layout="vertical"
+            onFinish={handleChangePassword}
+          >
+            <Form.Item
+              name="oldPassword"
+              label="Старый пароль"
+              rules={[{ required: true, message: 'Введите старый пароль' }]}
+            >
+              <Input.Password />
+            </Form.Item>
+            <Form.Item
+              name="newPassword"
+              label="Новый пароль"
+              rules={[{ required: true, message: 'Введите новый пароль' }]}
+            >
+              <Input.Password />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit" loading={changing}>
+                Сменить пароль
+              </Button>
+            </Form.Item>
+          </Form>
+        </TabPane>
+      </Tabs>
+      <div style={{ marginTop: 20 }}>
+        <Button type="primary" danger onClick={logout}>
+          Выйти
+        </Button>
+      </div>
+    </Card>
+  );
+};
+</file>
+
+<file path="services/api.js">
+// src/services/api.js
+import { jwtDecode } from 'jwt-decode';
+
+const API_BASE_URL = process.env.REACT_APP_AUTH_API_URL || 'http://localhost:5000';
+
+const getAccessToken = () => localStorage.getItem('accessToken');
+const getRefreshToken = () => localStorage.getItem('refreshToken');
+
+const setTokens = (accessToken, refreshToken) => {
+  localStorage.setItem('accessToken', accessToken);
+  if (refreshToken) localStorage.setItem('refreshToken', refreshToken);
+};
+
+const removeTokens = () => {
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
+};
+
+// Новая функция: извлечение роли из токена
+const getRoleFromToken = (token) => {
+  try {
+    const decoded = jwtDecode(token);
+    return decoded.role; // предполагается, что в токене есть поле "role"
+  } catch {
+    return null;
+  }
+};
+
+// Проверка, разрешена ли роль (не Customer)
+const isRoleAllowed = (role) => role !== 'Customer';
+
+async function apiRequest(endpoint, options = {}) {
+  const url = `${API_BASE_URL}${endpoint}`;
+  const accessToken = getAccessToken();
+
+  const headers = {
+    'Content-Type': 'application/json',
+    ...options.headers,
+  };
+
+  if (accessToken) {
+    headers.Authorization = `Bearer ${accessToken}`;
+  }
+
+  let response = await fetch(url, { ...options, headers });
+
+  if (response.status === 401 && getRefreshToken()) {
+    const newTokens = await refreshAccessToken();
+    if (newTokens) {
+      headers.Authorization = `Bearer ${newTokens.accessToken}`;
+      response = await fetch(url, { ...options, headers });
+    } else {
+      removeTokens();
+      window.location.href = '/login';
+      throw new Error('Session expired');
+    }
+  }
+
+  return response;
+}
+
+async function refreshAccessToken() {
+  const refreshToken = getRefreshToken();
+  if (!refreshToken) return null;
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/auth/refresh?token=${refreshToken}`, {
+      method: 'POST',
+    });
+    if (response.ok) {
+      const data = await response.json();
+      setTokens(data.accessToken, data.refreshToken || refreshToken);
+      return { accessToken: data.accessToken };
+    } else {
+      removeTokens();
+      return null;
+    }
+  } catch {
+    removeTokens();
+    return null;
+  }
+}
+
+export {
+  apiRequest,
+  setTokens,
+  removeTokens,
+  getAccessToken,
+  getRefreshToken,
+  getRoleFromToken,
+  isRoleAllowed,
+};
+</file>
+
+</files>

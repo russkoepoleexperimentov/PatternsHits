@@ -164,6 +164,18 @@ namespace Web
                         b => b.MigrationsAssembly("AuthWeb")
                     ));
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowFrontend",
+                    policy =>
+                    {
+                        policy.SetIsOriginAllowed(origin => true)  // адрес вашего фронтенда
+                              .AllowAnyHeader()
+                              .AllowAnyMethod()
+                              .AllowCredentials(); // если используете куки / авторизацию
+                    });
+            });
+
 
             var app = builder.Build();
 
@@ -206,6 +218,7 @@ namespace Web
             app.UseAuthorization();
 
             app.MapControllers();
+            app.UseCors("AllowFrontend");
 
             app.Run();
 
