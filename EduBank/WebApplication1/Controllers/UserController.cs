@@ -41,7 +41,7 @@ public class UserController : ControllerBase
         return Ok(await _userService.GetByIdAsync(id.Value));
     }
 
-    [Authorize(AuthenticationSchemes = "Bearer", Roles = $"{RoleNames.Admin}")]
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = $"{RoleNames.Employee}")]
     [HttpPost("{userId}/role")]
     public async Task<IActionResult> GiveRole(Guid userId, string role)
     {
@@ -49,7 +49,7 @@ public class UserController : ControllerBase
         return Ok();
     }
 
-    [Authorize(AuthenticationSchemes = "Bearer", Roles = RoleNames.Admin)]
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = RoleNames.Employee)]
     [HttpDelete("{userId}/role")]
     public async Task<IActionResult> RemoveRole(Guid userId, string role)
     {
@@ -57,7 +57,7 @@ public class UserController : ControllerBase
         return Ok();
     }
 
-    [Authorize(AuthenticationSchemes = "Bearer", Roles = RoleNames.Admin)]
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = RoleNames.Employee)]
     [ProducesResponseType<List<UserDto>>(StatusCodes.Status200OK)]
     [HttpGet("search")]
     public async Task<IActionResult> searchUsers(string? query)
