@@ -59,7 +59,9 @@ namespace CreditService.Services
                     Amount = command.Amount,
                     Status = PaymentStatus.Processed,
                     CreateDateTime = command.PaymentDate,
-                    ProcessedAt = DateTime.UtcNow
+                    ProcessedAt = DateTime.UtcNow,
+                    FailureReason = ""
+                    
                 };
                 _context.Payments.Add(payment);
 
