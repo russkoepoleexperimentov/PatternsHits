@@ -11,7 +11,7 @@ namespace CreditDomain.Entities
     public class Payment : BaseEntity
     {
         public Guid CreditId { get; set; }
-        public Credit Credit { get; set; }
+        public virtual Credit Credit { get; set; }
         public decimal Amount { get; set; }
         public PaymentStatus Status { get; set; }
         public DateTime? ProcessedAt { get; set; }

@@ -1,5 +1,13 @@
+using Common.Contracts;
+using Common.Middlewares;
 using Common.Options;
+using CreditApplication.Consumers;
+using CreditApplication.Dtos;
+using CreditApplication.Profiles;
+using CreditApplication.Services.Interfaces;
+using CreditApplication.Validators;
 using CreditInfrastructure;
+using CreditService.Services;
 using FluentValidation;
 using MassTransit;
 using MassTransit.JobService;
@@ -88,6 +96,10 @@ namespace Web
 
             builder.Services.AddMassTransit(x =>
             {
+                x.SetKebabCaseEndpointNameFormatter();
+
+                x.AddConsumer<ProcessExternalPaymentConsumer>();
+                x.AddRequestClient<DepositFundsCommand>();
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
@@ -99,15 +111,24 @@ namespace Web
                                  h.Password(rabbitOptions.Password);
                              });
 
-                    cfg.ReceiveEndpoint();
-
                     cfg.ConfigureEndpoints(context);
                 });
             });
 
 
+            builder.Services.AddScoped<IValidator<CreateTariffRequest>, TariffValidator>();
+            builder.Services.AddScoped<IValidator<CreateCreditRequest>, CreateCreditRequestValidator>();
+            builder.Services.AddScoped<IValidator<ApproveCreditRequest>, ApproveCreditRequestValidator>();
+            builder.Services.AddScoped<IValidator<RejectCreditRequest>, RejectCreditRequestValidator>();
+            builder.Services.AddScoped<IValidator<CreatePaymentRequest>, CreatePaymentRequestValidator>();
+            builder.Services.AddScoped<IValidator<UpdatePaymentStatusRequest>, UpdatePaymentStatusRequestValidator>();
+            builder.Services.AddScoped<ITariffService, TariffService>();
+            builder.Services.AddScoped<ICreditService, CreditsService>();
+            builder.Services.AddScoped<IPaymentService, PaymentService>();
             builder.Services
-                .AddScoped<IUserService, UserService>()
+                .AddAutoMapper(typeof(CreditProfile))
+                .AddAutoMapper(typeof(TariffProfile))
+                .AddAutoMapper(typeof(PaymentProfile));
 
 
             builder.Services.AddDbContext<CreditDbContext>(options =>
@@ -131,6 +152,7 @@ namespace Web
                     context.Database.Migrate();
             }
 
+            app.UseMiddleware<ExceptionCatchMiddleware>();
             app.UseSwagger();
             app.UseSwaggerUI();
 

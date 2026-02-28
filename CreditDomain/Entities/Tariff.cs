@@ -18,6 +18,6 @@ namespace CreditDomain.Entities
         public decimal InterestRate { get; set; }
         public decimal MaxAmount { get; set; }
         public int MaxTermDays { get; set; }
-        public ICollection<Credit> Credits { get; set; } = new List<Credit>();
+        public virtual ICollection<Credit> Credits { get; set; } = new List<Credit>();
     }
 }

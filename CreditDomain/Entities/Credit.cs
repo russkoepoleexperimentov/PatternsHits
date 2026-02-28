@@ -14,9 +14,9 @@ namespace CreditDomain.Entities
     {
 
         public Guid UserId { get; set; }
-
+        public Guid AccountId { get; set; }
         public Guid TariffId { get; set; }
-        public Tariff Tariff { get; set; }
+        public virtual Tariff Tariff { get; set; }
 
         public decimal Amount { get; set; }
 
@@ -37,6 +37,6 @@ namespace CreditDomain.Entities
 
         public DateTime? ClosedAt { get; set; }
 
-        public ICollection<Payment> Payments { get; set; } = new List<Payment>();
+        public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
     }
 }
