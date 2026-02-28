@@ -1,13 +1,13 @@
-using Application.Dtos;
-using Application.Profiles;
-using Application.Services.Abstractions;
-using Application.Services.Implementations;
-using Application.Services.Interfaces;
-using Application.Validators;
-using Common.Enums.Common.Enums;
+using Common.Contracts;
 using Common.Middlewares;
 using Common.Options;
-using Domain.Entities;
+using CreditApplication.Consumers;
+using CreditApplication.Dtos;
+using CreditApplication.Profiles;
+using CreditApplication.Services.Interfaces;
+using CreditApplication.Validators;
+using CreditInfrastructure;
+using CreditService.Services;
 using FluentValidation;
 using MassTransit;
 using MassTransit.JobService;
@@ -36,9 +36,6 @@ namespace Web
             builder.Services.Configure<RabbitMqOptions>(
                 builder.Configuration.GetSection("RabbitMq"));
 
-            builder.Services.Configure<IdentityPasswordOptions>(
-                builder.Configuration.GetSection("Identity:Password"));
-
             var jwtOptions = builder.Configuration
                 .GetSection("Jwt")
                 .Get<JwtOptions>()!;
@@ -47,9 +44,6 @@ namespace Web
                 .GetSection("RabbitMq")
                 .Get<RabbitMqOptions>()!;
 
-            var identityOptions = builder.Configuration
-                .GetSection("Identity:Password")
-                .Get<IdentityPasswordOptions>()!;
 
 
             builder.Services.AddLogging(logging =>
@@ -102,6 +96,10 @@ namespace Web
 
             builder.Services.AddMassTransit(x =>
             {
+                x.SetKebabCaseEndpointNameFormatter();
+
+                x.AddConsumer<ProcessExternalPaymentConsumer>();
+                x.AddRequestClient<DepositFundsCommand>();
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
@@ -113,67 +111,32 @@ namespace Web
                                  h.Password(rabbitOptions.Password);
                              });
 
-                    cfg.ReceiveEndpoint();
-
                     cfg.ConfigureEndpoints(context);
                 });
             });
 
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowFrontend",
-                    policy =>
-                    {
-                        policy.SetIsOriginAllowed(origin => true) 
-                              .AllowAnyHeader()
-                              .AllowAnyMethod()
-                              .AllowCredentials(); 
-                    });
-            });
 
+            builder.Services.AddScoped<IValidator<CreateTariffRequest>, TariffValidator>();
+            builder.Services.AddScoped<IValidator<CreateCreditRequest>, CreateCreditRequestValidator>();
+            builder.Services.AddScoped<IValidator<ApproveCreditRequest>, ApproveCreditRequestValidator>();
+            builder.Services.AddScoped<IValidator<RejectCreditRequest>, RejectCreditRequestValidator>();
+            builder.Services.AddScoped<IValidator<CreatePaymentRequest>, CreatePaymentRequestValidator>();
+            builder.Services.AddScoped<IValidator<UpdatePaymentStatusRequest>, UpdatePaymentStatusRequestValidator>();
+            builder.Services.AddScoped<ITariffService, TariffService>();
+            builder.Services.AddScoped<ICreditService, CreditsService>();
+            builder.Services.AddScoped<IPaymentService, PaymentService>();
             builder.Services
-                .AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
-                {
-                    options.Password.RequiredLength = identityOptions.RequiredLength;
-                    options.Password.RequireDigit = identityOptions.RequireDigit;
-                    options.Password.RequireUppercase = identityOptions.RequireUppercase;
-                    options.Password.RequireLowercase = identityOptions.RequireLowercase;
-                    options.Password.RequireNonAlphanumeric = identityOptions.RequireNonAlphanumeric;
-                })
-                .AddEntityFrameworkStores<UserDbContext>()
-                .AddDefaultTokenProviders();
+                .AddAutoMapper(typeof(CreditProfile))
+                .AddAutoMapper(typeof(TariffProfile))
+                .AddAutoMapper(typeof(PaymentProfile));
 
 
-            builder.Services
-                .AddScoped<IUserService, UserService>()
-                .AddScoped<IAuthService, AuthService>()
-                .AddScoped<IValidator<UserRegisterDto>, UserRegistrationValidator>()
-                .AddScoped<IValidator<UserUpdateDto>, UserUpdateValidator>()
-                .AddScoped<IValidator<UserLoginDto>, UserLoginValidator>()
-                .AddScoped<IValidator<UserChangePassword>, ChangePasswordValidator>()
-                .AddAutoMapper(typeof(UserMapProfile));
-
-            builder.Services.AddSingleton<IJwtService>(sp =>
-            {
-                var jwtOptions = sp.GetRequiredService<IOptions<JwtOptions>>().Value;
-
-                return new JWTService(
-                    new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(jwtOptions.Access.Secret)),
-                    jwtOptions.Access.LifetimeMinutes,
-                    new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(jwtOptions.Refresh.Secret)),
-                    jwtOptions.Refresh.LifetimeDays
-                );
-            });
-
-
-            builder.Services.AddDbContext<UserDbContext>(options =>
+            builder.Services.AddDbContext<CreditDbContext>(options =>
                 options
                     .UseLazyLoadingProxies()
                     .UseNpgsql(
                         builder.Configuration.GetConnectionString("DefaultConnection"),
-                        b => b.MigrationsAssembly("AuthWeb")
+                        b => b.MigrationsAssembly("CreditWeb")
                     ));
 
 
@@ -183,38 +146,16 @@ namespace Web
 
             using (var scope = app.Services.CreateScope())
             {
-                var context = scope.ServiceProvider.GetRequiredService<UserDbContext>();
+                var context = scope.ServiceProvider.GetRequiredService<CreditDbContext>();
 
                 if (context.Database.GetPendingMigrations().Any())
                     context.Database.Migrate();
             }
 
-            using (var scope = app.Services.CreateScope())
-            {
-                var roleManager = scope.ServiceProvider
-                    .GetRequiredService<RoleManager<IdentityRole<Guid>>>();
-
-                string[] roles =
-                {
-                    RoleNames.Customer,
-                    RoleNames.Employee
-                };
-
-                foreach (var role in roles)
-                {
-                    if (!await roleManager.RoleExistsAsync(role))
-                    {
-                         await roleManager.CreateAsync(
-                            new IdentityRole<Guid>(role));
-                    }
-                }
-            }
-
-
-            app.UseCors("AllowFrontend");
+            app.UseMiddleware<ExceptionCatchMiddleware>();
             app.UseSwagger();
             app.UseSwaggerUI();
-            app.UseMiddleware<ExceptionCatchMiddleware>();
+
             app.UseAuthentication();
             app.UseAuthorization();
 

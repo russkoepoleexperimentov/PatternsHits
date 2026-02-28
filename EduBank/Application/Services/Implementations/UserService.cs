@@ -53,7 +53,6 @@ public class UserService : IUserService
         {
             RoleNames.Customer,
             RoleNames.Employee,
-            RoleNames.Admin
         };
 
         foreach (var role in roles)
