@@ -27,3 +27,4 @@ publish/
 # OS
 .DS_Store
 Thumbs.db
+/EduBank/repomix-output.xml
