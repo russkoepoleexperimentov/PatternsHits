@@ -115,7 +115,7 @@ namespace Web
                 });
             });
 
-
+            builder.Services.AddHostedService<InterestAccrualService>();
             builder.Services.AddScoped<IValidator<CreateTariffRequest>, TariffValidator>();
             builder.Services.AddScoped<IValidator<CreateCreditRequest>, CreateCreditRequestValidator>();
             builder.Services.AddScoped<IValidator<ApproveCreditRequest>, ApproveCreditRequestValidator>();
