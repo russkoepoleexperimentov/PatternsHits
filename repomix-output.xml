@@ -1,0 +1,4476 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+4. Repository files, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+<additional_info>
+
+</additional_info>
+
+</file_summary>
+
+<directory_structure>
+.gitignore
+EduBank/.dockerignore
+EduBank/Application/Application.csproj
+EduBank/Application/Dtos/UserDtos.cs
+EduBank/Application/Profiles/UserMapProfile.cs
+EduBank/Application/Services/Implementations/AuthService.cs
+EduBank/Application/Services/Implementations/JwtService.cs
+EduBank/Application/Services/Implementations/UserService.cs
+EduBank/Application/Services/Interfaces/IAuthService.cs
+EduBank/Application/Services/Interfaces/IJwtService.cs
+EduBank/Application/Services/Interfaces/IUserService.cs
+EduBank/Application/Validators/UserValidator.cs
+EduBank/Common/BaseEntity.cs
+EduBank/Common/Common.csproj
+EduBank/Common/Enums/Roles.cs
+EduBank/Common/Exeptions/BadRequestExeption.cs
+EduBank/Common/Exeptions/EntryExistsExeption.cs
+EduBank/Common/Exeptions/ForbiddenExeption.cs
+EduBank/Common/Exeptions/InvalidAuthentificationDataExeption.cs
+EduBank/Common/Exeptions/NotFoundExeption.cs
+EduBank/Common/Exeptions/StatusCodeExeption.cs
+EduBank/Common/HttpContextExtensions.cs
+EduBank/Common/Options/JwtOptions.cs
+EduBank/Common/SwaggerAuthorizeFilter.cs
+EduBank/Core.Application/Core.Application.csproj
+EduBank/Core.Application/Dtos/AccountDto.cs
+EduBank/Core.Application/Dtos/CommentDto.cs
+EduBank/Core.Application/Dtos/CreateAccountDto.cs
+EduBank/Core.Application/Dtos/CreateCommentDto.cs
+EduBank/Core.Application/Dtos/CreateTransactionDto.cs
+EduBank/Core.Application/Dtos/TransactionDto.cs
+EduBank/Core.Application/Dtos/TransactionType.cs
+EduBank/Core.Application/Mapping/CoreMapProfile.cs
+EduBank/Core.Application/Services/Implementations/AccountService.cs
+EduBank/Core.Application/Services/Implementations/TransactionService.cs
+EduBank/Core.Application/Services/Interfaces/IAccountService.cs
+EduBank/Core.Application/Services/Interfaces/ITransactionService.cs
+EduBank/Core.Application/Validity/CreateTransactionValidator.cs
+EduBank/Core.Domain/Account.cs
+EduBank/Core.Domain/Core.Domain.csproj
+EduBank/Core.Domain/Transaction.cs
+EduBank/Core.Domain/TransactionObjectType.cs
+EduBank/Core.Domain/TransactionStatus.cs
+EduBank/Core.Infrastructure/Core.Infrastructure.csproj
+EduBank/Core.Infrastructure/CoreDbContext.cs
+EduBank/Core.Web/appsettings.Development.json
+EduBank/Core.Web/appsettings.json
+EduBank/Core.Web/Controllers/AccountsController.cs
+EduBank/Core.Web/Controllers/TransactionsController.cs
+EduBank/Core.Web/Core.Web.csproj
+EduBank/Core.Web/Core.Web.http
+EduBank/Core.Web/Dockerfile
+EduBank/Core.Web/Migrations/20260228111310_Initial.cs
+EduBank/Core.Web/Migrations/20260228111310_Initial.Designer.cs
+EduBank/Core.Web/Migrations/20260228134253_Transaction.cs
+EduBank/Core.Web/Migrations/20260228134253_Transaction.Designer.cs
+EduBank/Core.Web/Migrations/CoreDbContextModelSnapshot.cs
+EduBank/Core.Web/Program.cs
+EduBank/Core.Web/Properties/launchSettings.json
+EduBank/docker-compose.dcproj
+EduBank/docker-compose.override.yml
+EduBank/docker-compose.yml
+EduBank/Domain/Domain.csproj
+EduBank/Domain/Entities/AplicationUser.cs
+EduBank/Domain/Entities/RefreshTokken.cs
+EduBank/EduBank.sln
+EduBank/Infrastructure/Infrastructure.csproj
+EduBank/Infrastructure/UserDbContext.cs
+EduBank/launchSettings.json
+EduBank/WebApplication1/appsettings.Development.json
+EduBank/WebApplication1/appsettings.json
+EduBank/WebApplication1/AuthWeb.csproj
+EduBank/WebApplication1/Controllers/AuthController.cs
+EduBank/WebApplication1/Controllers/UserController.cs
+EduBank/WebApplication1/Dockerfile
+EduBank/WebApplication1/Migrations/20260223094529_UserDbInnitial.cs
+EduBank/WebApplication1/Migrations/20260223094529_UserDbInnitial.Designer.cs
+EduBank/WebApplication1/Migrations/UserDbContextModelSnapshot.cs
+EduBank/WebApplication1/Options/IdentityOptions.cs
+EduBank/WebApplication1/Options/RabbitMqOptions.cs
+EduBank/WebApplication1/Program.cs
+EduBank/WebApplication1/Properties/launchSettings.json
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="EduBank/.dockerignore">
+**/.classpath
+**/.dockerignore
+**/.env
+**/.git
+**/.gitignore
+**/.project
+**/.settings
+**/.toolstarget
+**/.vs
+**/.vscode
+**/*.*proj.user
+**/*.dbmdl
+**/*.jfm
+**/azds.yaml
+**/bin
+**/charts
+**/docker-compose*
+**/Dockerfile*
+**/node_modules
+**/npm-debug.log
+**/obj
+**/secrets.dev.yaml
+**/values.dev.yaml
+LICENSE
+README.md
+!**/.gitignore
+!.git/HEAD
+!.git/config
+!.git/packed-refs
+!.git/refs/heads/**
+</file>
+
+<file path="EduBank/Application/Application.csproj">
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="14.0.0" />
+		<PackageReference Include="FluentValidation" Version="11.11.0" />
+		<PackageReference Include="MassTransit" Version="8.4.0" />
+		<PackageReference Include="MassTransit.RabbitMQ" Version="8.4.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.3" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.3" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.3" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="9.0.3" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.3">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.3" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
+		<PackageReference Include="Npgsql" Version="9.0.3" />
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.0" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.7.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Common\Common.csproj" />
+	  <ProjectReference Include="..\Domain\Domain.csproj" />
+	  <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+	</ItemGroup>
+
+</Project>
+</file>
+
+<file path="EduBank/Application/Profiles/UserMapProfile.cs">
+using Application.Dtos;
+using AutoMapper;
+using Domain.Entities;
+
+namespace Application.Profiles
+{
+    public class UserMapProfile : Profile
+    {
+        public UserMapProfile()
+        {
+
+            CreateMap<UserRegisterDto, ApplicationUser>();
+
+            CreateMap<ApplicationUser, UserDto>();
+
+            CreateMap<UserUpdateDto, ApplicationUser>()
+                .ForAllMembers(opts =>
+                    opts.Condition((src, dest, srcMember) => srcMember != null));
+
+            CreateMap<UserChangePassword, ApplicationUser>();
+
+        }
+    }
+}
+</file>
+
+<file path="EduBank/Application/Services/Implementations/AuthService.cs">
+using Application.Dtos;
+using Application.Services.Abstractions;
+using Application.Services.Interfaces;
+using AutoMapper;
+using Common.Enums.Common.Enums;
+using Common.Exceptions;
+using Common.Options;
+using Domain.Entities;
+using FluentValidation;
+using MassTransit;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+
+public class AuthService : IAuthService
+{
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly UserDbContext _context;
+    private readonly IJwtService _jwtService;
+    private readonly IValidator<UserRegisterDto> _registerValidator;
+    private readonly IValidator<UserLoginDto> _loginValidator;
+    private readonly IValidator<UserChangePassword> _changeValidator;
+    private readonly IMapper _mapper;
+    private readonly JwtOptions _jwtOptions;
+
+    public AuthService(
+        UserManager<ApplicationUser> userManager,
+        UserDbContext context,
+        IJwtService jwtService,
+        IValidator<UserRegisterDto> registerValidator,
+        IValidator<UserLoginDto> loginValidator,
+        IValidator<UserChangePassword> changeValidator,
+        IMapper mapper,
+        IOptions<JwtOptions> jwtOptions)
+    {
+        _userManager = userManager;
+        _context = context;
+        _jwtService = jwtService;
+        _registerValidator = registerValidator;
+        _loginValidator = loginValidator;
+        _changeValidator = changeValidator;
+        _mapper = mapper;
+        _jwtOptions = jwtOptions.Value;
+    }
+
+    public async Task<TokenResponse> RegisterAsync(UserRegisterDto dto)
+    {
+        await _registerValidator.ValidateAndThrowAsync(dto);
+
+        if (await _userManager.FindByEmailAsync(dto.Email) != null)
+            throw new EntryExistsException($"User with Email {dto.Email} already exists.");
+
+        var user = _mapper.Map<ApplicationUser>(dto);
+        user.UserName = $"user_{Guid.NewGuid()}";
+
+        var result = await _userManager.CreateAsync(user, dto.Password);
+
+        if (!result.Succeeded)
+            throw new BadRequestException(
+                string.Join(", ", result.Errors.Select(x => x.Description)));
+
+        await _userManager.AddToRoleAsync(user, Roles.Customer.ToString());
+
+        var roles = await _userManager.GetRolesAsync(user);
+
+        var tokens = _jwtService.GenerateTokens(user, roles.ToList());
+
+        _context.RefreshTokens.Add(new RefreshToken
+        {
+            UserId = user.Id,
+            Token = tokens.RefreshToken,
+            Expiration = DateTime.UtcNow.AddDays(_jwtOptions.Refresh.LifetimeDays)
+        });
+
+        await _context.SaveChangesAsync();
+
+        return tokens;
+    }
+
+    public async Task<TokenResponse> LoginAsync(UserLoginDto dto)
+    {
+        await _loginValidator.ValidateAndThrowAsync(dto);
+
+        var user = await _userManager.FindByEmailAsync(dto.Email);
+
+        if (user == null ||
+            !await _userManager.CheckPasswordAsync(user, dto.Password))
+            throw new BadRequestException("Wrong login or password");
+
+        var roles = await _userManager.GetRolesAsync(user);
+
+        var tokens = _jwtService.GenerateTokens(user, roles.ToList());
+
+        _context.RefreshTokens.Add(new RefreshToken
+        {
+            UserId = user.Id,
+            Token = tokens.RefreshToken,
+            Expiration = DateTime.UtcNow.AddDays(_jwtOptions.Refresh.LifetimeDays)
+        });
+
+        await _context.SaveChangesAsync();
+
+        return tokens;
+    }
+
+    public async Task<TokenResponse> RefreshAsync(string refreshToken)
+    {
+        var tokenEntity = await _context.RefreshTokens
+            .FirstOrDefaultAsync(x => x.Token == refreshToken);
+
+        if (tokenEntity == null ||
+            tokenEntity.IsRevoked ||
+            tokenEntity.Expiration < DateTime.UtcNow)
+            throw new SecurityTokenException("Invalid token");
+
+        tokenEntity.IsRevoked = true;
+
+        var user = await _userManager.FindByIdAsync(tokenEntity.UserId.ToString())
+            ?? throw new NotFoundException("User not found");
+
+        var roles = await _userManager.GetRolesAsync(user);
+
+        var tokens = _jwtService.GenerateTokens(user, roles.ToList());
+
+        _context.RefreshTokens.Add(new RefreshToken
+        {
+            UserId = user.Id,
+            Token = tokens.RefreshToken,
+            Expiration = DateTime.UtcNow.AddDays(_jwtOptions.Refresh.LifetimeDays)
+        });
+
+        await _context.SaveChangesAsync();
+
+        return tokens;
+    }
+
+    public async Task LogoutAsync(Guid userId)
+    {
+        var tokens = await _context.RefreshTokens
+            .Where(x => x.UserId == userId && !x.IsRevoked)
+            .ToListAsync();
+
+        foreach (var token in tokens)
+            token.IsRevoked = true;
+
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task ChangePasswordAsync(Guid userId, UserChangePassword dto)
+    {
+        await _changeValidator.ValidateAndThrowAsync(dto);
+
+        var user = await _userManager.FindByIdAsync(userId.ToString())
+            ?? throw new NotFoundException("User not found");
+
+        var result = await _userManager.ChangePasswordAsync(
+            user,
+            dto.OldPassword,
+            dto.NewPassword);
+
+        if (!result.Succeeded)
+            throw new BadRequestException(
+                string.Join(", ", result.Errors.Select(e => e.Description)));
+    }
+}
+</file>
+
+<file path="EduBank/Application/Services/Implementations/JwtService.cs">
+using Application.Dtos;
+using Application.Services.Abstractions;
+using Domain.Entities;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+
+namespace Application.Services.Implementations
+{
+    public class JWTService : IJwtService
+    {
+        private readonly int _accessTokenLifetimeHours;
+        private readonly int _refreshTokenLifetimeDays;
+        private readonly SymmetricSecurityKey _accessTokenSecretKey;
+        private readonly SymmetricSecurityKey _refreshTokenSecretKey;
+
+        public JWTService(SymmetricSecurityKey accessTokenSecretKey, int accessTokenLifetimeHours,
+                          SymmetricSecurityKey refreshTokenSecretKey, int refreshTokenLifetimeDays)
+        {
+            _accessTokenSecretKey = accessTokenSecretKey;
+            _accessTokenLifetimeHours = accessTokenLifetimeHours;
+            _refreshTokenSecretKey = refreshTokenSecretKey;
+            _refreshTokenLifetimeDays = refreshTokenLifetimeDays;
+        }
+
+        public TokenResponse GenerateTokens(ApplicationUser user, List<string> roles)
+        {
+            var accessToken = GenerateAccessToken(user, roles);
+            var refreshToken = GenerateRefreshToken(user);
+
+            var responce = new TokenResponse
+            {
+                AccessToken = accessToken,
+                RefreshToken = refreshToken
+            };
+            return responce;
+        }
+
+        private string GenerateAccessToken(ApplicationUser user, List<string> roles)
+        {
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            };
+
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            var handler = new JwtSecurityTokenHandler();
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.UtcNow.AddHours(_accessTokenLifetimeHours),
+                SigningCredentials = new SigningCredentials(_accessTokenSecretKey, SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = handler.CreateToken(tokenDescriptor);
+            return handler.WriteToken(token);
+        }
+
+        private string GenerateRefreshToken(ApplicationUser user)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim("refresh_token", "true")
+                }),
+                Expires = DateTime.UtcNow.AddDays(_refreshTokenLifetimeDays),
+                SigningCredentials = new SigningCredentials(_refreshTokenSecretKey, SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = handler.CreateToken(tokenDescriptor);
+            return handler.WriteToken(token);
+        }
+    }
+}
+</file>
+
+<file path="EduBank/Application/Services/Implementations/UserService.cs">
+using Application.Dtos;
+using Application.Services.Interfaces;
+using AutoMapper;
+using Common.Enums.Common.Enums;
+using Common.Exceptions;
+using Domain.Entities;
+using FluentValidation;
+using MassTransit;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
+public class UserService : IUserService
+{
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IValidator<UserUpdateDto> _updateValidator;
+    private readonly IMapper _mapper;
+    private readonly RoleManager<IdentityRole<Guid>> _roleManager;
+
+    public UserService(
+        UserManager<ApplicationUser> userManager,
+        IMapper mapper,
+        IValidator<UserUpdateDto> updateValidator,
+        RoleManager<IdentityRole<Guid>> roleManager)
+    {
+        _mapper = mapper;
+        _userManager = userManager;
+        _updateValidator = updateValidator;
+        _roleManager = roleManager;
+    }
+
+    public async Task<UserDto> GetByIdAsync(Guid userId)
+    {
+        var user = await GetFromDbAsync(userId);
+        return _mapper.Map<UserDto>(user);
+    }
+
+    public async Task UpdateAsync(Guid userId, UserUpdateDto request)
+    {
+        await _updateValidator.ValidateAndThrowAsync(request);
+
+        var user = await GetFromDbAsync(userId);
+
+        _mapper.Map(request, user);
+
+        await _userManager.UpdateAsync(user);
+
+    }
+
+    public async Task SeedAsync()
+    {
+        string[] roles =
+        {
+            RoleNames.Customer,
+            RoleNames.Employee,
+            RoleNames.Admin
+        };
+
+        foreach (var role in roles)
+        {
+            if (!await _roleManager.RoleExistsAsync(role))
+            {
+                await _roleManager.CreateAsync(new IdentityRole<Guid>(role));
+            }
+        }
+    }
+
+    public async Task GiveUserRoleAsync(Guid userId, string role)
+    {
+        var user = await GetFromDbAsync(userId);
+
+        await _userManager.AddToRoleAsync(user, role);
+
+    }
+
+    public async Task RemoveUserRoleAsync(Guid userId, string role)
+    {
+        var user = await GetFromDbAsync(userId);
+
+        await _userManager.RemoveFromRoleAsync(user, role);
+
+    }
+
+    public async Task<List<UserDto>> GetAllUsersAsync(string? query)
+    {
+        var usersQuery = _userManager.Users.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(query))
+        {
+            var lowered = query.ToLower();
+
+            usersQuery = usersQuery.Where(u =>
+                u.Credentials.ToLower().Contains(lowered));
+        }
+
+        var users = await usersQuery.ToListAsync();
+
+        return _mapper.Map<List<UserDto>>(users);
+    }
+
+
+
+    private async Task<ApplicationUser> GetFromDbAsync(Guid id)
+    {
+        var user = await _userManager.FindByIdAsync(id.ToString());
+
+        if (user == null)
+            throw new NotFoundException("User not found");
+
+        return user;
+    }
+}
+</file>
+
+<file path="EduBank/Application/Services/Interfaces/IAuthService.cs">
+using Application.Dtos;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Application.Services.Interfaces
+{
+    public interface IAuthService
+    {
+        Task<TokenResponse> RegisterAsync(UserRegisterDto dto);
+        Task<TokenResponse> LoginAsync(UserLoginDto dto);
+        Task<TokenResponse> RefreshAsync(string refreshToken);
+        Task LogoutAsync(Guid userId);
+        Task ChangePasswordAsync(Guid userId, UserChangePassword dto);
+    }
+}
+</file>
+
+<file path="EduBank/Application/Services/Interfaces/IJwtService.cs">
+using Application.Dtos;
+using Domain.Entities;
+
+namespace Application.Services.Abstractions
+{
+    public interface IJwtService
+    {
+        TokenResponse GenerateTokens(ApplicationUser user, List<string> roles);
+    }
+}
+</file>
+
+<file path="EduBank/Application/Services/Interfaces/IUserService.cs">
+using Application.Dtos;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Application.Services.Interfaces
+{
+    public interface IUserService
+    {
+        Task<UserDto> GetByIdAsync(Guid userId);
+        Task UpdateAsync(Guid userId, UserUpdateDto request);
+        Task SeedAsync();
+        Task GiveUserRoleAsync(Guid userId, string role);
+        Task RemoveUserRoleAsync(Guid userId, string role);
+        Task<List<UserDto>> GetAllUsersAsync(string? query);
+    }
+}
+</file>
+
+<file path="EduBank/Application/Validators/UserValidator.cs">
+using Application.Dtos;
+using FluentValidation;
+
+namespace Application.Validators
+{
+    public class UserRegistrationValidator : AbstractValidator<UserRegisterDto>
+    {
+        public UserRegistrationValidator()
+        {
+            RuleFor(x => x.Credentials)
+                .NotEmpty().WithMessage("Name field is required.");
+
+            RuleFor(x => x.Email)
+                .NotEmpty().WithMessage("Email is required.")
+                .EmailAddress().WithMessage("Invalid email format.");
+
+            RuleFor(x => x.Password)
+                .NotEmpty().WithMessage("Password is required.")
+                .MinimumLength(6).WithMessage("Password must be at least 7 characters long.");
+
+
+        }
+    }
+    public class UserUpdateValidator : AbstractValidator<UserUpdateDto>
+    {
+        public UserUpdateValidator()
+        {
+
+            RuleFor(x => x.Email)
+                .EmailAddress().WithMessage("Invalid email format.");
+
+        }
+    }
+
+    public class ChangePasswordValidator : AbstractValidator<UserChangePassword>
+    {
+        public ChangePasswordValidator()
+        {
+            RuleFor(x => x.OldPassword).NotEmpty().WithMessage("Password is required.")
+                .MinimumLength(7).WithMessage("Password must be at least 7 characters long.");
+
+            RuleFor(x => x.NewPassword).NotEmpty().WithMessage("Password is required.")
+                .MinimumLength(7).WithMessage("Password must be at least 7 characters long.");
+        }
+    }
+
+    public class UserLoginValidator : AbstractValidator<UserLoginDto>
+    {
+        public UserLoginValidator()
+        {
+            RuleFor(x => x.Email)
+                .NotEmpty().WithMessage("Login is required.");
+
+            RuleFor(x => x.Password)
+                .NotEmpty().WithMessage("Password is required.");
+        }
+    }
+}
+</file>
+
+<file path="EduBank/Common/BaseEntity.cs">
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Common
+{
+    public abstract class BaseEntity
+    {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid Id { get; set; }
+
+        public DateTime CreateDateTime { get; set; }
+
+        public DateTime? ModifyDateTime { get; set; }
+
+        public bool IsDeleted { get; set; }
+    }
+}
+</file>
+
+<file path="EduBank/Common/Common.csproj">
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="14.0.0" />
+		<PackageReference Include="FluentValidation" Version="11.11.0" />
+		<PackageReference Include="MassTransit" Version="8.4.0" />
+		<PackageReference Include="MassTransit.RabbitMQ" Version="8.4.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.3" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.3" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.3" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="9.0.3" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.3">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.3" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
+		<PackageReference Include="Npgsql" Version="9.0.3" />
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.0" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.7.0" />
+	</ItemGroup>
+	
+</Project>
+</file>
+
+<file path="EduBank/Common/Enums/Roles.cs">
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
+
+namespace Common.Enums
+{
+    namespace Common.Enums
+    {
+        public static class RoleNames
+        {
+            public const string Customer = "Customer";
+            public const string Employee = "Employee";
+            public const string Admin = "Admin";
+        };
+
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public enum Roles : byte
+        {
+            Customer = 0,
+            Employee,
+            Admin
+        }
+
+    }
+}
+</file>
+
+<file path="EduBank/Common/Exeptions/BadRequestExeption.cs">
+using Microsoft.AspNetCore.Http;
+
+namespace Common.Exceptions
+{
+    public class BadRequestException : StatusCodeException
+    {
+        public override int StatusCode => StatusCodes.Status400BadRequest;
+
+        public BadRequestException() : base() { }
+        public BadRequestException(string message) : base(message) { }
+
+    }
+}
+</file>
+
+<file path="EduBank/Common/Exeptions/EntryExistsExeption.cs">
+using Microsoft.AspNetCore.Http;
+
+namespace Common.Exceptions
+{
+    public class EntryExistsException : StatusCodeException
+    {
+        public override int StatusCode => StatusCodes.Status422UnprocessableEntity;
+
+        public EntryExistsException() : base() { }
+        public EntryExistsException(string message) : base(message) { }
+    }
+}
+</file>
+
+<file path="EduBank/Common/Exeptions/ForbiddenExeption.cs">
+using Microsoft.AspNetCore.Http;
+
+namespace Common.Exceptions
+{
+    public class ForbiddenException : StatusCodeException
+    {
+        public override int StatusCode => StatusCodes.Status403Forbidden;
+
+        public ForbiddenException() : base() { }
+        public ForbiddenException(string message) : base(message) { }
+    }
+}
+</file>
+
+<file path="EduBank/Common/Exeptions/InvalidAuthentificationDataExeption.cs">
+using Microsoft.AspNetCore.Http;
+
+namespace Common.Exceptions
+{
+    public class InvalidAuthenticationDataException : StatusCodeException
+    {
+        public InvalidAuthenticationDataException() : base() { }
+        public InvalidAuthenticationDataException(string message) : base(message) { }
+
+        public override int StatusCode => StatusCodes.Status400BadRequest;
+    }
+}
+</file>
+
+<file path="EduBank/Common/Exeptions/NotFoundExeption.cs">
+using Microsoft.AspNetCore.Http;
+
+namespace Common.Exceptions
+{
+    public class NotFoundException : StatusCodeException
+    {
+        public override int StatusCode => StatusCodes.Status404NotFound;
+
+        public NotFoundException() : base() { }
+        public NotFoundException(string message) : base(message) { }
+    }
+}
+</file>
+
+<file path="EduBank/Common/Exeptions/StatusCodeExeption.cs">
+namespace Common.Exceptions
+{
+    public abstract class StatusCodeException : Exception
+    {
+        public abstract int StatusCode { get; }
+        public StatusCodeException() : base() { }
+        public StatusCodeException(string message) : base(message) { }
+    }
+}
+</file>
+
+<file path="EduBank/Common/HttpContextExtensions.cs">
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
+
+namespace Common
+{
+    public static class HttpContextExtensions
+    {
+        public static Guid? GetUserId(this HttpContext context)
+        {
+            var str = context.User?.Claims?.FirstOrDefault(c => c.Type.Equals(ClaimTypes.NameIdentifier, StringComparison.OrdinalIgnoreCase))?.Value;
+            return str == null ? null : new Guid(str);
+        }
+    }
+}
+</file>
+
+<file path="EduBank/Common/SwaggerAuthorizeFilter.cs">
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
+
+
+    //https://github.com/domaindrivendev/Swashbuckle.AspNetCore#add-security-definitions-and-requirements
+    public class SwaggerAuthorizeFilter : IOperationFilter
+    {
+        public void Apply(OpenApiOperation operation, OperationFilterContext context)
+        {
+            // Policy names map to scopes
+            var requiredScopes = context.MethodInfo
+                .GetCustomAttributes(true)
+                .OfType<AuthorizeAttribute>()
+                .Select(attr => attr.Policy)
+                .Distinct();
+
+            if (requiredScopes.Any())
+            {
+                operation.Responses.Add("401", new OpenApiResponse { Description = "Unauthorized" });
+                operation.Responses.Add("403", new OpenApiResponse { Description = "Forbidden" });
+
+                var oAuthScheme = new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    Description = "JWT Authorization header using the Bearer scheme."
+                };
+
+                operation.Security = new List<OpenApiSecurityRequirement>
+                {
+                    new OpenApiSecurityRequirement
+                    {
+                        {
+                            new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "bearerAuth" }
+                            },
+                            new string[] {}
+                        }
+                    }
+                };
+            }
+        }
+    }
+</file>
+
+<file path="EduBank/Core.Application/Core.Application.csproj">
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="14.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core.Domain\Core.Domain.csproj" />
+    <ProjectReference Include="..\Core.Infrastructure\Core.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
+</file>
+
+<file path="EduBank/Core.Application/Dtos/CommentDto.cs">
+namespace Core.Application.Dtos
+{
+    public class CommentDto
+    {
+        public Guid Id { get; set; }
+        public string Text { get; set; } = null!;
+        public Guid AuthorId { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public Guid? ParentCommentId { get; set; }
+        public List<CommentDto>? Replies { get; set; }
+    }
+}
+</file>
+
+<file path="EduBank/Core.Application/Dtos/CreateCommentDto.cs">
+namespace Core.Application.Dtos
+{
+    public class CreateCommentDto
+    {
+        public string Text { get; set; } = null!;
+        public Guid? ParentCommentId { get; set; }
+    }
+}
+</file>
+
+<file path="EduBank/Core.Application/Dtos/TransactionType.cs">
+namespace Core.Application.Dtos
+{
+    // тип транзакции ИСКЛЮЧИТЕЛЬНО для отображения в UI
+    public enum TransactionType
+    {
+        Unclassified,
+        Deposit,
+        Withdrawal,
+        Transfer,
+        CreditPayment,
+        CreditIncoming
+    }
+}
+</file>
+
+<file path="EduBank/Core.Application/Services/Implementations/TransactionService.cs">
+using AutoMapper;
+using Common.Exceptions;
+using Core.Application.Dtos;
+using Core.Application.Services.Interfaces;
+using Core.Domain;
+using Core.Infrastructure;
+using FluentValidation;
+
+namespace Core.Application.Services.Implementations
+{
+    public class TransactionService : ITransactionService
+    {
+
+        private readonly CoreDbContext _context;
+        private readonly IAccountService _accountService;
+        private readonly IValidator<CreateTransactionDto> _createValidator;
+        private readonly IMapper _mapper;
+
+        public TransactionService(CoreDbContext context, IAccountService accountService, IValidator<CreateTransactionDto> createValidator, IMapper mapper)
+        {
+            _context = context;
+            _accountService = accountService;
+            _createValidator = createValidator;
+            _mapper = mapper;
+        }
+
+        public async Task<TransactionDto> InitializeTransactionAsync(CreateTransactionDto dto, Guid currentUserId)
+        {
+            _createValidator.ValidateAndThrow(dto);
+            var transaction = _mapper.Map<Transaction>(dto);
+
+            if(transaction.SourceType == TransactionObjectType.Account)
+            {
+                // счёт-источник (привязанный к юзеру)
+                var sourceAcc = await _accountService.GetAccountFromDbAsync(transaction.SourceId!.Value, currentUserId);
+
+                if (transaction.TargetType == TransactionObjectType.Account) // перевод со счёта на счёт
+                {
+                    // счёт-цель (любой!!)
+                    var targetAcc = await _accountService.GetAccountFromDbAsync(transaction.TargetId!.Value, null);
+                    ApplyTransfer(transaction, sourceAcc, targetAcc);
+                }
+                else if(transaction.TargetType == TransactionObjectType.RealWorld) // снятие денег
+                {
+                    ApplyWithdraw(transaction, sourceAcc);
+                }
+            }
+            else if (transaction.TargetType == TransactionObjectType.RealWorld)
+            {
+                // счёт-цель (привязанный к юзеру)
+                if (transaction.TargetType == TransactionObjectType.Account) // пополнение
+                {
+                    // ensure existance of target account
+                    var targetAcc = await _accountService.GetAccountFromDbAsync(transaction.TargetId!.Value, currentUserId);
+                    ApplyDeposit(transaction, targetAcc);
+                }
+            }
+
+            _context.Transactions.Add(transaction);
+            await _context.SaveChangesAsync();
+
+            return _mapper.Map<TransactionDto>(transaction);
+        }
+
+        public async Task<TransactionDto> GetTransactionByIdAsync(Guid id, Guid currentUserId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<TransactionDto> ResolveTransactionAsync(Guid id, TransactionStatus status, string message)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ApplyTransfer(Transaction transaction, Account source, Account target)
+        {
+            if(source.Balance < transaction.Amount)
+            {
+                transaction.Status = TransactionStatus.Failed;
+                transaction.ResolvedAt = DateTime.UtcNow;
+                transaction.ResolutionMessage = "На счёте недостаточно денег";
+                return;
+            }
+
+            source.Balance -= transaction.Amount;
+            target.Balance += transaction.Amount;
+            transaction.Status = TransactionStatus.Completed;
+            transaction.ResolvedAt = DateTime.UtcNow;
+            transaction.ResolutionMessage = "Перевод выполнен";
+        }
+
+        private void ApplyDeposit(Transaction transaction, Account target)
+        {
+            target.Balance += transaction.Amount;
+            transaction.Status = TransactionStatus.Completed;
+            transaction.ResolvedAt = DateTime.UtcNow;
+            transaction.ResolutionMessage = "Пополнение счёта";
+        }
+
+        private void ApplyWithdraw(Transaction transaction, Account source)
+        {
+            source.Balance -= transaction.Amount;
+            transaction.Status = TransactionStatus.Completed;
+            transaction.ResolvedAt = DateTime.UtcNow;
+            transaction.ResolutionMessage = "Снятие денег со счёта";
+        }
+
+        private async Task<Transaction> GetTransactionFromDbAsync(Guid transactionId)
+        {
+            var account = await _context.FindAsync<Transaction>(transactionId);
+
+            if (account == null)
+            {
+                throw new NotFoundException(nameof(Transaction));
+            }
+
+            return account;
+        }
+    }
+}
+</file>
+
+<file path="EduBank/Core.Domain/Account.cs">
+using Common;
+
+namespace Core.Domain
+{
+    // счет в банке
+    public class Account : BaseEntity
+    {
+        public Guid UserId { get; set; }
+        public decimal Balance { get; set; }
+        public DateTime? ClosedAt { get; set; }
+
+        public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
+    }
+}
+</file>
+
+<file path="EduBank/Core.Domain/Core.Domain.csproj">
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj" />
+  </ItemGroup>
+
+</Project>
+</file>
+
+<file path="EduBank/Core.Domain/TransactionObjectType.cs">
+namespace Core.Domain
+{
+
+    public enum TransactionObjectType
+    {
+        RealWorld,
+        Account,
+        Credit
+    }
+}
+</file>
+
+<file path="EduBank/Core.Infrastructure/Core.Infrastructure.csproj">
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core.Domain\Core.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
+</file>
+
+<file path="EduBank/Core.Web/appsettings.Development.json">
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  }
+}
+</file>
+
+<file path="EduBank/Core.Web/Core.Web.http">
+@Core.Web_HostAddress = http://localhost:5246
+
+GET {{Core.Web_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+</file>
+
+<file path="EduBank/Core.Web/Dockerfile">
+# См. статью по ссылке https://aka.ms/customizecontainer, чтобы узнать как настроить контейнер отладки и как Visual Studio использует этот Dockerfile для создания образов для ускорения отладки.
+
+# Этот этап используется при запуске из VS в быстром режиме (по умолчанию для конфигурации отладки)
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+USER $APP_UID
+WORKDIR /app
+EXPOSE 8080
+EXPOSE 8081
+
+
+# Этот этап используется для сборки проекта службы
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
+COPY ["Core.Web/Core.Web.csproj", "Core.Web/"]
+RUN dotnet restore "./Core.Web/Core.Web.csproj"
+COPY . .
+WORKDIR "/src/Core.Web"
+RUN dotnet build "./Core.Web.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+# Этот этап используется для публикации проекта службы, который будет скопирован на последний этап
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "./Core.Web.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+# Этот этап используется в рабочей среде или при запуске из VS в обычном режиме (по умолчанию, когда конфигурация отладки не используется)
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "Core.Web.dll"]
+</file>
+
+<file path="EduBank/Core.Web/Migrations/20260228111310_Initial.cs">
+using System;
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace Core.Web.Migrations
+{
+    /// <inheritdoc />
+    public partial class Initial : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateTable(
+                name: "Accounts",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Balance = table.Column<decimal>(type: "numeric", nullable: false),
+                    ClosedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CreateDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ModifyDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Accounts", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Transactions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    FromAccountId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Type = table.Column<string>(type: "text", nullable: false),
+                    TargetId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Amount = table.Column<decimal>(type: "numeric", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    Status = table.Column<string>(type: "text", nullable: false),
+                    ResolutionMessage = table.Column<string>(type: "text", nullable: true),
+                    CompletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CreateDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ModifyDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Transactions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Transactions_Accounts_FromAccountId",
+                        column: x => x.FromAccountId,
+                        principalTable: "Accounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Accounts_UserId",
+                table: "Accounts",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transactions_FromAccountId",
+                table: "Transactions",
+                column: "FromAccountId");
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "Transactions");
+
+            migrationBuilder.DropTable(
+                name: "Accounts");
+        }
+    }
+}
+</file>
+
+<file path="EduBank/Core.Web/Migrations/20260228111310_Initial.Designer.cs">
+// <auto-generated />
+using System;
+using Core.Infrastructure;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+
+#nullable disable
+
+namespace Core.Web.Migrations
+{
+    [DbContext(typeof(CoreDbContext))]
+    [Migration("20260228111310_Initial")]
+    partial class Initial
+    {
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        {
+#pragma warning disable 612, 618
+            modelBuilder
+                .HasAnnotation("ProductVersion", "9.0.3")
+                .HasAnnotation("Proxies:ChangeTracking", false)
+                .HasAnnotation("Proxies:CheckEquality", false)
+                .HasAnnotation("Proxies:LazyLoading", true)
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("Core.Domain.Account", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Balance")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime?>("ClosedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("ModifyDateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Accounts");
+                });
+
+            modelBuilder.Entity("Core.Domain.Transaction", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("FromAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("ModifyDateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ResolutionMessage")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("TargetId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FromAccountId");
+
+                    b.ToTable("Transactions");
+                });
+
+            modelBuilder.Entity("Core.Domain.Transaction", b =>
+                {
+                    b.HasOne("Core.Domain.Account", "FromAccount")
+                        .WithMany("Transactions")
+                        .HasForeignKey("FromAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FromAccount");
+                });
+
+            modelBuilder.Entity("Core.Domain.Account", b =>
+                {
+                    b.Navigation("Transactions");
+                });
+#pragma warning restore 612, 618
+        }
+    }
+}
+</file>
+
+<file path="EduBank/Core.Web/Migrations/20260228134253_Transaction.cs">
+using System;
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace Core.Web.Migrations
+{
+    /// <inheritdoc />
+    public partial class Transaction : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Transactions_Accounts_FromAccountId",
+                table: "Transactions");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Transactions_FromAccountId",
+                table: "Transactions");
+
+            migrationBuilder.DropColumn(
+                name: "FromAccountId",
+                table: "Transactions");
+
+            migrationBuilder.DropColumn(
+                name: "Type",
+                table: "Transactions");
+
+            migrationBuilder.DropColumn(
+                name: "Status",
+                table: "Transactions");
+
+            migrationBuilder.RenameColumn(
+                name: "CompletedAt",
+                table: "Transactions",
+                newName: "ResolvedAt");
+
+            migrationBuilder.AddColumn<int>(
+                name: "Status",
+                table: "Transactions",
+                type: "integer",
+                nullable: false);
+
+            migrationBuilder.AddColumn<Guid>(
+                name: "AccountId",
+                table: "Transactions",
+                type: "uuid",
+                nullable: true);
+
+            migrationBuilder.AddColumn<Guid>(
+                name: "SourceId",
+                table: "Transactions",
+                type: "uuid",
+                nullable: true);
+
+            migrationBuilder.AddColumn<int>(
+                name: "SourceType",
+                table: "Transactions",
+                type: "integer",
+                nullable: false,
+                defaultValue: 0);
+
+            migrationBuilder.AddColumn<int>(
+                name: "TargetType",
+                table: "Transactions",
+                type: "integer",
+                nullable: false,
+                defaultValue: 0);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transactions_AccountId",
+                table: "Transactions",
+                column: "AccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transactions_SourceId",
+                table: "Transactions",
+                column: "SourceId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Transactions_Accounts_AccountId",
+                table: "Transactions",
+                column: "AccountId",
+                principalTable: "Accounts",
+                principalColumn: "Id");
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Transactions_Accounts_AccountId",
+                table: "Transactions");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Transactions_AccountId",
+                table: "Transactions");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Transactions_SourceId",
+                table: "Transactions");
+
+            migrationBuilder.DropColumn(
+                name: "AccountId",
+                table: "Transactions");
+
+            migrationBuilder.DropColumn(
+                name: "SourceId",
+                table: "Transactions");
+
+            migrationBuilder.DropColumn(
+                name: "SourceType",
+                table: "Transactions");
+
+            migrationBuilder.DropColumn(
+                name: "TargetType",
+                table: "Transactions");
+
+            migrationBuilder.RenameColumn(
+                name: "ResolvedAt",
+                table: "Transactions",
+                newName: "CompletedAt");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Status",
+                table: "Transactions",
+                type: "text",
+                nullable: false,
+                oldClrType: typeof(int),
+                oldType: "integer");
+
+            migrationBuilder.AddColumn<Guid>(
+                name: "FromAccountId",
+                table: "Transactions",
+                type: "uuid",
+                nullable: false,
+                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
+
+            migrationBuilder.AddColumn<string>(
+                name: "Type",
+                table: "Transactions",
+                type: "text",
+                nullable: false,
+                defaultValue: "");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transactions_FromAccountId",
+                table: "Transactions",
+                column: "FromAccountId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Transactions_Accounts_FromAccountId",
+                table: "Transactions",
+                column: "FromAccountId",
+                principalTable: "Accounts",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+        }
+    }
+}
+</file>
+
+<file path="EduBank/Core.Web/Migrations/20260228134253_Transaction.Designer.cs">
+// <auto-generated />
+using System;
+using Core.Infrastructure;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+
+#nullable disable
+
+namespace Core.Web.Migrations
+{
+    [DbContext(typeof(CoreDbContext))]
+    [Migration("20260228134253_Transaction")]
+    partial class Transaction
+    {
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        {
+#pragma warning disable 612, 618
+            modelBuilder
+                .HasAnnotation("ProductVersion", "9.0.3")
+                .HasAnnotation("Proxies:ChangeTracking", false)
+                .HasAnnotation("Proxies:CheckEquality", false)
+                .HasAnnotation("Proxies:LazyLoading", true)
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("Core.Domain.Account", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Balance")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime?>("ClosedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("ModifyDateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Accounts");
+                });
+
+            modelBuilder.Entity("Core.Domain.Transaction", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("AccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("ModifyDateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ResolutionMessage")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("ResolvedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("SourceId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("SourceType")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("TargetId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("TargetType")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("SourceId");
+
+                    b.ToTable("Transactions");
+                });
+
+            modelBuilder.Entity("Core.Domain.Transaction", b =>
+                {
+                    b.HasOne("Core.Domain.Account", null)
+                        .WithMany("Transactions")
+                        .HasForeignKey("AccountId");
+                });
+
+            modelBuilder.Entity("Core.Domain.Account", b =>
+                {
+                    b.Navigation("Transactions");
+                });
+#pragma warning restore 612, 618
+        }
+    }
+}
+</file>
+
+<file path="EduBank/Core.Web/Properties/launchSettings.json">
+{
+  "profiles": {
+    "http": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:5246"
+    },
+    "https": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "https://localhost:7192;http://localhost:5246"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "environmentVariables": {
+        "ASPNETCORE_HTTPS_PORTS": "8081",
+        "ASPNETCORE_HTTP_PORTS": "8080"
+      },
+      "publishAllPorts": true,
+      "useSSL": true
+    }
+  },
+  "$schema": "https://json.schemastore.org/launchsettings.json"
+}
+</file>
+
+<file path="EduBank/docker-compose.dcproj">
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" Sdk="Microsoft.Docker.Sdk">
+  <PropertyGroup Label="Globals">
+    <ProjectVersion>2.1</ProjectVersion>
+    <DockerTargetOS>Linux</DockerTargetOS>
+    <DockerPublishLocally>False</DockerPublishLocally>
+    <ProjectGuid>fc8f16f7-5031-437b-8598-1178911073f1</ProjectGuid>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="docker-compose.override.yml">
+      <DependentUpon>docker-compose.yml</DependentUpon>
+    </None>
+    <None Include="docker-compose.yml" />
+    <None Include=".dockerignore" />
+  </ItemGroup>
+</Project>
+</file>
+
+<file path="EduBank/docker-compose.override.yml">
+services:
+  authweb:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+    ports:
+      - "8080"
+      - "8081"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+</file>
+
+<file path="EduBank/Domain/Domain.csproj">
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="14.0.0" />
+		<PackageReference Include="FluentValidation" Version="11.11.0" />
+		<PackageReference Include="MassTransit" Version="8.4.0" />
+		<PackageReference Include="MassTransit.RabbitMQ" Version="8.4.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.3" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.3" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.3" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="9.0.3" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.3">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.3" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
+		<PackageReference Include="Npgsql" Version="9.0.3" />
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.0" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.7.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Common\Common.csproj" />
+	</ItemGroup>
+</Project>
+</file>
+
+<file path="EduBank/Domain/Entities/AplicationUser.cs">
+using Common;
+using Microsoft.AspNetCore.Identity;
+
+namespace Domain.Entities
+{
+    public class ApplicationUser : IdentityUser<Guid>
+    {
+        public string Credentials { get; set; } = null!;
+
+    }
+}
+</file>
+
+<file path="EduBank/Domain/Entities/RefreshTokken.cs">
+using Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Domain.Entities
+{
+    public class RefreshToken : BaseEntity
+    {
+        public Guid UserId { get; set; }
+        public string Token { get; set; } = null!;
+        public DateTime Expiration { get; set; }
+        public bool IsRevoked { get; set; } = false;
+    }
+}
+</file>
+
+<file path="EduBank/Infrastructure/Infrastructure.csproj">
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+
+	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="14.0.0" />
+		<PackageReference Include="FluentValidation" Version="11.11.0" />
+		<PackageReference Include="MassTransit" Version="8.4.0" />
+		<PackageReference Include="MassTransit.RabbitMQ" Version="8.4.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.3" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.3" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.3" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="9.0.3" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.3">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.3" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
+		<PackageReference Include="Npgsql" Version="9.0.3" />
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.0" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.7.0" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Common\Common.csproj" />
+	  <ProjectReference Include="..\Domain\Domain.csproj" />
+	</ItemGroup>
+</Project>
+</file>
+
+<file path="EduBank/Infrastructure/UserDbContext.cs">
+using Domain.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+
+public class UserDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
+{
+    public UserDbContext(DbContextOptions<UserDbContext> options) : base(options)
+    {
+    }
+
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
+
+
+}
+</file>
+
+<file path="EduBank/launchSettings.json">
+{
+  "profiles": {
+    "Docker Compose": {
+      "commandName": "DockerCompose",
+      "commandVersion": "1.0",
+      "serviceActions": {
+        "authweb": "StartDebugging"
+      }
+    }
+  }
+}
+</file>
+
+<file path="EduBank/WebApplication1/appsettings.Development.json">
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  }
+}
+</file>
+
+<file path="EduBank/WebApplication1/Controllers/AuthController.cs">
+using Application.Dtos;
+using Application.Services.Interfaces;
+using Common;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+
+[ApiController]
+[Route("api/auth")]
+public class AuthController : ControllerBase
+{
+    private readonly IAuthService _authService;
+
+    public AuthController(IAuthService authService)
+    {
+        _authService = authService;
+    }
+
+    [HttpPost("register")]
+    public async Task<IActionResult> Register(UserRegisterDto dto)
+    {
+        return Ok(await _authService.RegisterAsync(dto));
+    }
+
+    [Authorize(AuthenticationSchemes = "Bearer")]
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout()
+    {
+        var id = HttpContext.GetUserId();
+
+        await _authService.LogoutAsync(id.Value);
+
+        return Ok();
+    }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login(UserLoginDto dto)
+    {
+        return Ok(await _authService.LoginAsync(dto));
+    }
+
+    [HttpPost("refresh")]
+    public async Task<IActionResult> Refresh(string token)
+    {
+        return Ok(await _authService.RefreshAsync(token));
+    }
+
+    [Authorize(AuthenticationSchemes = "Bearer")]
+    [HttpPost("change-password")]
+    public async Task<IActionResult> ChangePassword(UserChangePassword dto)
+    {
+        var userId = Guid.Parse(
+            User.FindFirst("nameid")!.Value);
+
+        await _authService.ChangePasswordAsync(userId, dto);
+
+        return Ok();
+    }
+}
+</file>
+
+<file path="EduBank/WebApplication1/Controllers/UserController.cs">
+using Application.Dtos;
+using Application.Services.Interfaces;
+using Common;
+using Common.Enums.Common.Enums;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+[ApiController]
+[Route("api/users")]
+public class UserController : ControllerBase
+{
+    private readonly IUserService _userService;
+
+    public UserController(IUserService userService)
+    {
+        _userService = userService;
+    }
+
+    [Authorize(AuthenticationSchemes = "Bearer")]
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(Guid id)
+    {
+        return Ok(await _userService.GetByIdAsync(id));
+    }
+
+    [Authorize(AuthenticationSchemes = "Bearer")]
+    [HttpPut]
+    public async Task<IActionResult> UpdateSelf(UserUpdateDto dto)
+    {
+        var id = HttpContext.GetUserId();
+        await _userService.UpdateAsync(id.Value, dto);
+        return Ok();
+    }
+
+    [Authorize(AuthenticationSchemes = "Bearer")]
+    [ProducesResponseType<UserDto>(StatusCodes.Status200OK)]
+    [HttpGet]
+    public async Task<IActionResult> GetMe()
+    {
+        var id = HttpContext.GetUserId();
+        return Ok(await _userService.GetByIdAsync(id.Value));
+    }
+
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = $"{RoleNames.Admin}")]
+    [HttpPost("{userId}/role")]
+    public async Task<IActionResult> GiveRole(Guid userId, string role)
+    {
+        await _userService.GiveUserRoleAsync(userId, role);
+        return Ok();
+    }
+
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = RoleNames.Admin)]
+    [HttpDelete("{userId}/role")]
+    public async Task<IActionResult> RemoveRole(Guid userId, string role)
+    {
+        await _userService.RemoveUserRoleAsync(userId, role);
+        return Ok();
+    }
+
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = RoleNames.Admin)]
+    [ProducesResponseType<List<UserDto>>(StatusCodes.Status200OK)]
+    [HttpGet("search")]
+    public async Task<IActionResult> searchUsers(string? query)
+    {
+        var res = await _userService.GetAllUsersAsync(query);
+        return Ok(res);
+    }
+}
+</file>
+
+<file path="EduBank/WebApplication1/Dockerfile">
+# См. статью по ссылке https://aka.ms/customizecontainer, чтобы узнать как настроить контейнер отладки и как Visual Studio использует этот Dockerfile для создания образов для ускорения отладки.
+
+# Этот этап используется при запуске из VS в быстром режиме (по умолчанию для конфигурации отладки)
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+USER $APP_UID
+WORKDIR /app
+EXPOSE 8080
+EXPOSE 8081
+
+
+# Этот этап используется для сборки проекта службы
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
+COPY ["WebApplication1/WebApplication1.csproj", "WebApplication1/"]
+RUN dotnet restore "./WebApplication1/WebApplication1.csproj"
+COPY . .
+WORKDIR "/src/WebApplication1"
+RUN dotnet build "./WebApplication1.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+# Этот этап используется для публикации проекта службы, который будет скопирован на последний этап
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "./WebApplication1.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+# Этот этап используется в рабочей среде или при запуске из VS в обычном режиме (по умолчанию, когда конфигурация отладки не используется)
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "WebApplication1.dll"]
+</file>
+
+<file path="EduBank/WebApplication1/Migrations/20260223094529_UserDbInnitial.cs">
+using System;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+
+#nullable disable
+
+namespace AuthWeb.Migrations
+{
+    /// <inheritdoc />
+    public partial class UserDbInnitial : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateTable(
+                name: "AspNetRoles",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetRoles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUsers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Credentials = table.Column<string>(type: "text", nullable: false),
+                    UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    PasswordHash = table.Column<string>(type: "text", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "text", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "text", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "boolean", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "boolean", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RefreshTokens",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Token = table.Column<string>(type: "text", nullable: false),
+                    Expiration = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    IsRevoked = table.Column<bool>(type: "boolean", nullable: false),
+                    CreateDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ModifyDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RefreshTokens", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetRoleClaims",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    RoleId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ClaimType = table.Column<string>(type: "text", nullable: true),
+                    ClaimValue = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserClaims",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ClaimType = table.Column<string>(type: "text", nullable: true),
+                    ClaimValue = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUserClaims_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserLogins",
+                columns: table => new
+                {
+                    LoginProvider = table.Column<string>(type: "text", nullable: false),
+                    ProviderKey = table.Column<string>(type: "text", nullable: false),
+                    ProviderDisplayName = table.Column<string>(type: "text", nullable: true),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserLogins", x => new { x.LoginProvider, x.ProviderKey });
+                    table.ForeignKey(
+                        name: "FK_AspNetUserLogins_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserRoles",
+                columns: table => new
+                {
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    RoleId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserRoles", x => new { x.UserId, x.RoleId });
+                    table.ForeignKey(
+                        name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AspNetUserRoles_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserTokens",
+                columns: table => new
+                {
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    LoginProvider = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Value = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
+                    table.ForeignKey(
+                        name: "FK_AspNetUserTokens_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetRoleClaims_RoleId",
+                table: "AspNetRoleClaims",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "RoleNameIndex",
+                table: "AspNetRoles",
+                column: "NormalizedName",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserClaims_UserId",
+                table: "AspNetUserClaims",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserLogins_UserId",
+                table: "AspNetUserLogins",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserRoles_RoleId",
+                table: "AspNetUserRoles",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "EmailIndex",
+                table: "AspNetUsers",
+                column: "NormalizedEmail");
+
+            migrationBuilder.CreateIndex(
+                name: "UserNameIndex",
+                table: "AspNetUsers",
+                column: "NormalizedUserName",
+                unique: true);
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "AspNetRoleClaims");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUserClaims");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUserLogins");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUserRoles");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "RefreshTokens");
+
+            migrationBuilder.DropTable(
+                name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
+        }
+    }
+}
+</file>
+
+<file path="EduBank/WebApplication1/Migrations/20260223094529_UserDbInnitial.Designer.cs">
+// <auto-generated />
+using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+
+#nullable disable
+
+namespace AuthWeb.Migrations
+{
+    [DbContext(typeof(UserDbContext))]
+    [Migration("20260223094529_UserDbInnitial")]
+    partial class UserDbInnitial
+    {
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        {
+#pragma warning disable 612, 618
+            modelBuilder
+                .HasAnnotation("ProductVersion", "9.0.3")
+                .HasAnnotation("Proxies:ChangeTracking", false)
+                .HasAnnotation("Proxies:CheckEquality", false)
+                .HasAnnotation("Proxies:LazyLoading", true)
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("Domain.Entities.ApplicationUser", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Credentials")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex");
+
+                    b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("Expiration")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("ModifyDateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RefreshTokens");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex");
+
+                    b.ToTable("AspNetRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("text");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
+                {
+                    b.HasOne("Domain.Entities.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
+                {
+                    b.HasOne("Domain.Entities.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
+                {
+                    b.HasOne("Domain.Entities.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+#pragma warning restore 612, 618
+        }
+    }
+}
+</file>
+
+<file path="EduBank/WebApplication1/Migrations/UserDbContextModelSnapshot.cs">
+// <auto-generated />
+using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+
+#nullable disable
+
+namespace AuthWeb.Migrations
+{
+    [DbContext(typeof(UserDbContext))]
+    partial class UserDbContextModelSnapshot : ModelSnapshot
+    {
+        protected override void BuildModel(ModelBuilder modelBuilder)
+        {
+#pragma warning disable 612, 618
+            modelBuilder
+                .HasAnnotation("ProductVersion", "9.0.3")
+                .HasAnnotation("Proxies:ChangeTracking", false)
+                .HasAnnotation("Proxies:CheckEquality", false)
+                .HasAnnotation("Proxies:LazyLoading", true)
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("Domain.Entities.ApplicationUser", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Credentials")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex");
+
+                    b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("Expiration")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("ModifyDateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RefreshTokens");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex");
+
+                    b.ToTable("AspNetRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("text");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
+                {
+                    b.HasOne("Domain.Entities.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
+                {
+                    b.HasOne("Domain.Entities.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
+                {
+                    b.HasOne("Domain.Entities.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+#pragma warning restore 612, 618
+        }
+    }
+}
+</file>
+
+<file path="EduBank/WebApplication1/Options/IdentityOptions.cs">
+namespace Web.Options
+{
+    public class IdentityPasswordOptions
+    {
+        public int RequiredLength { get; set; }
+        public bool RequireDigit { get; set; }
+        public bool RequireUppercase { get; set; }
+        public bool RequireLowercase { get; set; }
+        public bool RequireNonAlphanumeric { get; set; }
+    }
+}
+</file>
+
+<file path="EduBank/WebApplication1/Options/RabbitMqOptions.cs">
+namespace Web.Options
+{
+    public class RabbitMqOptions
+    {
+        public string Host { get; set; } = null!;
+        public string VirtualHost { get; set; } = "/";
+        public string Username { get; set; } = null!;
+        public string Password { get; set; } = null!;
+        public RabbitQueues Queues { get; set; } = null!;
+    }
+
+    public class RabbitQueues
+    {
+    }
+}
+</file>
+
+<file path="EduBank/Common/Options/JwtOptions.cs">
+namespace Common.Options
+{
+    public class JwtOptions
+    {
+        public AccessOptions Access { get; set; } = null!;
+        public RefreshOptions Refresh { get; set; } = null!;
+    }
+
+    public class AccessOptions
+    {
+        public string Secret { get; set; } = null!;
+        public int LifetimeMinutes { get; set; }
+        public string ClaimValidSession { get; set; } = null!;
+        public string? Issuer { get; set; }
+        public string? Audience { get; set; }
+    }
+
+    public class RefreshOptions
+    {
+        public string Secret { get; set; } = null!;
+        public int LifetimeDays { get; set; }
+    }
+}
+</file>
+
+<file path="EduBank/Core.Application/Dtos/AccountDto.cs">
+namespace Core.Application.Dtos
+{
+    public class AccountDto
+    {
+        public Guid Id { get; set; }
+        public Guid UserId { get; set; }
+        public decimal Balance { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? ClosedAt { get; set; }
+    }
+}
+</file>
+
+<file path="EduBank/Core.Application/Dtos/CreateTransactionDto.cs">
+using Core.Domain;
+
+namespace Core.Application.Dtos
+{
+    public class CreateTransactionDto
+    {
+        public Guid? SourceId { get; set; }
+        public TransactionObjectType SourceType { get; set; }
+
+        public Guid? TargetId { get; set; }
+        public TransactionObjectType TargetType { get; set; }
+
+        public decimal Amount { get; set; }
+        public string Description { get; set; } = null!;
+    }
+}
+</file>
+
+<file path="EduBank/Core.Application/Services/Interfaces/ITransactionService.cs">
+using Core.Application.Dtos;
+using Core.Domain;
+
+namespace Core.Application.Services.Interfaces
+{
+    public interface ITransactionService
+    {
+        Task<TransactionDto> InitializeTransactionAsync(CreateTransactionDto dto, Guid currentUserId);
+        Task<TransactionDto> GetTransactionByIdAsync(Guid id, Guid currentUserId);
+        Task<TransactionDto> ResolveTransactionAsync(Guid id, TransactionStatus status, string message);
+    }
+}
+</file>
+
+<file path="EduBank/Core.Application/Validity/CreateTransactionValidator.cs">
+using Core.Application.Dtos;
+using Core.Domain;
+using FluentValidation;
+
+namespace Core.Application.Validity
+{
+    public class CreateTransactionValidator : AbstractValidator<CreateTransactionDto>
+    {
+        public CreateTransactionValidator()
+        {
+            RuleFor(x => x.SourceType)
+            .NotEqual(TransactionObjectType.Credit)
+            .WithMessage("Source type cannot be Credit.");
+
+            // Правило: SourceType и TargetType не могут одновременно быть RealWorld.
+            RuleFor(x => x)
+                .Must(x => !(x.SourceType == TransactionObjectType.RealWorld && x.TargetType == TransactionObjectType.RealWorld))
+                .WithMessage("Source and Target cannot both be RealWorld.");
+
+            // SourceId не null, если SourceType != RealWorld
+            RuleFor(x => x.SourceId)
+                .NotNull()
+                .When(x => x.SourceType != TransactionObjectType.RealWorld)
+                .WithMessage("SourceId is required when SourceType is not RealWorld.");
+
+            // TargetId не null, если TargetType != RealWorld
+            RuleFor(x => x.TargetId)
+                .NotNull()
+                .When(x => x.TargetType != TransactionObjectType.RealWorld)
+                .WithMessage("TargetId is required when TargetType is not RealWorld.");
+
+
+            RuleFor(x => x.Amount).GreaterThan(0);
+            RuleFor(x => x.Description)
+                .MaximumLength(500)
+                .WithMessage("Description must be less than 500 chars.");
+        }
+    }
+}
+</file>
+
+<file path="EduBank/Core.Domain/Transaction.cs">
+using Common;
+
+namespace Core.Domain
+{
+    public class Transaction : BaseEntity
+    {
+        public Guid? SourceId { get; set; }
+        public TransactionObjectType SourceType { get; set; }
+
+        public Guid? TargetId { get; set; }
+        public TransactionObjectType TargetType { get; set; }
+
+        public decimal Amount { get; set; }
+        public string Description { get; set; } = null!;
+
+        public TransactionStatus Status { get; set; } // Pending, Completed, Cancelled
+        public string? ResolutionMessage { get; set; }
+
+        public DateTime? ResolvedAt { get; set; }
+    }
+}
+</file>
+
+<file path="EduBank/Core.Domain/TransactionStatus.cs">
+namespace Core.Domain
+{
+    public enum TransactionStatus
+    {
+        Pending,
+        Completed,
+        Failed
+    }
+}
+</file>
+
+<file path="EduBank/Core.Infrastructure/CoreDbContext.cs">
+using Core.Domain;
+using Microsoft.EntityFrameworkCore;
+
+namespace Core.Infrastructure
+{
+    public class CoreDbContext : DbContext
+    {
+        public CoreDbContext(DbContextOptions<CoreDbContext> options) : base(options) { }
+
+        public DbSet<Account> Accounts { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // Настройки для отношений и индексов
+            modelBuilder.Entity<Account>()
+                .HasIndex(a => a.UserId);
+
+            modelBuilder.Entity<Transaction>()
+                .HasIndex(t => t.SourceId);
+        }
+    }
+}
+</file>
+
+<file path="EduBank/Core.Web/Core.Web.csproj">
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>bcd00eba-5905-40ea-8166-62231a68b56f</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.13" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core.Application\Core.Application.csproj" />
+  </ItemGroup>
+
+</Project>
+</file>
+
+<file path="EduBank/Core.Web/Migrations/CoreDbContextModelSnapshot.cs">
+// <auto-generated />
+using System;
+using Core.Infrastructure;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+
+#nullable disable
+
+namespace Core.Web.Migrations
+{
+    [DbContext(typeof(CoreDbContext))]
+    partial class CoreDbContextModelSnapshot : ModelSnapshot
+    {
+        protected override void BuildModel(ModelBuilder modelBuilder)
+        {
+#pragma warning disable 612, 618
+            modelBuilder
+                .HasAnnotation("ProductVersion", "9.0.3")
+                .HasAnnotation("Proxies:ChangeTracking", false)
+                .HasAnnotation("Proxies:CheckEquality", false)
+                .HasAnnotation("Proxies:LazyLoading", true)
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("Core.Domain.Account", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Balance")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime?>("ClosedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("ModifyDateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Accounts");
+                });
+
+            modelBuilder.Entity("Core.Domain.Transaction", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("AccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("ModifyDateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ResolutionMessage")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("ResolvedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("SourceId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("SourceType")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("TargetId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("TargetType")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("SourceId");
+
+                    b.ToTable("Transactions");
+                });
+
+            modelBuilder.Entity("Core.Domain.Transaction", b =>
+                {
+                    b.HasOne("Core.Domain.Account", null)
+                        .WithMany("Transactions")
+                        .HasForeignKey("AccountId");
+                });
+
+            modelBuilder.Entity("Core.Domain.Account", b =>
+                {
+                    b.Navigation("Transactions");
+                });
+#pragma warning restore 612, 618
+        }
+    }
+}
+</file>
+
+<file path="EduBank/WebApplication1/AuthWeb.csproj">
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>bb5b223c-7edb-4c4b-825c-5c81bb2415ee</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="14.0.0" />
+		<PackageReference Include="FluentValidation" Version="11.11.0" />
+		<PackageReference Include="MassTransit" Version="8.4.0" />
+		<PackageReference Include="MassTransit.RabbitMQ" Version="8.4.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.3" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.3" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.3" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="9.0.3" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.3">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.3" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
+		<PackageReference Include="Npgsql" Version="9.0.3" />
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.0" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.7.0" />
+	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.9" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Application\Application.csproj" />
+    <ProjectReference Include="..\Common\Common.csproj" />
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
+</file>
+
+<file path="EduBank/WebApplication1/Program.cs">
+using Application.Dtos;
+using Application.Profiles;
+using Application.Services.Abstractions;
+using Application.Services.Implementations;
+using Application.Services.Interfaces;
+using Application.Validators;
+using Common.Enums.Common.Enums;
+using Common.Options;
+using Domain.Entities;
+using FluentValidation;
+using MassTransit;
+using MassTransit.JobService;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
+using Web.Options;
+
+namespace Web
+{
+    public class Program
+    {
+        public static async Task Main(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.Configure<JwtOptions>(
+                builder.Configuration.GetSection("Jwt"));
+
+            builder.Services.Configure<RabbitMqOptions>(
+                builder.Configuration.GetSection("RabbitMq"));
+
+            builder.Services.Configure<IdentityPasswordOptions>(
+                builder.Configuration.GetSection("Identity:Password"));
+
+            var jwtOptions = builder.Configuration
+                .GetSection("Jwt")
+                .Get<JwtOptions>()!;
+
+            var rabbitOptions = builder.Configuration
+                .GetSection("RabbitMq")
+                .Get<RabbitMqOptions>()!;
+
+            var identityOptions = builder.Configuration
+                .GetSection("Identity:Password")
+                .Get<IdentityPasswordOptions>()!;
+
+
+            builder.Services.AddLogging(logging =>
+                logging.AddConsole());
+
+
+            builder.Services
+                .AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions
+                        .Converters
+                        .Add(new JsonStringEnumConverter());
+                });
+
+
+            var accessKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtOptions.Access.Secret));
+
+            builder.Services
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters =
+                        new TokenValidationParameters
+                        {
+                            ValidateIssuer = false,
+                            ValidateAudience = false,
+                            IssuerSigningKey = accessKey,
+                        };
+                });
+
+            builder.Services.AddAuthorization();
+
+
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen(config =>
+            {
+                config.AddSecurityDefinition("bearerAuth", new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    Description = "JWT Authorization header using the Bearer scheme."
+                });
+
+                config.OperationFilter<SwaggerAuthorizeFilter>();
+            });
+
+
+            builder.Services.AddMassTransit(x =>
+            {
+
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host(rabbitOptions.Host,
+                             rabbitOptions.VirtualHost,
+                             h =>
+                             {
+                                 h.Username(rabbitOptions.Username);
+                                 h.Password(rabbitOptions.Password);
+                             });
+
+                    cfg.ReceiveEndpoint();
+
+                    cfg.ConfigureEndpoints(context);
+                });
+            });
+
+
+            builder.Services
+                .AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
+                {
+                    options.Password.RequiredLength = identityOptions.RequiredLength;
+                    options.Password.RequireDigit = identityOptions.RequireDigit;
+                    options.Password.RequireUppercase = identityOptions.RequireUppercase;
+                    options.Password.RequireLowercase = identityOptions.RequireLowercase;
+                    options.Password.RequireNonAlphanumeric = identityOptions.RequireNonAlphanumeric;
+                })
+                .AddEntityFrameworkStores<UserDbContext>()
+                .AddDefaultTokenProviders();
+
+
+            builder.Services
+                .AddScoped<IUserService, UserService>()
+                .AddScoped<IAuthService, AuthService>()
+                .AddScoped<IValidator<UserRegisterDto>, UserRegistrationValidator>()
+                .AddScoped<IValidator<UserUpdateDto>, UserUpdateValidator>()
+                .AddScoped<IValidator<UserLoginDto>, UserLoginValidator>()
+                .AddScoped<IValidator<UserChangePassword>, ChangePasswordValidator>()
+                .AddAutoMapper(typeof(UserMapProfile));
+
+            builder.Services.AddSingleton<IJwtService>(sp =>
+            {
+                var jwtOptions = sp.GetRequiredService<IOptions<JwtOptions>>().Value;
+
+                return new JWTService(
+                    new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(jwtOptions.Access.Secret)),
+                    jwtOptions.Access.LifetimeMinutes,
+                    new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(jwtOptions.Refresh.Secret)),
+                    jwtOptions.Refresh.LifetimeDays
+                );
+            });
+
+
+            builder.Services.AddDbContext<UserDbContext>(options =>
+                options
+                    .UseLazyLoadingProxies()
+                    .UseNpgsql(
+                        builder.Configuration.GetConnectionString("DefaultConnection"),
+                        b => b.MigrationsAssembly("AuthWeb")
+                    ));
+
+
+            var app = builder.Build();
+
+
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<UserDbContext>();
+
+                if (context.Database.GetPendingMigrations().Any())
+                    context.Database.Migrate();
+            }
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var roleManager = scope.ServiceProvider
+                    .GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+
+                string[] roles =
+                {
+                    RoleNames.Customer,
+                    RoleNames.Employee,
+                    RoleNames.Admin
+                };
+
+                foreach (var role in roles)
+                {
+                    if (!await roleManager.RoleExistsAsync(role))
+                    {
+                         await roleManager.CreateAsync(
+                            new IdentityRole<Guid>(role));
+                    }
+                }
+            }
+
+            app.UseSwagger();
+            app.UseSwaggerUI();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.MapControllers();
+
+            app.Run();
+
+
+        }
+    }
+}
+</file>
+
+<file path="EduBank/WebApplication1/Properties/launchSettings.json">
+{
+  "profiles": {
+    "http": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:5047"
+    },
+    "https": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "https://localhost:7087;http://localhost:5047"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "environmentVariables": {
+        "ASPNETCORE_HTTPS_PORTS": "8081",
+        "ASPNETCORE_HTTP_PORTS": "8080"
+      },
+      "publishAllPorts": true,
+      "useSSL": true
+    },
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  },
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:49891/",
+      "sslPort": 44362
+    }
+  }
+}
+</file>
+
+<file path="EduBank/Application/Dtos/UserDtos.cs">
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Application.Dtos
+{
+    public class UserDto
+    {
+        public Guid Id { get; set; }
+        public string Credentials { get; set; } = null!;
+        public string Email { get; set; } = null!;
+    }
+
+    public class UserUpdateDto
+    {
+        public string Credentials { get; set; } = null!;
+        public string Email { get; set; } = null!;
+
+    }
+
+    public class UserRegisterDto : UserLoginDto
+    {
+        public string Credentials { get; set; } = null!;
+
+    }
+
+    public class UserChangePassword
+    {
+        public string OldPassword { get; set; } = null!;
+        public string NewPassword { get; set; } = null!;
+    }
+
+    public class UserLoginDto
+    {
+        public string Email { get; set; } = null!;
+        public string Password { get; set; } = null!;
+    }
+
+    public class TokenResponse
+    {
+        public string AccessToken { get; set; } = null!;
+        public string RefreshToken { get; set; } = null!;
+    }
+
+}
+</file>
+
+<file path="EduBank/Core.Application/Dtos/CreateAccountDto.cs">
+namespace Core.Application.Dtos
+{
+    public class CreateAccountDto
+    {
+        public decimal InitialBalance { get; set; }
+    }
+}
+</file>
+
+<file path="EduBank/Core.Application/Dtos/TransactionDto.cs">
+using Core.Domain;
+
+namespace Core.Application.Dtos
+{
+    public class TransactionDto
+    {
+        public Guid Id { get; set; }
+
+        public Guid? SourceId { get; set; }
+        public TransactionObjectType SourceType { get; set; }
+
+        public Guid? TargetId { get; set; }
+        public TransactionObjectType TargetType { get; set; }
+
+        public decimal Amount { get; set; }
+        public TransactionType DisplayType { get; set; }
+        public string Description { get; set; } = null!;
+        public TransactionStatus Status { get; set; } // Pending, Completed, Cancelled
+        public string? ResolutionMessage { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+        public DateTime? ResolvedAt { get; set; }
+    }
+}
+</file>
+
+<file path="EduBank/Core.Web/appsettings.json">
+{
+    "ConnectionStrings": {
+        "DefaultConnection": "Host=database_host;Port=5432;Database=CoreDb;Username=appuser;Password=123456"
+    },
+
+    "Jwt": {
+        "Access": {
+            "Secret": "javaBackendUmiraetPashaTehnikRespect",
+            "LifetimeMinutes": 40,
+            "ClaimValidSession": "javaBackendUmiraetPashaTehnikRespect",
+            "Issuer": "jadsjhkf",
+            "Audience": "dfaslksdaf;ljhk"
+        },
+        "Refresh": {
+            "Secret": "javaBackendUmiraetPashaTehnikRespect2",
+            "LifetimeDays": 7
+        }
+    },
+
+    "Logging": {
+        "LogLevel": {
+            "Default": "Information",
+            "Microsoft.AspNetCore": "Warning"
+        }
+    },
+    "AllowedHosts": "*"
+}
+</file>
+
+<file path="EduBank/EduBank.sln">
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36429.23
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthWeb", "WebApplication1\AuthWeb.csproj", "{6DEBE20D-9C42-4447-99DC-DB1385542565}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Microservices", "Microservices", "{36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AuthService", "AuthService", "{EA70E947-5826-4541-8883-B5B9A3343F0C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{9BB5A0AD-338D-49FB-AFF0-1F38ED57CFA2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{827F54FF-3FD0-4434-BF66-C7DB0E199E85}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{49A2CB07-2C60-4241-9783-4598546AB940}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{C3428C04-7380-4D91-870F-97EA00B5E800}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CoreService", "CoreService", "{78EF452C-A04A-410E-B0A1-6752C2F758CB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Domain", "Core.Domain\Core.Domain.csproj", "{ABC3E073-EABD-4C01-A8D4-0F24980ACDD8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Application", "Core.Application\Core.Application.csproj", "{C235E3B2-5A70-404F-8D79-96C948FB4FF8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Infrastructure", "Core.Infrastructure\Core.Infrastructure.csproj", "{EDECFEEE-91F2-477E-9368-172363871523}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Web", "Core.Web\Core.Web.csproj", "{09AD3155-3D14-4004-861D-77529D1E091A}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{FC8F16F7-5031-437B-8598-1178911073F1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6DEBE20D-9C42-4447-99DC-DB1385542565}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DEBE20D-9C42-4447-99DC-DB1385542565}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DEBE20D-9C42-4447-99DC-DB1385542565}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DEBE20D-9C42-4447-99DC-DB1385542565}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BB5A0AD-338D-49FB-AFF0-1F38ED57CFA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BB5A0AD-338D-49FB-AFF0-1F38ED57CFA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BB5A0AD-338D-49FB-AFF0-1F38ED57CFA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BB5A0AD-338D-49FB-AFF0-1F38ED57CFA2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{827F54FF-3FD0-4434-BF66-C7DB0E199E85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{827F54FF-3FD0-4434-BF66-C7DB0E199E85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{827F54FF-3FD0-4434-BF66-C7DB0E199E85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{827F54FF-3FD0-4434-BF66-C7DB0E199E85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49A2CB07-2C60-4241-9783-4598546AB940}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49A2CB07-2C60-4241-9783-4598546AB940}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49A2CB07-2C60-4241-9783-4598546AB940}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49A2CB07-2C60-4241-9783-4598546AB940}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3428C04-7380-4D91-870F-97EA00B5E800}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3428C04-7380-4D91-870F-97EA00B5E800}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3428C04-7380-4D91-870F-97EA00B5E800}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3428C04-7380-4D91-870F-97EA00B5E800}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC8F16F7-5031-437B-8598-1178911073F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC8F16F7-5031-437B-8598-1178911073F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC8F16F7-5031-437B-8598-1178911073F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC8F16F7-5031-437B-8598-1178911073F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABC3E073-EABD-4C01-A8D4-0F24980ACDD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABC3E073-EABD-4C01-A8D4-0F24980ACDD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABC3E073-EABD-4C01-A8D4-0F24980ACDD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABC3E073-EABD-4C01-A8D4-0F24980ACDD8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C235E3B2-5A70-404F-8D79-96C948FB4FF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C235E3B2-5A70-404F-8D79-96C948FB4FF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C235E3B2-5A70-404F-8D79-96C948FB4FF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C235E3B2-5A70-404F-8D79-96C948FB4FF8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDECFEEE-91F2-477E-9368-172363871523}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDECFEEE-91F2-477E-9368-172363871523}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDECFEEE-91F2-477E-9368-172363871523}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDECFEEE-91F2-477E-9368-172363871523}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09AD3155-3D14-4004-861D-77529D1E091A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09AD3155-3D14-4004-861D-77529D1E091A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09AD3155-3D14-4004-861D-77529D1E091A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09AD3155-3D14-4004-861D-77529D1E091A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EA70E947-5826-4541-8883-B5B9A3343F0C} = {36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}
+		{9BB5A0AD-338D-49FB-AFF0-1F38ED57CFA2} = {EA70E947-5826-4541-8883-B5B9A3343F0C}
+		{827F54FF-3FD0-4434-BF66-C7DB0E199E85} = {EA70E947-5826-4541-8883-B5B9A3343F0C}
+		{49A2CB07-2C60-4241-9783-4598546AB940} = {EA70E947-5826-4541-8883-B5B9A3343F0C}
+		{78EF452C-A04A-410E-B0A1-6752C2F758CB} = {36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}
+		{ABC3E073-EABD-4C01-A8D4-0F24980ACDD8} = {78EF452C-A04A-410E-B0A1-6752C2F758CB}
+		{C235E3B2-5A70-404F-8D79-96C948FB4FF8} = {78EF452C-A04A-410E-B0A1-6752C2F758CB}
+		{EDECFEEE-91F2-477E-9368-172363871523} = {78EF452C-A04A-410E-B0A1-6752C2F758CB}
+		{09AD3155-3D14-4004-861D-77529D1E091A} = {78EF452C-A04A-410E-B0A1-6752C2F758CB}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DC2E40BC-851A-48E6-9893-AB0F190704AE}
+	EndGlobalSection
+EndGlobal
+</file>
+
+<file path="EduBank/WebApplication1/appsettings.json">
+{
+    "ConnectionStrings": {
+        "DefaultConnection": "Host=database_host;Port=5432;Database=UserDb;Username=appuser;Password=123456"
+    },
+
+  "Jwt": {
+    "Access": {
+      "Secret": "javaBackendUmiraetPashaTehnikRespect",
+      "LifetimeMinutes": 40,
+      "ClaimValidSession": "javaBackendUmiraetPashaTehnikRespect",
+      "Issuer": "jadsjhkf",
+      "Audience": "dfaslksdaf;ljhk"
+    },
+    "Refresh": {
+      "Secret": "javaBackendUmiraetPashaTehnikRespect2",
+      "LifetimeDays": 7
+    }
+  },
+
+  "RabbitMq": {
+    "Host": "localhost",
+    "VirtualHost": "/",
+    "Username": "guest",
+    "Password": "guest",
+    "Queues": {
+    }
+  },
+
+  "Identity": {
+    "Password": {
+      "RequiredLength": 7,
+      "RequireDigit": false,
+      "RequireUppercase": false,
+      "RequireLowercase": false,
+      "RequireNonAlphanumeric": false
+    }
+  },
+
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.EntityFrameworkCore": "Warning"
+    }
+  }
+}
+</file>
+
+<file path=".gitignore">
+# .NET
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio
+.vs/
+.vscode/
+
+# Build
+build/
+publish/
+
+# Logs
+*.log
+
+# Rider
+.idea/
+
+# NuGet
+*.nupkg
+
+
+# OS
+.DS_Store
+Thumbs.db
+/EduBank/repomix-output.xml
+</file>
+
+<file path="EduBank/Core.Application/Services/Implementations/AccountService.cs">
+using AutoMapper;
+using Common.Exceptions;
+using Core.Application.Dtos;
+using Core.Application.Services.Interfaces;
+using Core.Domain;
+using Core.Infrastructure;
+using FluentValidation;
+using Microsoft.EntityFrameworkCore;
+
+namespace Core.Application.Services.Implementations
+{
+    public class AccountService : IAccountService
+    {
+        private readonly IMapper _mapper;
+        private readonly CoreDbContext _context;
+
+        public AccountService(
+            IMapper mapper,
+            CoreDbContext context)
+        {
+            _mapper = mapper;
+            _context = context;
+        }
+
+        public async Task<AccountDto> CreateAccountAsync(Guid currentUserId, CreateAccountDto dto)
+        {
+            var account = new Account()
+            {
+                UserId = currentUserId,
+                Balance = dto.InitialBalance,
+                ClosedAt = null
+            };
+            _context.Accounts.Add(account);
+            await _context.SaveChangesAsync();
+
+            return _mapper.Map<AccountDto>(account);    
+        }
+
+        public async Task CloseAccountAsync(Guid id, Guid currentUserId)
+        {
+            var account = await GetAccountFromDbAsync(id, currentUserId);
+            account.IsDeleted = true;
+            account.ClosedAt = DateTime.UtcNow;
+            _context.Accounts.Update(account);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<AccountDto> GetAccountByIdAsync(Guid id, Guid currentUserId)
+        {
+            var account = await GetAccountFromDbAsync(id, currentUserId);
+            return _mapper.Map<AccountDto>(account);
+        }
+
+        public async Task<List<AccountDto>> GetAccountsAsync(Guid? userId, Guid currentUserId)
+        {
+            var accounts = await _context.Accounts.Where(x => x.UserId == userId).ToListAsync();
+            return accounts.Select(_mapper.Map<AccountDto>).ToList();
+        }
+
+        public async Task<List<TransactionDto>> GetAccountTransactionsAsync(Guid accountId, DateTime? from, DateTime? to, Guid currentUserId)
+        {
+            var account = await GetAccountFromDbAsync(accountId, currentUserId);
+            var transactions = await _context.Transactions.Where(x => 
+                (x.SourceId == accountId && x.SourceType == TransactionObjectType.Account) ||
+                (x.TargetId == accountId && x.TargetType == TransactionObjectType.Account)
+            ).ToListAsync();
+            return transactions.Select(_mapper.Map<TransactionDto>).ToList();
+        }
+
+        public async Task<Account> GetAccountFromDbAsync(Guid accountId, Guid? ownerId)
+        {
+            var account =  await _context.FindAsync<Account>(accountId);
+
+            if(account == null)
+            {
+                throw new NotFoundException(nameof(Account));
+            }
+
+            if(ownerId.HasValue && account.UserId != ownerId.Value)
+            {
+                throw new ForbiddenException();
+            }
+
+            return account;
+        }
+    }
+}
+</file>
+
+<file path="EduBank/Core.Application/Services/Interfaces/IAccountService.cs">
+using Core.Application.Dtos;
+using Core.Domain;
+
+namespace Core.Application.Services.Interfaces
+{
+    public interface IAccountService
+    {
+        Task<List<AccountDto>> GetAccountsAsync(Guid? userId, Guid currentUserId);
+        Task<AccountDto> CreateAccountAsync(Guid currentUserId, CreateAccountDto dto);
+        Task<AccountDto> GetAccountByIdAsync(Guid id, Guid currentUserId);
+        Task CloseAccountAsync(Guid id, Guid currentUserId);
+        Task<List<TransactionDto>> GetAccountTransactionsAsync(Guid accountId, DateTime? from, DateTime? to, Guid currentUserId);
+        Task<Account> GetAccountFromDbAsync(Guid value, Guid? currentUserId);
+    }
+}
+</file>
+
+<file path="EduBank/Core.Web/Controllers/AccountsController.cs">
+using Common;
+using Core.Application.Dtos;
+using Core.Application.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+
+namespace Core.Web.Controllers
+{
+    [ApiController]
+    [Route("api/accounts")]
+    [Authorize]
+    public class AccountsController : ControllerBase
+    {
+        private readonly IAccountService _accountService;
+
+        public AccountsController(IAccountService accountService)
+        {
+            _accountService = accountService;
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> GetAccounts()
+        {
+            var currentUserId = HttpContext.GetUserId()!.Value;
+            var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value ?? "";
+
+            var accounts = await _accountService.GetAccountsAsync(currentUserId, currentUserId);
+            return Ok(accounts);
+        }
+
+        [HttpGet("{id}")]
+        [Authorize]
+        public async Task<IActionResult> GetAccount(Guid id)
+        {
+            var currentUserId = HttpContext.GetUserId()!.Value;
+            var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value ?? "";
+
+            var account = await _accountService.GetAccountByIdAsync(id, currentUserId);
+            return Ok(account);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> CreateAccount(CreateAccountDto dto)
+        {
+            var currentUserId = HttpContext.GetUserId()!.Value;
+            var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value ?? "";
+
+            var account = await _accountService.CreateAccountAsync(currentUserId, dto);
+            return CreatedAtAction(nameof(GetAccount), new { id = account.Id }, account);
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize]
+        public async Task<IActionResult> CloseAccount(Guid id)
+        {
+            var currentUserId = HttpContext.GetUserId()!.Value;
+            var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value ?? "";
+
+            await _accountService.CloseAccountAsync(id, currentUserId);
+            return Ok();
+        }
+
+        [HttpGet("{id}/transactions")]
+        [Authorize]
+        public async Task<IActionResult> GetAccountTransactions(Guid id, [FromQuery] DateTime? from, [FromQuery] DateTime? to)
+        {
+            var currentUserId = HttpContext.GetUserId()!.Value;
+            var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value ?? "";
+
+            var transactions = await _accountService.GetAccountTransactionsAsync(id, from, to, currentUserId);
+            return Ok(transactions);
+        }
+    }
+}
+</file>
+
+<file path="EduBank/Core.Web/Controllers/TransactionsController.cs">
+using Common;
+using Core.Application.Dtos;
+using Core.Application.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+
+namespace Core.Web.Controllers
+{
+    [ApiController]
+    [Route("api/transactions")]
+    [Authorize]
+    public class TransactionsController : ControllerBase
+    {
+        private readonly ITransactionService _transactionService;
+
+        public TransactionsController(ITransactionService transactionService)
+        {
+            _transactionService = transactionService;
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> CreateTransaction(CreateTransactionDto dto)
+        {
+            var currentUserId = HttpContext.GetUserId()!.Value;
+            var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value ?? "";
+
+            var transaction = await _transactionService.InitializeTransactionAsync(dto, currentUserId);
+            return CreatedAtAction(nameof(GetTransaction), new { id = transaction.Id }, transaction);
+        }
+
+        [HttpGet("{id}")]
+        [Authorize]
+        public async Task<IActionResult> GetTransaction(Guid id)
+        {
+            var currentUserId = HttpContext.GetUserId()!.Value;
+            var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value ?? "";
+
+            var transaction = await _transactionService.GetTransactionByIdAsync(id, currentUserId);
+            return Ok(transaction);
+        }
+    }
+}
+</file>
+
+<file path="EduBank/Core.Web/Program.cs">
+using System.Text.Json.Serialization;
+using System.Text;
+using Common.Options;
+using Core.Application.Mapping;
+using Core.Application.Services.Implementations;
+using Core.Application.Services.Interfaces;
+using Core.Application.Validity;
+using Core.Infrastructure;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using FluentValidation;
+using Core.Application.Dtos;
+
+namespace Core.Web
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
+            // Add services to the container.
+
+
+            var jwtOptions = builder.Configuration
+                .GetSection("Jwt")
+                .Get<JwtOptions>()!;
+
+            builder.Services
+                .AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions
+                        .Converters
+                        .Add(new JsonStringEnumConverter());
+                });
+
+
+            var accessKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtOptions.Access.Secret));
+
+            builder.Services
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters =
+                        new TokenValidationParameters
+                        {
+                            ValidateIssuer = false,
+                            ValidateAudience = false,
+                            IssuerSigningKey = accessKey,
+                        };
+                });
+
+            builder.Services.AddAuthorization();
+
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen(config =>
+            {
+                config.AddSecurityDefinition("bearerAuth", new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    Description = "JWT Authorization header using the Bearer scheme."
+                });
+
+                config.OperationFilter<SwaggerAuthorizeFilter>();
+            });
+
+
+            builder.Services
+                .AddTransient<IAccountService, AccountService>()
+                .AddTransient<ITransactionService, TransactionService>()
+                .AddScoped<IValidator<CreateTransactionDto>, CreateTransactionValidator>()
+                .AddAutoMapper(typeof(CoreMapProfile));
+            //services.AddScoped<ITransactionService, TransactionService>();
+
+            builder.Services.AddDbContext<CoreDbContext>(options =>
+                options
+                    .UseLazyLoadingProxies()
+                    .UseNpgsql(
+                        builder.Configuration.GetConnectionString("DefaultConnection"),
+                        b => b.MigrationsAssembly("Core.Web")
+                    ));
+
+
+            var app = builder.Build();
+
+
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
+
+                if (context.Database.GetPendingMigrations().Any())
+                    context.Database.Migrate();
+            }
+
+            app.UseSwagger();
+            app.UseSwaggerUI();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.MapControllers();
+
+            app.Run();
+        }
+    }
+}
+</file>
+
+<file path="EduBank/docker-compose.yml">
+services:
+  authweb:
+    image: ${DOCKER_REGISTRY-}authweb
+    build:
+      context: .
+      dockerfile: WebApplication1/Dockerfile
+    ports:
+      - "2280:8080"
+    depends_on:
+      - db
+
+  coreweb:
+    image: ${DOCKER_REGISTRY-}coreweb
+    build:
+      context: .
+      dockerfile: Core.Web/Dockerfile
+    ports:
+      - "2281:8080"
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15-alpine
+    container_name: db
+    hostname: database_host
+    ports:
+      - "1488:5432"
+    expose:
+      - 5432
+    environment:
+      POSTGRES_USER: appuser
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: UserDb
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d UserDb"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  rabbitmq:                      
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"  
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  db_data:
+    name: db_data
+  rabbitmq_data:
+    name: rabbitmq_data
+</file>
+
+<file path="EduBank/Core.Application/Mapping/CoreMapProfile.cs">
+using Core.Application.Dtos;
+using AutoMapper;
+using Core.Domain;
+using System.Linq.Expressions;
+
+namespace Core.Application.Mapping
+{
+    public class CoreMapProfile : Profile
+    {
+        public CoreMapProfile()
+        {
+            CreateMap<Account, AccountDto>();
+
+            CreateMap<Transaction, TransactionDto>()
+                .ForMember(dest => dest.DisplayType, opt => opt.MapFrom(src => CalculateTransactionType(src)));
+
+            CreateMap<CreateTransactionDto, Transaction>()
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(_ => TransactionStatus.Pending))
+                .ForMember(dest => dest.ResolutionMessage, opt => opt.MapFrom<string?>(_ => null))
+                .ForMember(dest => dest.ResolvedAt, opt => opt.MapFrom<DateTime?>(_ => null));
+        }
+
+        private static TransactionType CalculateTransactionType(Transaction src)
+        {
+            if (src.SourceType == TransactionObjectType.RealWorld && src.TargetType == TransactionObjectType.Account) return TransactionType.Deposit;
+            if (src.SourceType == TransactionObjectType.Account && src.TargetType == TransactionObjectType.RealWorld) return TransactionType.Withdrawal;
+            if (src.SourceType == TransactionObjectType.Account && src.TargetType == TransactionObjectType.Account) return TransactionType.Transfer;
+            if (src.SourceType == TransactionObjectType.Credit) return TransactionType.CreditIncoming;
+            if (src.TargetType == TransactionObjectType.Credit) return TransactionType.CreditPayment;
+            return TransactionType.Unclassified;
+        }
+    }
+}
+</file>
+
+</files>
