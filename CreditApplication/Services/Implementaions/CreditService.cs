@@ -80,6 +80,7 @@ namespace CreditService.Services
             credit.Status = CreditStatus.Pending;
             credit.RemainingDebt = 0;
             credit.AccountId = request.AccountId;
+            credit.RejectionReason = "";
 
             _context.Credits.Add(credit);
             await _context.SaveChangesAsync();
