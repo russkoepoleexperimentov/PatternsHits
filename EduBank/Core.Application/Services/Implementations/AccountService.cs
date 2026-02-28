@@ -22,12 +22,12 @@ namespace Core.Application.Services.Implementations
             _context = context;
         }
 
-        public async Task<AccountDto> CreateAccountAsync(Guid currentUserId)
+        public async Task<AccountDto> CreateAccountAsync(Guid currentUserId, CreateAccountDto dto)
         {
             var account = new Account()
             {
                 UserId = currentUserId,
-                Balance = 0,
+                Balance = dto.InitialBalance,
                 ClosedAt = null
             };
             _context.Accounts.Add(account);

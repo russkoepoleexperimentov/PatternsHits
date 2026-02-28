@@ -21,12 +21,12 @@ namespace Core.Web.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> GetAccounts([FromQuery] Guid? userId)
+        public async Task<IActionResult> GetAccounts()
         {
             var currentUserId = HttpContext.GetUserId()!.Value;
             var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value ?? "";
 
-            var accounts = await _accountService.GetAccountsAsync(userId, currentUserId);
+            var accounts = await _accountService.GetAccountsAsync(currentUserId, currentUserId);
             return Ok(accounts);
         }
 
@@ -43,12 +43,12 @@ namespace Core.Web.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> CreateAccount()
+        public async Task<IActionResult> CreateAccount(CreateAccountDto dto)
         {
             var currentUserId = HttpContext.GetUserId()!.Value;
             var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value ?? "";
 
-            var account = await _accountService.CreateAccountAsync(currentUserId);
+            var account = await _accountService.CreateAccountAsync(currentUserId, dto);
             return CreatedAtAction(nameof(GetAccount), new { id = account.Id }, account);
         }
 
