@@ -1,10 +1,15 @@
 
+using System.Text.Json.Serialization;
+using System.Text;
+using Common.Options;
 using Core.Application.Mapping;
 using Core.Application.Services.Implementations;
 using Core.Application.Services.Interfaces;
 using Core.Application.Validity;
 using Core.Infrastructure;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 namespace Core.Web
@@ -16,7 +21,38 @@ namespace Core.Web
             var builder = WebApplication.CreateBuilder(args);
             // Add services to the container.
 
-            builder.Services.AddControllers();
+
+            var jwtOptions = builder.Configuration
+                .GetSection("Jwt")
+                .Get<JwtOptions>()!;
+
+            builder.Services
+                .AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions
+                        .Converters
+                        .Add(new JsonStringEnumConverter());
+                });
+
+
+            var accessKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtOptions.Access.Secret));
+
+            builder.Services
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters =
+                        new TokenValidationParameters
+                        {
+                            ValidateIssuer = false,
+                            ValidateAudience = false,
+                            IssuerSigningKey = accessKey,
+                        };
+                });
+
+            builder.Services.AddAuthorization();
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(config =>
@@ -35,7 +71,6 @@ namespace Core.Web
 
             builder.Services
                 .AddScoped<IAccountService, AccountService>()
-                .AddScoped<CreateAccountValidator>()
                 .AddAutoMapper(typeof(CoreMapProfile));
             //services.AddScoped<ITransactionService, TransactionService>();
 
@@ -50,13 +85,21 @@ namespace Core.Web
 
             var app = builder.Build();
 
+
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
+
+                if (context.Database.GetPendingMigrations().Any())
+                    context.Database.Migrate();
+            }
+
             app.UseSwagger();
             app.UseSwaggerUI();
 
-            app.UseHttpsRedirection();
-
+            app.UseAuthentication();
             app.UseAuthorization();
-
 
             app.MapControllers();
 

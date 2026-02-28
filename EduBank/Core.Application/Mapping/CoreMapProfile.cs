@@ -9,8 +9,6 @@ namespace Core.Application.Mapping
         public CoreMapProfile()
         {
             CreateMap<Account, AccountDto>();
-            CreateMap<CreateAccountDto, Account>()
-                .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => src.InitialBalance));
 
             CreateMap<Transaction, TransactionDto>()
                 .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type.ToString().ToLower()))

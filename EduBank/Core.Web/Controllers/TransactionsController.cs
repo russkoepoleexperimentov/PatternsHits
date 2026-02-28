@@ -8,7 +8,7 @@ using System.Security.Claims;
 namespace Core.Web.Controllers
 {
     [ApiController]
-    [Route("api/v1/transactions")]
+    [Route("api/transactions")]
     [Authorize]
     public class TransactionsController : ControllerBase
     {

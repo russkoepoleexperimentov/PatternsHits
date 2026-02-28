@@ -8,7 +8,7 @@ using System.Security.Claims;
 namespace Core.Web.Controllers
 {
     [ApiController]
-    [Route("api/v1/accounts")]
+    [Route("api/accounts")]
     [Authorize]
     public class AccountsController : ControllerBase
     {
@@ -20,6 +20,7 @@ namespace Core.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAccounts([FromQuery] Guid? userId)
         {
             var currentUserId = HttpContext.GetUserId()!.Value;
@@ -30,6 +31,7 @@ namespace Core.Web.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<IActionResult> GetAccount(Guid id)
         {
             var currentUserId = HttpContext.GetUserId()!.Value;
@@ -40,16 +42,18 @@ namespace Core.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAccount(CreateAccountDto dto)
+        [Authorize]
+        public async Task<IActionResult> CreateAccount()
         {
             var currentUserId = HttpContext.GetUserId()!.Value;
             var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value ?? "";
 
-            var account = await _accountService.CreateAccountAsync(dto, currentUserId);
+            var account = await _accountService.CreateAccountAsync(currentUserId);
             return CreatedAtAction(nameof(GetAccount), new { id = account.Id }, account);
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> CloseAccount(Guid id)
         {
             var currentUserId = HttpContext.GetUserId()!.Value;
@@ -60,6 +64,7 @@ namespace Core.Web.Controllers
         }
 
         [HttpGet("{id}/transactions")]
+        [Authorize]
         public async Task<IActionResult> GetAccountTransactions(Guid id, [FromQuery] DateTime? from, [FromQuery] DateTime? to)
         {
             var currentUserId = HttpContext.GetUserId()!.Value;
