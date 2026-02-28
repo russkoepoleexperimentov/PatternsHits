@@ -25,7 +25,7 @@ namespace Core.Web.Controllers
             var currentUserId = HttpContext.GetUserId()!.Value;
             var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value ?? "";
 
-            var transaction = await _transactionService.CreateTransactionAsync(dto, currentUserId, currentUserRole);
+            var transaction = await _transactionService.InitializeTransactionAsync(dto, currentUserId);
             return CreatedAtAction(nameof(GetTransaction), new { id = transaction.Id }, transaction);
         }
 
@@ -35,23 +35,8 @@ namespace Core.Web.Controllers
             var currentUserId = HttpContext.GetUserId()!.Value;
             var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value ?? "";
 
-            var transaction = await _transactionService.GetTransactionByIdAsync(id, currentUserId, currentUserRole);
+            var transaction = await _transactionService.GetTransactionByIdAsync(id, currentUserId);
             return Ok(transaction);
-        }
-
-        [HttpPost("{id}/comments")]
-        public async Task<IActionResult> AddComment(Guid id, CreateCommentDto dto)
-        {
-            var authorId = HttpContext.GetUserId()!.Value;
-            var comment = await _transactionService.AddCommentAsync(id, dto, authorId);
-            return CreatedAtAction(nameof(GetComments), new { transactionId = id }, comment);
-        }
-
-        [HttpGet("{id}/comments")]
-        public async Task<IActionResult> GetComments(Guid id, [FromQuery] Guid? parentId)
-        {
-            var comments = await _transactionService.GetCommentsAsync(id, parentId);
-            return Ok(comments);
         }
     }
 }

@@ -25,7 +25,7 @@ namespace Core.Web.Controllers
             var currentUserId = HttpContext.GetUserId()!.Value;
             var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value ?? "";
 
-            var accounts = await _accountService.GetAccountsAsync(userId, currentUserId, currentUserRole);
+            var accounts = await _accountService.GetAccountsAsync(userId, currentUserId);
             return Ok(accounts);
         }
 
@@ -35,7 +35,7 @@ namespace Core.Web.Controllers
             var currentUserId = HttpContext.GetUserId()!.Value;
             var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value ?? "";
 
-            var account = await _accountService.GetAccountByIdAsync(id, currentUserId, currentUserRole);
+            var account = await _accountService.GetAccountByIdAsync(id, currentUserId);
             return Ok(account);
         }
 
@@ -45,7 +45,7 @@ namespace Core.Web.Controllers
             var currentUserId = HttpContext.GetUserId()!.Value;
             var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value ?? "";
 
-            var account = await _accountService.CreateAccountAsync(dto, currentUserId, currentUserRole);
+            var account = await _accountService.CreateAccountAsync(dto, currentUserId);
             return CreatedAtAction(nameof(GetAccount), new { id = account.Id }, account);
         }
 
@@ -55,7 +55,7 @@ namespace Core.Web.Controllers
             var currentUserId = HttpContext.GetUserId()!.Value;
             var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value ?? "";
 
-            await _accountService.CloseAccountAsync(id, currentUserId, currentUserRole);
+            await _accountService.CloseAccountAsync(id, currentUserId);
             return Ok();
         }
 
@@ -65,7 +65,7 @@ namespace Core.Web.Controllers
             var currentUserId = HttpContext.GetUserId()!.Value;
             var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value ?? "";
 
-            var transactions = await _accountService.GetAccountTransactionsAsync(id, from, to, currentUserId, currentUserRole);
+            var transactions = await _accountService.GetAccountTransactionsAsync(id, from, to, currentUserId);
             return Ok(transactions);
         }
     }

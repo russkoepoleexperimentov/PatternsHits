@@ -4,6 +4,18 @@ services:
     build:
       context: .
       dockerfile: WebApplication1/Dockerfile
+    ports:
+      - "2280:8080"
+    depends_on:
+      - db
+
+  coreweb:
+    image: ${DOCKER_REGISTRY-}coreweb
+    build:
+      context: .
+      dockerfile: Core.Web/Dockerfile
+    ports:
+      - "2281:8080"
     depends_on:
       - db
 
