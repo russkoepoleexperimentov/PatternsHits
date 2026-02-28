@@ -4,6 +4,18 @@ services:
     build:
       context: .
       dockerfile: WebApplication1/Dockerfile
+    ports:
+      - "2280:8080"
+    depends_on:
+      - db
+
+  coreweb:
+    image: ${DOCKER_REGISTRY-}coreweb
+    build:
+      context: .
+      dockerfile: Core.Web/Dockerfile
+    ports:
+      - "2281:8080"
     depends_on:
       - db
 
@@ -11,6 +23,8 @@ services:
     image: postgres:15-alpine
     container_name: db
     hostname: database_host
+    ports:
+      - "1488:5432"
     expose:
       - 5432
     environment:
