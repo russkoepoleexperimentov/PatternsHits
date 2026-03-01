@@ -94,9 +94,12 @@ namespace Core.Application.Services.Implementations
         {
             try
             {
-                var account = await GetAccountFromDbAsync(cmd.UserId, null);
-                account.IsDeleted = true;
-                _context.Accounts.Update(account);
+                var accounts = await _context.Accounts.Where(x => x.UserId == cmd.UserId).ToListAsync();
+                foreach (var account in accounts)
+                {
+                    account.IsDeleted = true;
+                    _context.Accounts.Update(account);
+                }
                 await _context.SaveChangesAsync();
                 return new(true, null);
             }
@@ -109,9 +112,12 @@ namespace Core.Application.Services.Implementations
         {
             try
             {
-                var account = await GetAccountFromDbAsync(cmd.UserId, null);
-                account.IsDeleted = false;
-                _context.Accounts.Update(account);
+                var accounts = await _context.Accounts.Where(x => x.UserId == cmd.UserId).ToListAsync();
+                foreach (var account in accounts)
+                {
+                    account.IsDeleted = false;
+                    _context.Accounts.Update(account);
+                }
                 await _context.SaveChangesAsync();
                 return new(true, null);
             }

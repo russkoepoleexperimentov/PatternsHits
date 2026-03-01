@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Tag, Button, message, Spin, Tooltip, Drawer, Space, Typography, Popconfirm } from 'antd';
-import { UserOutlined, DeleteOutlined, CloseOutlined, MoneyCollectOutlined, MinusCircleOutlined, PlusCircleOutlined, BlockOutlined, EyeFilled, EyeOutlined } from '@ant-design/icons';
+import { UserOutlined, DeleteOutlined, CloseOutlined, MoneyCollectOutlined, MinusCircleOutlined, PlusCircleOutlined, BlockOutlined, EyeFilled, EyeOutlined, BookOutlined } from '@ant-design/icons';
 import { useAuth } from '../../context/authContext';
 import { getAccounts, deleteAccount, getAccountTransactions } from '../../services/core';
 import { authApiRequest } from '../../services/api';
@@ -117,11 +117,13 @@ export const AccountsPage = () => {
       title: 'Статус',
       key: 'status',
       render: (_, record) => {
-        if (!record.closedAt) {
+        if (!record.closedAt && !record.isDeleted) {
           return <Tag color="green">Активен</Tag>;
-        } else {
+        } else if(record.closedAt) {
           const closedDate = dayjs(record.closedAt).format('DD.MM.YYYY HH:mm');
           return <Tag color="red">Закрыт {closedDate}</Tag>;
+        }else if(record.isDeleted) {
+          return <Tag color="red">Пользователь заблокирован</Tag>;
         }
       },
     },
@@ -143,7 +145,13 @@ export const AccountsPage = () => {
       key: 'actions',
       render: (_, record) => (
         <Space>
-            <Popconfirm 
+            <Button
+                icon={<BookOutlined />}
+                type='default'
+                size="small"
+                onClick={() => handleRowClick(record)}
+            >История операций</Button>
+            {!record.closedAt && !record.isDeleted && <Popconfirm 
             title="Подтвердите действие"
             description="Вы уверены что хотите закрыть этот счёт?"
             okText="Закрыть"
@@ -154,13 +162,7 @@ export const AccountsPage = () => {
                     danger
                     size="small"
                 >Закрыть</Button>
-            </Popconfirm>
-            <Button
-                icon={<EyeOutlined />}
-                type='default'
-                size="small"
-                onClick={() => handleRowClick(record)}
-            >Транзакции</Button>
+            </Popconfirm> }
         </Space>
       ),
     },
