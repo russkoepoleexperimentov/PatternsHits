@@ -1,10 +1,11 @@
 // pages/users/UsersPage.jsx
 import React, { useEffect, useState, useCallback } from 'react';
-import { Table, Input, Button, Drawer, Spin, message, Typography, Space } from 'antd';
-import { SearchOutlined, EyeOutlined } from '@ant-design/icons';
+import { Table, Input, Button, Drawer, Spin, message, Typography, Space, Divider, Tag } from 'antd';
+import { SearchOutlined, EyeOutlined, UnlockOutlined, LockOutlined } from '@ant-design/icons';
 import { useAuth } from '../../context/authContext';
 import { searchUsers, getUserById } from '../../services/users';
-import debounce from 'lodash/debounce'; // установите lodash или используйте setTimeout
+import debounce from 'lodash/debounce';
+import { addUserRole, removeUserRole, blockUser, unblockUser } from '../../services/users';
 
 const { Title, Text } = Typography;
 
@@ -15,6 +16,10 @@ export const UsersPage = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [userDetailsLoading, setUserDetailsLoading] = useState(false);
+  const [roleActionLoading, setRoleActionLoading] = useState(false);
+const [blockActionLoading, setBlockActionLoading] = useState(false);
+
+    const { user } = useAuth();
 
   // Загрузка пользователей с учётом поискового запроса
   const fetchUsers = async (query) => {
@@ -71,6 +76,34 @@ export const UsersPage = () => {
     setSelectedUser(null);
   };
 
+  const handleBlockUser = async (userId) => {
+  setBlockActionLoading(true);
+  try {
+    await blockUser(userId);
+    message.success('Пользователь заблокирован');
+    const updated = await getUserById(userId);
+    setSelectedUser(updated);
+  } catch (error) {
+    message.error(error.message || 'Ошибка блокировки');
+  } finally {
+    setBlockActionLoading(false);
+  }
+};
+
+const handleUnblockUser = async (userId) => {
+  setBlockActionLoading(true);
+  try {
+    await unblockUser(userId);
+    message.success('Пользователь разблокирован');
+    const updated = await getUserById(userId);
+    setSelectedUser(updated);
+  } catch (error) {
+    message.error(error.message || 'Ошибка разблокировки');
+  } finally {
+    setBlockActionLoading(false);
+  }
+};
+
   const columns = [
     {
       title: 'ID',
@@ -106,6 +139,32 @@ export const UsersPage = () => {
       ),
     },
   ];
+
+    const handleAssignEmployee = async (userId) => {
+    setRoleActionLoading(true);
+    try {
+        await addUserRole(userId, 'Employee');
+        message.success('Роль Employee назначена');
+    } catch (error) {
+        message.error(error.message || 'Ошибка назначения роли');
+    } finally {
+        setRoleActionLoading(false);
+        fetchUsers(searchQuery);
+    }
+    };
+
+    const handleRemoveEmployee = async (userId) => {
+    setRoleActionLoading(true);
+    try {
+        await removeUserRole(userId, 'Employee');
+        message.success('Роль Employee снята');
+    } catch (error) {
+        message.error(error.message || 'Ошибка снятия роли');
+    } finally {
+        setRoleActionLoading(false);
+        fetchUsers(searchQuery);
+    }
+    };
 
   return (
     <div>
@@ -157,7 +216,73 @@ export const UsersPage = () => {
             <div>
               <Text strong>Имя:</Text> <Text>{selectedUser.credentials || '—'}</Text>
             </div>
-            {/* Здесь можно добавить управление ролями, когда появится соответствующий API */}
+            
+                  {/* Статус блокировки */}
+      <div>
+        <Text strong>Статус:</Text>{' '}
+        {selectedUser.isBlocked ? (
+          <Tag color="red">Заблокирован</Tag>
+        ) : (
+          <Tag color="green">Активен</Tag>
+        )}
+      </div>
+
+      {/* Роли */}
+      <div>
+        <Text strong>Роли:</Text>{' '}
+        {selectedUser.roles && selectedUser.roles.length > 0 ? (
+          selectedUser.roles.map(role => (
+            <Tag key={role} color="blue">{role}</Tag>
+          ))
+        ) : (
+          <Text type="secondary">Нет ролей</Text>
+        )}
+      </div>
+
+      <Divider />
+
+      {/* Управление ролью Employee */}
+      {user.id != selectedUser.id && <Space>
+        {selectedUser.roles?.includes('Employee') ? (
+          <Button
+            danger
+            onClick={() => handleRemoveEmployee(selectedUser.id)}
+            loading={roleActionLoading}
+          >
+            Снять роль Employee
+          </Button>
+        ) : (
+          <Button
+            type="primary"
+            onClick={() => handleAssignEmployee(selectedUser.id)}
+            loading={roleActionLoading}
+          >
+            Назначить Employee
+          </Button>
+        )}
+      </Space>}
+
+      {/* Управление блокировкой (если доступно) */}
+      {user.id != selectedUser.id &&<Space style={{ marginTop: 16 }}>
+        {selectedUser.isBlocked ? (
+          <Button
+            icon={<UnlockOutlined />}
+            onClick={() => handleUnblockUser(selectedUser.id)}
+            loading={blockActionLoading}
+          >
+            Разблокировать
+          </Button>
+        ) : (
+          <Button
+            icon={<LockOutlined />}
+            danger
+            onClick={() => handleBlockUser(selectedUser.id)}
+            loading={blockActionLoading}
+          >
+            Заблокировать
+          </Button>
+        )}
+      </Space> }
           </Space>
         ) : (
           <Text>Пользователь не выбран</Text>

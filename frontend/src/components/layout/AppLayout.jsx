@@ -28,7 +28,7 @@ export const AppLayout = ({ children }) => {
     <Layout className="layout" style={{ minHeight: '100vh' }}>
       <Header>
         <div className="logo" style={{ float: 'left', color: '#fff', marginRight: 20 }}>
-          MyApp
+          Банк 
         </div>
         <Menu
           theme="dark"
@@ -42,7 +42,7 @@ export const AppLayout = ({ children }) => {
           {children}
         </div>
       </Content>
-      <Footer style={{ textAlign: 'center' }}>MyApp ©2025</Footer>
+      <Footer style={{ textAlign: 'center' }}>Банк</Footer>
     </Layout>
   );
 };

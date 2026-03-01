@@ -29,6 +29,60 @@ export const getUserById = async (id) => {
   return response.json();
 };
 
+export const addUserRole = async (userId, role) => {
+  const response = await authApiRequest(`/api/users/${userId}/role?role=${encodeURIComponent(role)}`, {
+    method: 'POST',
+  });
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.message || 'Не удалось добавить роль');
+  }
+  return response.json(); // предположительно возвращает что-то или просто ok
+};
+
+export const removeUserRole = async (userId, role) => {
+  const response = await authApiRequest(`/api/users/${userId}/role?role=${encodeURIComponent(role)}`, {
+    method: 'DELETE',
+  });
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.message || 'Не удалось удалить роль');
+  }
+  return response.json();
+};
+
+/**
+ * Заблокировать пользователя
+ * @param {string} userId
+ * @returns {Promise<Object>}
+ */
+export const blockUser = async (userId) => {
+  const response = await authApiRequest(`/api/auth/block/${userId}`, {
+    method: 'POST',
+  });
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.message || 'Не удалось заблокировать пользователя');
+  }
+  return response.json();
+};
+
+/**
+ * Разблокировать пользователя
+ * @param {string} userId
+ * @returns {Promise<Object>}
+ */
+export const unblockUser = async (userId) => {
+  const response = await authApiRequest(`/api/auth/unblock/${userId}`, {
+    method: 'POST',
+  });
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.message || 'Не удалось разблокировать пользователя');
+  }
+  return response.json();
+};
+
 // (Опционально) функции для управления ролями можно добавить позже
 // export const addUserRole = async (userId, role) => { ... }
 // export const removeUserRole = async (userId, role) => { ... }
