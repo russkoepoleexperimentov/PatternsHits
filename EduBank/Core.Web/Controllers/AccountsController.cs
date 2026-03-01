@@ -1,4 +1,5 @@
 ﻿using Common;
+using Common.Enums.Common.Enums;
 using Core.Application.Dtos;
 using Core.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -71,6 +72,35 @@ namespace Core.Web.Controllers
             var currentUserRole = User.FindFirst(ClaimTypes.Role)?.Value ?? "";
 
             var transactions = await _accountService.GetAccountTransactionsAsync(id, from, to, currentUserId);
+            return Ok(transactions);
+        }
+
+
+
+        private bool IsEmployeeOrAdmin() =>
+            User.IsInRole(RoleNames.Employee);
+
+        [HttpGet("employee")]
+        public async Task<IActionResult> GetAccountsEmployee()
+        {
+            if(!IsEmployeeOrAdmin()) return Forbid();
+            var accounts = await _accountService.GetAllAccountsAsync();
+            return Ok(accounts);
+        }
+
+        [HttpGet("employee/{id}")]
+        public async Task<IActionResult> GetAccountEmployee(Guid id)
+        {
+            if (!IsEmployeeOrAdmin()) return Forbid();
+            var account = await _accountService.GetAccountByIdAsync(id, null);
+            return Ok(account);
+        }
+
+        [HttpGet("employee/{id}/transactions")]
+        public async Task<IActionResult> GetAccountEmployeeTransactions(Guid id, [FromQuery] DateTime? from, [FromQuery] DateTime? to)
+        {
+            if (!IsEmployeeOrAdmin()) return Forbid();
+            var transactions = await _accountService.GetAccountTransactionsAsync(id, from, to, null);
             return Ok(transactions);
         }
     }

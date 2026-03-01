@@ -9,7 +9,6 @@ namespace Core.Application.Services.Interfaces
     {
         Task<TransactionDto> InitializeTransactionAsync(CreateTransactionDto dto, Guid currentUserId);
         Task<TransactionDto> GetTransactionByIdAsync(Guid id, Guid currentUserId);
-        Task<TransactionDto> ResolveTransactionAsync(Guid id, TransactionStatus status, string message);
         Task<DepositFundsResponse> ProcessDepositFund(DepositFundsCommand command);
     }
 }

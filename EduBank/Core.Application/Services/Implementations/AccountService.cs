@@ -45,7 +45,7 @@ namespace Core.Application.Services.Implementations
             await _context.SaveChangesAsync();
         }
 
-        public async Task<AccountDto> GetAccountByIdAsync(Guid id, Guid currentUserId)
+        public async Task<AccountDto> GetAccountByIdAsync(Guid id, Guid? currentUserId)
         {
             var account = await GetAccountFromDbAsync(id, currentUserId);
             return _mapper.Map<AccountDto>(account);
@@ -57,7 +57,7 @@ namespace Core.Application.Services.Implementations
             return accounts.Select(_mapper.Map<AccountDto>).ToList();
         }
 
-        public async Task<List<TransactionDto>> GetAccountTransactionsAsync(Guid accountId, DateTime? from, DateTime? to, Guid currentUserId)
+        public async Task<List<TransactionDto>> GetAccountTransactionsAsync(Guid accountId, DateTime? from, DateTime? to, Guid? currentUserId)
         {
             var account = await GetAccountFromDbAsync(accountId, currentUserId);
             var transactions = await _context.Transactions.Where(x => 
@@ -82,6 +82,12 @@ namespace Core.Application.Services.Implementations
             }
 
             return account;
+        }
+
+        public async Task<List<AccountDto>> GetAllAccountsAsync()
+        {
+            var accounts = await _context.Accounts.ToListAsync();
+            return accounts.Select(_mapper.Map<AccountDto>).ToList();
         }
     }
 }

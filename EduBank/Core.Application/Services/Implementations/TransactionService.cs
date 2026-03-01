@@ -35,7 +35,7 @@ namespace Core.Application.Services.Implementations
             var transaction = _mapper.Map<Transaction>(dto);
             transaction.Id = Guid.NewGuid();
 
-            if(transaction.SourceType == TransactionObjectType.Account)
+            if (transaction.SourceType == TransactionObjectType.Account)
             {
                 // счёт-источник (привязанный к юзеру)
                 var sourceAcc = await _accountService.GetAccountFromDbAsync(transaction.SourceId!.Value, currentUserId);
@@ -62,7 +62,7 @@ namespace Core.Application.Services.Implementations
                 if (transaction.TargetType == TransactionObjectType.Account) // пополнение
                 {
                     // ensure existance of target account
-                    var targetAcc = await _accountService.GetAccountFromDbAsync(transaction.TargetId!.Value, currentUserId);
+                    var targetAcc = await _accountService.GetAccountFromDbAsync(transaction.TargetId!.Value, null);
                     ApplyDeposit(transaction, targetAcc);
                 }
                 else throw new InvalidOperationException();
@@ -91,6 +91,7 @@ namespace Core.Application.Services.Implementations
                     Amount = command.Amount,
                     Status = TransactionStatus.Completed,
                 };
+                if (!EnsureCanInitialize(transaction, targetAcc)) return new(false, transaction.ResolutionMessage);
 
                 targetAcc.Balance += command.Amount;
 
@@ -108,16 +109,13 @@ namespace Core.Application.Services.Implementations
 
         public async Task<TransactionDto> GetTransactionByIdAsync(Guid id, Guid currentUserId)
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task<TransactionDto> ResolveTransactionAsync(Guid id, TransactionStatus status, string message)
-        {
-            throw new NotImplementedException();
+            var transaction = await GetTransactionFromDbAsync(id);
+            return _mapper.Map<TransactionDto>(transaction);
         }
 
         private async Task ApplyCreditPayment(Transaction transaction, Account source)
         {
+            if (!EnsureCanInitialize(transaction, source)) return;
             if (!EnsureCanWithdraw(transaction, source)) return;
 
             var response = await _paymentClient.GetResponse<ProcessExternalPaymentResponse>(
@@ -141,13 +139,27 @@ namespace Core.Application.Services.Implementations
 
         private void ApplyTransfer(Transaction transaction, Account source, Account target)
         {
-            if(!EnsureCanWithdraw(transaction, source)) return;
+            if (!EnsureCanInitialize(transaction, source)) return;
+            if (!EnsureCanInitialize(transaction, target)) return;
+            if (!EnsureCanWithdraw(transaction, source)) return;
 
             source.Balance -= transaction.Amount;
             target.Balance += transaction.Amount;
             transaction.Status = TransactionStatus.Completed;
             transaction.ResolvedAt = DateTime.UtcNow;
             transaction.ResolutionMessage = "Перевод выполнен";
+        }
+
+        private static bool EnsureCanInitialize(Transaction transaction, Account source)
+        {
+            if (source.IsDeleted || source.ClosedAt != null)
+            {
+                transaction.Status = TransactionStatus.Failed;
+                transaction.ResolvedAt = DateTime.UtcNow;
+                transaction.ResolutionMessage = "Счёт закрыт";
+                return false;
+            }
+            return true;
         }
 
         private static bool EnsureCanWithdraw(Transaction transaction, Account source)
@@ -165,6 +177,7 @@ namespace Core.Application.Services.Implementations
 
         private void ApplyDeposit(Transaction transaction, Account target)
         {
+            if (!EnsureCanInitialize(transaction, target)) return;
             target.Balance += transaction.Amount;
             transaction.Status = TransactionStatus.Completed;
             transaction.ResolvedAt = DateTime.UtcNow;
@@ -173,6 +186,7 @@ namespace Core.Application.Services.Implementations
 
         private void ApplyWithdraw(Transaction transaction, Account source)
         {
+            if (!EnsureCanInitialize(transaction, source)) return;
             if (!EnsureCanWithdraw(transaction, source)) return;
 
             source.Balance -= transaction.Amount;

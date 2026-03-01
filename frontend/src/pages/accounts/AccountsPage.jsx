@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Tag, Button, message, Spin, Tooltip, Drawer, Space, Typography } from 'antd';
-import { UserOutlined, DeleteOutlined, CloseOutlined } from '@ant-design/icons';
+import { UserOutlined, DeleteOutlined, CloseOutlined, MoneyCollectOutlined, MinusCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { useAuth } from '../../context/authContext';
 import { getAccounts, deleteAccount, getAccountTransactions } from '../../services/core';
 import { authApiRequest } from '../../services/api';
 import dayjs from 'dayjs'; // если есть, иначе использовать new Date()
 import { transactionColumns } from './values/transactionTable';
+import { DepositWithdrawModal } from './ui/DepositWithdrawModal';
 
 const { Text } = Typography;
 
@@ -17,6 +18,8 @@ export const AccountsPage = () => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [transactionsLoading, setTransactionsLoading] = useState(false);
+
+  const [modalStatus, setModalStatus] = useState(null)
 
   const fetchAccounts = async () => {
     setLoading(true);
@@ -90,6 +93,12 @@ export const AccountsPage = () => {
     setSelectedAccount(null);
     setTransactions([]);
   };
+
+  const invalidate = () => {
+    fetchAccounts();
+    if(selectedAccount?.id)
+        loadTransactions(selectedAccount?.id)
+  }
 
   const columns = [
     {
@@ -170,23 +179,32 @@ export const AccountsPage = () => {
         onClose={closeDrawer}
         open={drawerVisible}
         extra={
-          <Button icon={<CloseOutlined />} onClick={closeDrawer}>
-            Закрыть
-          </Button>
+          <Space>
+            <Button type='primary' onClick={() => setModalStatus({open: true, type: 'deposit'})} icon={<PlusCircleOutlined/>}>Пополнить</Button>
+            <Button type='default' onClick={() => setModalStatus({open: true, type: 'withdraw'})} icon={<MinusCircleOutlined/>}>Снять</Button>
+          </Space>
         }
       >
         {transactionsLoading ? (
           <Spin />
         ) : (
-          <Table
-            dataSource={transactions}
-            columns={transactionColumns(transactions, selectedAccount)}
-            rowKey="id"
-            pagination={{ pageSize: 20 }}
-            locale={{ emptyText: 'Нет транзакций' }}
-          />
+            <Table
+                dataSource={transactions}
+                columns={transactionColumns(transactions, selectedAccount)}
+                rowKey="id"
+                pagination={{ pageSize: 20 }}
+                locale={{ emptyText: 'Нет транзакций' }}
+            />
         )}
       </Drawer>
+
+      <DepositWithdrawModal 
+        accountId={selectedAccount?.id}
+        onInvalidate={invalidate}
+        open={modalStatus?.open ?? false}
+        type={modalStatus?.type ?? 'withdraw'}
+        onClose={() => setModalStatus(null)}
+      />
     </div>
   );
 };
