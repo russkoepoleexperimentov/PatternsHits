@@ -17,6 +17,7 @@ using MassTransit;
 using Web.Options;
 using Core.Application.Consumers;
 using Common.Contracts;
+using Common.Contracts.AuthServiceContracts;
 
 namespace Core.Web
 {
@@ -122,6 +123,8 @@ namespace Core.Web
                 x.SetKebabCaseEndpointNameFormatter();
 
                 x.AddConsumer<DepositFundsConsumer>();
+                x.AddConsumer<UserBlockConsumer>();
+                x.AddConsumer<UserUnblockConsumer>();
                 x.AddRequestClient<ProcessExternalPaymentCommand>();
 
                 x.UsingRabbitMq((context, cfg) =>

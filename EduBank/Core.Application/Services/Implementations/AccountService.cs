@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Common.Contracts.AuthServiceContracts;
 using Common.Exceptions;
 using Core.Application.Dtos;
 using Core.Application.Services.Interfaces;
@@ -39,7 +40,6 @@ namespace Core.Application.Services.Implementations
         public async Task CloseAccountAsync(Guid id, Guid? currentUserId)
         {
             var account = await GetAccountFromDbAsync(id, currentUserId);
-            account.IsDeleted = true;
             account.ClosedAt = DateTime.UtcNow;
             _context.Accounts.Update(account);
             await _context.SaveChangesAsync();
@@ -88,6 +88,37 @@ namespace Core.Application.Services.Implementations
         {
             var accounts = await _context.Accounts.ToListAsync();
             return accounts.Select(_mapper.Map<AccountDto>).ToList();
+        }
+
+        public async Task<BlockUserAccountsResponse> BlockAccountAsync(BlockUserAccountsCommand cmd)
+        {
+            try
+            {
+                var account = await GetAccountFromDbAsync(cmd.UserId, null);
+                account.IsDeleted = true;
+                _context.Accounts.Update(account);
+                await _context.SaveChangesAsync();
+                return new(true, null);
+            }
+            catch (Exception ex) { 
+                return new(false, ex.Message);
+            }
+        }
+
+        public async Task<UnblockUserAccountsResponse> UnblockAccountAsync(UnblockUserAccountsCommand cmd)
+        {
+            try
+            {
+                var account = await GetAccountFromDbAsync(cmd.UserId, null);
+                account.IsDeleted = false;
+                _context.Accounts.Update(account);
+                await _context.SaveChangesAsync();
+                return new(true, null);
+            }
+            catch (Exception ex)
+            {
+                return new(false, ex.Message);
+            }
         }
     }
 }
