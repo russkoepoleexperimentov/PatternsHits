@@ -9,6 +9,7 @@ using MassTransit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using static MassTransit.ValidationResultExtensions;
 
 public class UserService : IUserService
 {
@@ -32,7 +33,10 @@ public class UserService : IUserService
     public async Task<UserDto> GetByIdAsync(Guid userId)
     {
         var user = await GetFromDbAsync(userId);
-        return _mapper.Map<UserDto>(user);
+        var roles = await _userManager.GetRolesAsync(user);
+        var dto = _mapper.Map<UserDto>(user);
+        dto.Roles = roles.ToList();
+        return dto;
     }
 
     public async Task UpdateAsync(Guid userId, UserUpdateDto request)
@@ -83,20 +87,23 @@ public class UserService : IUserService
     public async Task<List<UserDto>> GetAllUsersAsync(string? query)
     {
         var usersQuery = _userManager.Users.AsQueryable();
-
         if (!string.IsNullOrWhiteSpace(query))
         {
             var lowered = query.ToLower();
-
-            usersQuery = usersQuery.Where(u =>
-                u.Credentials.ToLower().Contains(lowered));
+            usersQuery = usersQuery.Where(u => u.Credentials.ToLower().Contains(lowered));
         }
-
         var users = await usersQuery.ToListAsync();
 
-        return _mapper.Map<List<UserDto>>(users);
+        var result = new List<UserDto>();
+        foreach (var user in users)
+        {
+            var roles = await _userManager.GetRolesAsync(user);
+            var dto = _mapper.Map<UserDto>(user);
+            dto.Roles = roles.ToList();
+            result.Add(dto);
+        }
+        return result;
     }
-
 
 
     private async Task<ApplicationUser> GetFromDbAsync(Guid id)

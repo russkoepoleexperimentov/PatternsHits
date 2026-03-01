@@ -8,9 +8,11 @@ namespace Application.Dtos
 {
     public class UserDto
     {
+        public bool IsBlocked { get; set; }
         public Guid Id { get; set; }
         public string Credentials { get; set; } = null!;
         public string Email { get; set; } = null!;
+        public List<string> Roles { get; set; }
     }
 
     public class UserUpdateDto

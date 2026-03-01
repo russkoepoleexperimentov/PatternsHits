@@ -1,6 +1,7 @@
 using Application.Dtos;
 using Application.Services.Interfaces;
 using Common;
+using Common.Enums.Common.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -30,6 +31,22 @@ public class AuthController : ControllerBase
 
         await _authService.LogoutAsync(id.Value);
 
+        return Ok();
+    }
+
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = RoleNames.Employee)]
+    [HttpPost("block/{userId}")]
+    public async Task<IActionResult> BlockUser(Guid userId)
+    {
+        await _authService.BlockUserAsync(userId);
+        return Ok();
+    }
+
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = RoleNames.Employee)]
+    [HttpPost("unblock/{userId}")]
+    public async Task<IActionResult> UnblockUser(Guid userId)
+    {
+        await _authService.UnblockUserAsync(userId);
         return Ok();
     }
 

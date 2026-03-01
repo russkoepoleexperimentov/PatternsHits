@@ -14,5 +14,7 @@ namespace Application.Services.Interfaces
         Task<TokenResponse> RefreshAsync(string refreshToken);
         Task LogoutAsync(Guid userId);
         Task ChangePasswordAsync(Guid userId, UserChangePassword dto);
+        Task BlockUserAsync(Guid userId);
+        Task UnblockUserAsync(Guid userId);
     }
 }
