@@ -90,6 +90,7 @@ namespace Core.Application.Services.Implementations
                     Description = "Кредит",
                     Amount = command.Amount,
                     Status = TransactionStatus.Completed,
+                    CreateDateTime = DateTime.UtcNow,
                 };
                 if (!EnsureCanInitialize(transaction, targetAcc)) return new(false, transaction.ResolutionMessage);
 
