@@ -17,7 +17,8 @@ namespace Core.Application.Mapping
             CreateMap<CreateTransactionDto, Transaction>()
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(_ => TransactionStatus.Pending))
                 .ForMember(dest => dest.ResolutionMessage, opt => opt.MapFrom<string?>(_ => null))
-                .ForMember(dest => dest.ResolvedAt, opt => opt.MapFrom<DateTime?>(_ => null));
+                .ForMember(dest => dest.ResolvedAt, opt => opt.MapFrom<DateTime?>(_ => null))
+                .ForMember(dest => dest.CreateDateTime, opt => opt.MapFrom(_ => DateTime.UtcNow));
         }
 
         private static TransactionType CalculateTransactionType(Transaction src)
