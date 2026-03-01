@@ -2,6 +2,7 @@ import React from 'react';
 import { Layout, Menu } from 'antd';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/authContext';
+import { AccountBookOutlined, ContactsOutlined, ExceptionOutlined, HomeOutlined, ProfileOutlined } from '@ant-design/icons';
 
 const { Header, Content, Footer } = Layout;
 
@@ -15,12 +16,12 @@ export const AppLayout = ({ children }) => {
   }
 
   const menuItems = [
-    { key: '/', label: <Link to="/">Главная</Link> },
-    { key: '/users', label: <Link to="/users">Пользователи</Link> },
-    { key: '/accounts', label: <Link to="/accounts">Счета</Link> },
-    user ? { key: '/profile', label: <Link to="/profile">Профиль</Link> } : null,
+    { key: '/', icon: <HomeOutlined/>, label: <Link to="/">Главная</Link> },
+    { key: '/users', icon: <ContactsOutlined/>, label: <Link to="/users">Пользователи</Link> },
+    { key: '/accounts', icon: <AccountBookOutlined/>, label: <Link to="/accounts">Счета</Link> },
+    user ? { key: '/profile', icon: <ProfileOutlined/>, label: <Link to="/profile">Профиль</Link> } : null,
     user
-      ? { key: 'logout', label: <span onClick={logout}>Выйти</span> }
+      ? { key: 'logout', icon: <ExceptionOutlined/>, label: <span onClick={logout}>Выйти</span> }
       : { key: '/login', label: <Link to="/login">Вход</Link> },
   ].filter(Boolean);
 
