@@ -11,6 +11,7 @@ import { NotFoundPage } from './pages/notFound/NotFoundPage';
 import { Spin } from 'antd'; // для индикатора загрузки
 import { ForbiddenPage } from './pages/forbidden/ForbiddenPage';
 import { AccountsPage } from './pages/accounts/AccountsPage';
+import { UsersPage } from './pages/users/UsersPage';
 
 function AppRoutes() {
   const { loading } = useAuth();
@@ -52,6 +53,14 @@ function AppRoutes() {
         element={
           <PrivateRoute>
             <AccountsPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/users"
+        element={
+          <PrivateRoute>
+            <UsersPage />
           </PrivateRoute>
         }
       />

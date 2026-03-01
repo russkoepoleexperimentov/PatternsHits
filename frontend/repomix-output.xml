@@ -50,12 +50,16 @@ components/privateRoute/PrivateRoute.jsx
 components/publicRoute/PublicRoute.jsx
 context/authContext.js
 index.js
+pages/accounts/AccountsPage.jsx
+pages/accounts/ui/DepositWithdrawModal.jsx
+pages/accounts/values/transactionTable.js
 pages/forbidden/ForbiddenPage.jsx
 pages/home/HomePage.jsx
 pages/login/LoginPage.jsx
 pages/notFound/NotFoundPage.jsx
 pages/profile/ProfilePage.jsx
 services/api.js
+services/core.js
 </directory_structure>
 
 <files>
@@ -74,6 +78,7 @@ import { ProfilePage } from './pages/profile/ProfilePage';
 import { NotFoundPage } from './pages/notFound/NotFoundPage';
 import { Spin } from 'antd'; // для индикатора загрузки
 import { ForbiddenPage } from './pages/forbidden/ForbiddenPage';
+import { AccountsPage } from './pages/accounts/AccountsPage';
 
 function AppRoutes() {
   const { loading } = useAuth();
@@ -107,6 +112,14 @@ function AppRoutes() {
         element={
           <PrivateRoute>
             <ProfilePage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/accounts"
+        element={
+          <PrivateRoute>
+            <AccountsPage />
           </PrivateRoute>
         }
       />
@@ -150,6 +163,7 @@ export const AppLayout = ({ children }) => {
 
   const menuItems = [
     { key: '/', label: <Link to="/">Главная</Link> },
+    { key: '/accounts', label: <Link to="/accounts">Счета</Link> },
     user ? { key: '/profile', label: <Link to="/profile">Профиль</Link> } : null,
     user
       ? { key: 'logout', label: <span onClick={logout}>Выйти</span> }
@@ -216,7 +230,7 @@ export const PublicRoute = ({ children }) => {
 <file path="context/authContext.js">
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import {
-  apiRequest,
+  authApiRequest,
   setTokens,
   removeTokens,
   getAccessToken,
@@ -242,7 +256,7 @@ export const AuthProvider = ({ children }) => {
           return;
         }
         try {
-          const response = await apiRequest('/api/users', { method: 'GET' });
+          const response = await authApiRequest('/api/users', { method: 'GET' });
           if (response.ok) {
             const userData = await response.json();
             setUser(userData);
@@ -274,7 +288,7 @@ export const AuthProvider = ({ children }) => {
         return { success: false, error: 'Доступ запрещён для данной роли' };
       }
       setTokens(data.accessToken, data.refreshToken);
-      const userResponse = await apiRequest('/api/users', { method: 'GET' });
+      const userResponse = await authApiRequest('/api/users', { method: 'GET' });
       if (userResponse.ok) {
         const userData = await userResponse.json();
         setUser(userData);
@@ -306,7 +320,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await apiRequest('/api/auth/logout', { method: 'POST' });
+      await authApiRequest('/api/auth/logout', { method: 'POST' });
     } finally {
       removeTokens();
       setUser(null);
@@ -314,12 +328,12 @@ export const AuthProvider = ({ children }) => {
   };
 
   const updateProfile = async (data) => {
-    const response = await apiRequest('/api/users', {
+    const response = await authApiRequest('/api/users', {
       method: 'PUT',
       body: JSON.stringify(data),
     });
     if (response.ok) {
-      const userResponse = await apiRequest('/api/users', { method: 'GET' });
+      const userResponse = await authApiRequest('/api/users', { method: 'GET' });
       const updatedUser = await userResponse.json();
       setUser(updatedUser);
       return { success: true };
@@ -330,7 +344,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const changePassword = async (oldPassword, newPassword) => {
-    const response = await apiRequest('/api/auth/change-password', {
+    const response = await authApiRequest('/api/auth/change-password', {
       method: 'POST',
       body: JSON.stringify({ oldPassword, newPassword }),
     });
@@ -370,6 +384,381 @@ root.render(
     <App />
   </React.StrictMode>
 );
+</file>
+
+<file path="pages/accounts/AccountsPage.jsx">
+import React, { useEffect, useState } from 'react';
+import { Table, Tag, Button, message, Spin, Tooltip, Drawer, Space, Typography } from 'antd';
+import { UserOutlined, DeleteOutlined, CloseOutlined, MoneyCollectOutlined, MinusCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import { useAuth } from '../../context/authContext';
+import { getAccounts, deleteAccount, getAccountTransactions } from '../../services/core';
+import { authApiRequest } from '../../services/api';
+import dayjs from 'dayjs'; // если есть, иначе использовать new Date()
+import { transactionColumns } from './values/transactionTable';
+import { DepositWithdrawModal } from './ui/DepositWithdrawModal';
+
+const { Text } = Typography;
+
+export const AccountsPage = () => {
+  const [accounts, setAccounts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [usersMap, setUsersMap] = useState({});
+  const [selectedAccount, setSelectedAccount] = useState(null);
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [transactions, setTransactions] = useState([]);
+  const [transactionsLoading, setTransactionsLoading] = useState(false);
+
+  const [modalStatus, setModalStatus] = useState(null)
+
+  const fetchAccounts = async () => {
+    setLoading(true);
+    try {
+      const data = await getAccounts();
+      setAccounts(data);
+
+      // Загружаем данные владельцев
+      const uniqueUserIds = [...new Set(data.map(acc => acc.userId).filter(Boolean))];
+      if (uniqueUserIds.length > 0) {
+        const usersData = await Promise.all(
+          uniqueUserIds.map(async (id) => {
+            try {
+              const res = await authApiRequest(`/api/users/${id}`, { method: 'GET' });
+              if (res.ok) return await res.json();
+            } catch {
+              return null;
+            }
+            return null;
+          })
+        );
+        const map = {};
+        usersData.forEach(u => {
+          if (u && u.id) map[u.id] = u;
+        });
+        setUsersMap(map);
+      }
+    } catch (error) {
+      message.error('Не удалось загрузить счета');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAccounts();
+  }, []);
+
+  const handleDelete = async (id, e) => {
+    e.stopPropagation(); // предотвращаем открытие drawer при клике на удаление
+    try {
+      await deleteAccount(id);
+      message.success('Счёт удалён');
+      fetchAccounts();
+    } catch {
+      message.error('Ошибка при удалении счёта');
+    }
+  };
+
+  const handleRowClick = (record) => {
+    setSelectedAccount(record);
+    setDrawerVisible(true);
+    loadTransactions(record.id);
+  };
+
+  const loadTransactions = async (accountId) => {
+    setTransactionsLoading(true);
+    try {
+      const data = await getAccountTransactions(accountId); // нужно добавить в core.js
+      setTransactions(data);
+    } catch (error) {
+      message.error('Не удалось загрузить транзакции');
+      setTransactions([]);
+    } finally {
+      setTransactionsLoading(false);
+    }
+  };
+
+  const closeDrawer = () => {
+    setDrawerVisible(false);
+    setSelectedAccount(null);
+    setTransactions([]);
+  };
+
+  const invalidate = () => {
+    fetchAccounts();
+    if(selectedAccount?.id)
+        loadTransactions(selectedAccount?.id)
+  }
+
+  const columns = [
+    {
+      title: 'ID счёта',
+      dataIndex: 'id',
+      key: 'id',
+      render: (id) => <code>{id.substring(0, 8)}...</code>,
+    },
+    {
+      title: 'Баланс',
+      dataIndex: 'balance',
+      key: 'balance',
+      render: (balance) => <Tag color="green">{balance} ₽</Tag>,
+    },
+    {
+      title: 'Статус',
+      key: 'status',
+      render: (_, record) => {
+        if (!record.closedAt) {
+          return <Tag color="green">Активен</Tag>;
+        } else {
+          const closedDate = dayjs(record.closedAt).format('DD.MM.YYYY HH:mm');
+          return <Tag color="red">Закрыт {closedDate}</Tag>;
+        }
+      },
+    },
+    {
+      title: 'Владелец',
+      key: 'owner',
+      render: (_, record) => {
+        const owner = usersMap[record.userId];
+        if (!owner) return '—';
+        return (
+          <Tooltip title={owner.email}>
+            <UserOutlined /> {owner.credentials || owner.email}
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: 'Действия',
+      key: 'actions',
+      render: (_, record) => (
+        <Button
+          icon={<DeleteOutlined />}
+          danger
+          size="small"
+          onClick={(e) => handleDelete(record.id, e)}
+        />
+      ),
+    },
+  ];
+
+  
+
+  return (
+    <div>
+      <h2>Счета клиентов</h2>
+      {loading ? (
+        <Spin size="large" style={{ display: 'block', margin: '50px auto' }} />
+      ) : (
+        <Table
+          dataSource={accounts}
+          columns={columns}
+          rowKey="id"
+          pagination={{ pageSize: 10 }}
+          onRow={(record) => ({
+            onClick: () => handleRowClick(record),
+            style: { cursor: 'pointer' },
+          })}
+        />
+      )}
+
+      <Drawer
+        title={`Транзакции счета ${selectedAccount?.id}`}
+        placement="right"
+        width={800}
+        onClose={closeDrawer}
+        open={drawerVisible}
+        extra={
+          <Space>
+            <Button type='primary' onClick={() => setModalStatus({open: true, type: 'deposit'})} icon={<PlusCircleOutlined/>}>Пополнить</Button>
+            <Button type='default' onClick={() => setModalStatus({open: true, type: 'withdraw'})} icon={<MinusCircleOutlined/>}>Снять</Button>
+          </Space>
+        }
+      >
+        {transactionsLoading ? (
+          <Spin />
+        ) : (
+            <Table
+                dataSource={transactions}
+                columns={transactionColumns(transactions, selectedAccount)}
+                rowKey="id"
+                pagination={{ pageSize: 20 }}
+                locale={{ emptyText: 'Нет транзакций' }}
+            />
+        )}
+      </Drawer>
+
+      <DepositWithdrawModal 
+        accountId={selectedAccount?.id}
+        onInvalidate={invalidate}
+        open={modalStatus?.open ?? false}
+        type={modalStatus?.type ?? 'withdraw'}
+        onClose={() => setModalStatus(null)}
+      />
+    </div>
+  );
+};
+</file>
+
+<file path="pages/accounts/ui/DepositWithdrawModal.jsx">
+import { Modal, Form, Input, InputNumber, Button, message } from 'antd';
+import { useSubmit } from 'react-router-dom';
+import { useEffect } from 'react';
+import { deposit, withdraw } from '../../../services/core';
+
+export const DepositWithdrawModal = ({ open, onClose, onInvalidate, type, accountId }) => {
+  const [form] = Form.useForm();
+
+  // Reset form when modal opens/closes or type changes
+  useEffect(() => {
+    if (open) {
+      form.resetFields();
+    }
+  }, [open, form]);
+
+  const handleFinish = async (values) => {
+    const req = type == "deposit" ? deposit : withdraw;
+
+    try{
+        var json = await req(accountId, values);
+    } catch (e) {
+        message.error({ content: e.message })
+    }
+    onInvalidate();
+    onClose();
+  };
+
+  const title = type === 'deposit' ? 'Пополнение счета' : 'Снятие со счета';
+  const okText = type === 'deposit' ? 'Пополнить' : 'Снять';
+
+  return (
+    <Modal
+      open={open}
+      title={title}
+      onCancel={onClose}
+      footer={null} // We'll use the form's own buttons
+      destroyOnClose
+    >
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={handleFinish}
+        initialValues={{ amount: undefined, description: '' }}
+      >
+        <Form.Item
+          name="amount"
+          label="Сумма"
+          rules={[
+            { required: true, message: 'Введите сумму' },
+            { type: 'number', min: 0.01, message: 'Сумма должна быть больше 0' },
+          ]}
+        >
+          <InputNumber
+            style={{ width: '100%' }}
+            placeholder="0.00"
+            precision={2}
+            step={0.01}
+            min={0.01}
+          />
+        </Form.Item>
+
+        <Form.Item
+          name="description"
+          label="Описание (необязательно)"
+        >
+          <Input.TextArea rows={3} placeholder="Введите описание транзакции" />
+        </Form.Item>
+
+        <Form.Item style={{ marginBottom: 0, textAlign: 'right' }}>
+          <Button onClick={onClose} style={{ marginRight: 8 }}>
+            Отмена
+          </Button>
+          <Button type="primary" htmlType="submit">
+            {okText}
+          </Button>
+        </Form.Item>
+      </Form>
+    </Modal>
+  );
+};
+</file>
+
+<file path="pages/accounts/values/transactionTable.js">
+import { Tag } from 'antd';
+import dayjs from 'dayjs';
+
+
+const typeMap = {
+    Unclassified: "неклассифицировано",
+    Deposit: "Пополнение ч/з банкомат",
+    Withdrawal: "Снятие ч/з банкомат",
+    Transfer: "Перевод",
+    CreditPayment: "Выплата кредита",
+    CreditIncoming: "Взятие кредита"
+}
+
+// Колонки для таблицы транзакций с фильтрами
+export const transactionColumns = (data, selectedAccount) => {
+    // Вычисляем уникальные значения для фильтров
+const typeFilters = [...new Set(data.map(t => t.displayType))]
+  .map(type => ({
+    text: typeMap[type] || type,
+    value: type
+  }));
+
+const statusFilters = [...new Set(data.map(t => t.status))]
+  .map(status => ({
+    text: status,
+    value: status
+  }));
+return[
+  {
+    title: 'Дата',
+    dataIndex: 'createdAt',
+    key: 'createdAt',
+    render: (date) => dayjs(date).format('DD.MM.YYYY HH:mm'),
+    // Можно добавить фильтр по дате с помощью filterDropdown,
+    // но для простоты здесь не реализовано
+  },
+  {
+    title: 'Тип',
+    dataIndex: 'displayType', 
+    key: 'type',
+    render: (type) => typeMap[type] || typeMap.Unclassified,
+    filters: typeFilters,       // массив объектов { text, value }
+    onFilter: (value, record) => record.type === value,
+  },
+  {
+    title: 'Сумма',
+    dataIndex: 'amount',
+    key: 'amount',
+    render: (amount, record) => (
+      <Tag color={record.targetId == selectedAccount.id ? 'green' : 'red'}>
+        {record.targetId == selectedAccount.id ? '+' : '-'} {amount} ₽
+      </Tag>
+    ),
+    // Для числовых фильтров можно использовать filterDropdown с RangePicker,
+    // но здесь не реализовано для краткости
+  },
+  {
+    title: 'Описание',
+    dataIndex: 'description',
+    key: 'description',
+    // Можно добавить текстовый поиск через глобальный поиск таблицы,
+    // либо через filterDropdown с Input.Search
+  },
+  {
+    title: 'Статус',
+    dataIndex: 'status',
+    key: 'status',
+    render: (status) => (
+      <Tag color={{ Pending: 'yellow', Completed: 'green', Failed: 'red' }[status]}>
+        {status}
+      </Tag>
+    ),
+    filters: statusFilters,
+    onFilter: (value, record) => record.status === value,
+  },
+]};
 </file>
 
 <file path="pages/forbidden/ForbiddenPage.jsx">
@@ -466,9 +855,6 @@ export const LoginPage = () => {
               Войти
             </Button>
           </Form.Item>
-          <div style={{ textAlign: 'center' }}>
-            Нет аккаунта? <Link to="/register">Зарегистрироваться</Link>
-          </div>
         </Form>
       </Card>
     </div>
@@ -606,11 +992,10 @@ export const ProfilePage = () => {
 </file>
 
 <file path="services/api.js">
-// src/services/api.js
+// services/api.js
 import { jwtDecode } from 'jwt-decode';
 
-const API_BASE_URL = process.env.REACT_APP_AUTH_API_URL || 'http://localhost:5000';
-
+// Функции для работы с токенами (общие)
 const getAccessToken = () => localStorage.getItem('accessToken');
 const getRefreshToken = () => localStorage.getItem('refreshToken');
 
@@ -624,55 +1009,59 @@ const removeTokens = () => {
   localStorage.removeItem('refreshToken');
 };
 
-// Новая функция: извлечение роли из токена
 const getRoleFromToken = (token) => {
   try {
     const decoded = jwtDecode(token);
-    return decoded.role; // предполагается, что в токене есть поле "role"
+    return decoded.role; // предполагается поле "role"
   } catch {
     return null;
   }
 };
 
-// Проверка, разрешена ли роль (не Customer)
 const isRoleAllowed = (role) => role !== 'Customer';
 
-async function apiRequest(endpoint, options = {}) {
-  const url = `${API_BASE_URL}${endpoint}`;
-  const accessToken = getAccessToken();
+// Фабрика для создания API-клиента с заданным baseURL
+const createApiRequest = (baseURL) => {
+  return async function apiRequest(endpoint, options = {}) {
+    const url = `${baseURL}${endpoint}`;
+    const accessToken = getAccessToken();
 
-  const headers = {
-    'Content-Type': 'application/json',
-    ...options.headers,
-  };
+    const headers = {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    };
 
-  if (accessToken) {
-    headers.Authorization = `Bearer ${accessToken}`;
-  }
-
-  let response = await fetch(url, { ...options, headers });
-
-  if (response.status === 401 && getRefreshToken()) {
-    const newTokens = await refreshAccessToken();
-    if (newTokens) {
-      headers.Authorization = `Bearer ${newTokens.accessToken}`;
-      response = await fetch(url, { ...options, headers });
-    } else {
-      removeTokens();
-      window.location.href = '/login';
-      throw new Error('Session expired');
+    if (accessToken) {
+      headers.Authorization = `Bearer ${accessToken}`;
     }
-  }
 
-  return response;
-}
+    let response = await fetch(url, { ...options, headers });
 
+    // Попытка обновить токен при 401
+    if (response.status === 401 && getRefreshToken()) {
+      const newTokens = await refreshAccessToken();
+      if (newTokens) {
+        headers.Authorization = `Bearer ${newTokens.accessToken}`;
+        response = await fetch(url, { ...options, headers });
+      } else {
+        removeTokens();
+        window.location.href = '/login';
+        throw new Error('Session expired');
+      }
+    }
+
+    return response;
+  };
+};
+
+// Функция обновления токена (использует baseURL Auth, так как endpoint принадлежит Auth)
 async function refreshAccessToken() {
   const refreshToken = getRefreshToken();
   if (!refreshToken) return null;
 
+  const authBaseURL = process.env.REACT_APP_AUTH_API_URL || 'http://localhost:5000';
   try {
-    const response = await fetch(`${API_BASE_URL}/api/auth/refresh?token=${refreshToken}`, {
+    const response = await fetch(`${authBaseURL}/api/auth/refresh?token=${refreshToken}`, {
       method: 'POST',
     });
     if (response.ok) {
@@ -689,14 +1078,96 @@ async function refreshAccessToken() {
   }
 }
 
+// Создаём два экземпляра: для Auth и для Core
+const authApiRequest = createApiRequest(process.env.REACT_APP_AUTH_API_URL || 'http://localhost:5000');
+const coreApiRequest = createApiRequest(process.env.REACT_APP_CORE_API_URL || 'http://localhost:5001');
+
 export {
-  apiRequest,
+  authApiRequest,
+  coreApiRequest,
   setTokens,
   removeTokens,
   getAccessToken,
   getRefreshToken,
   getRoleFromToken,
   isRoleAllowed,
+};
+</file>
+
+<file path="services/core.js">
+// services/core.js
+import { coreApiRequest } from './api';
+
+export const getAccounts = async () => {
+  const response = await coreApiRequest('/api/accounts/employee', { method: 'GET' });
+  if (!response.ok) {
+    throw new Error('Failed to fetch accounts');
+  }
+  return response.json(); // предполагаем, что возвращается массив объектов AccountDto
+};
+
+export const getAccountById = async (id) => {
+  const response = await coreApiRequest(`/api/accounts/employee/${id}`, { method: 'GET' });
+  if (!response.ok) {
+    throw new Error('Failed to fetch account');
+  }
+  return response.json();
+};
+
+export const deleteAccount = async (id) => {
+  const response = await coreApiRequest(`/api/accounts/employee/${id}`, { method: 'DELETE' });
+  if (!response.ok) {
+    throw new Error('Failed to delete account');
+  }
+  return response.json();
+};
+
+export const deposit = async (id, { amount, description }) => {
+    const body = {
+        sourceId: null,
+        sourceType: "RealWorld",
+        targetId: id,
+        targetType: "Account",
+        amount,
+        description
+    }
+
+  const response = await coreApiRequest(`/api/transactions`, { method: 'POST', body: JSON.stringify(body)  });
+  if (!response.ok) {
+    throw new Error('Failed to deposit');
+  }
+  return response.json();
+};
+
+export const withdraw = async (id, { amount, description }) => {
+    const body = {
+        sourceId: id,
+        sourceType: "Account",
+        targetId: null,
+        targetType: "RealWorld",
+        amount,
+        description
+    }
+
+  const response = await coreApiRequest(`/api/transactions`, { method: 'POST', body: JSON.stringify(body)  });
+  if (!response.ok) {
+    throw new Error('Failed to deposit');
+  }
+  return response.json();
+};
+
+export const getAccountTransactions = async (accountId, from, to) => {
+  let url = `/api/accounts/employee/${accountId}/transactions`;
+  const params = new URLSearchParams();
+  if (from) params.append('from', from.toISOString());
+  if (to) params.append('to', to.toISOString());
+  if (params.toString()) url += `?${params.toString()}`;
+  
+  const response = await coreApiRequest(url, { method: 'GET' });
+  if (!response.ok) {
+    throw new Error('Failed to fetch transactions');
+  }
+  return response.json();
 };
 </file>
 

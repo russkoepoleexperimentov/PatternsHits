@@ -36,7 +36,7 @@ namespace Core.Application.Services.Implementations
             return _mapper.Map<AccountDto>(account);    
         }
 
-        public async Task CloseAccountAsync(Guid id, Guid currentUserId)
+        public async Task CloseAccountAsync(Guid id, Guid? currentUserId)
         {
             var account = await GetAccountFromDbAsync(id, currentUserId);
             account.IsDeleted = true;
@@ -51,7 +51,7 @@ namespace Core.Application.Services.Implementations
             return _mapper.Map<AccountDto>(account);
         }
 
-        public async Task<List<AccountDto>> GetAccountsAsync(Guid? userId, Guid currentUserId)
+        public async Task<List<AccountDto>> GetAccountsAsync(Guid? userId, Guid? currentUserId)
         {
             var accounts = await _context.Accounts.Where(x => x.UserId == userId).ToListAsync();
             return accounts.Select(_mapper.Map<AccountDto>).ToList();

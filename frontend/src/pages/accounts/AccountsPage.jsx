@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Tag, Button, message, Spin, Tooltip, Drawer, Space, Typography } from 'antd';
-import { UserOutlined, DeleteOutlined, CloseOutlined, MoneyCollectOutlined, MinusCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import { Table, Tag, Button, message, Spin, Tooltip, Drawer, Space, Typography, Popconfirm } from 'antd';
+import { UserOutlined, DeleteOutlined, CloseOutlined, MoneyCollectOutlined, MinusCircleOutlined, PlusCircleOutlined, BlockOutlined, EyeFilled, EyeOutlined } from '@ant-design/icons';
 import { useAuth } from '../../context/authContext';
 import { getAccounts, deleteAccount, getAccountTransactions } from '../../services/core';
 import { authApiRequest } from '../../services/api';
@@ -63,10 +63,10 @@ export const AccountsPage = () => {
     try {
       await deleteAccount(id);
       message.success('Счёт удалён');
-      fetchAccounts();
-    } catch {
-      message.error('Ошибка при удалении счёта');
+    } catch (e){
+      message.error('Ошибка при удалении счёта: ' + e.message);
     }
+      fetchAccounts();
   };
 
   const handleRowClick = (record) => {
@@ -142,12 +142,26 @@ export const AccountsPage = () => {
       title: 'Действия',
       key: 'actions',
       render: (_, record) => (
-        <Button
-          icon={<DeleteOutlined />}
-          danger
-          size="small"
-          onClick={(e) => handleDelete(record.id, e)}
-        />
+        <Space>
+            <Popconfirm 
+            title="Подтвердите действие"
+            description="Вы уверены что хотите закрыть этот счёт?"
+            okText="Закрыть"
+            cancelText="Отмена"
+            onConfirm={(e) => handleDelete(record.id, e)}>
+                <Button
+                    icon={<DeleteOutlined />}
+                    danger
+                    size="small"
+                >Закрыть</Button>
+            </Popconfirm>
+            <Button
+                icon={<EyeOutlined />}
+                type='default'
+                size="small"
+                onClick={() => handleRowClick(record)}
+            >Транзакции</Button>
+        </Space>
       ),
     },
   ];
@@ -165,10 +179,6 @@ export const AccountsPage = () => {
           columns={columns}
           rowKey="id"
           pagination={{ pageSize: 10 }}
-          onRow={(record) => ({
-            onClick: () => handleRowClick(record),
-            style: { cursor: 'pointer' },
-          })}
         />
       )}
 
