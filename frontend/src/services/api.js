@@ -1,8 +1,7 @@
-// src/services/api.js
+// services/api.js
 import { jwtDecode } from 'jwt-decode';
 
-const API_BASE_URL = process.env.REACT_APP_AUTH_API_URL || 'http://localhost:5000';
-
+// Функции для работы с токенами (общие)
 const getAccessToken = () => localStorage.getItem('accessToken');
 const getRefreshToken = () => localStorage.getItem('refreshToken');
 
@@ -16,55 +15,59 @@ const removeTokens = () => {
   localStorage.removeItem('refreshToken');
 };
 
-// Новая функция: извлечение роли из токена
 const getRoleFromToken = (token) => {
   try {
     const decoded = jwtDecode(token);
-    return decoded.role; // предполагается, что в токене есть поле "role"
+    return decoded.role; // предполагается поле "role"
   } catch {
     return null;
   }
 };
 
-// Проверка, разрешена ли роль (не Customer)
 const isRoleAllowed = (role) => role !== 'Customer';
 
-async function apiRequest(endpoint, options = {}) {
-  const url = `${API_BASE_URL}${endpoint}`;
-  const accessToken = getAccessToken();
+// Фабрика для создания API-клиента с заданным baseURL
+const createApiRequest = (baseURL) => {
+  return async function apiRequest(endpoint, options = {}) {
+    const url = `${baseURL}${endpoint}`;
+    const accessToken = getAccessToken();
 
-  const headers = {
-    'Content-Type': 'application/json',
-    ...options.headers,
-  };
+    const headers = {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    };
 
-  if (accessToken) {
-    headers.Authorization = `Bearer ${accessToken}`;
-  }
-
-  let response = await fetch(url, { ...options, headers });
-
-  if (response.status === 401 && getRefreshToken()) {
-    const newTokens = await refreshAccessToken();
-    if (newTokens) {
-      headers.Authorization = `Bearer ${newTokens.accessToken}`;
-      response = await fetch(url, { ...options, headers });
-    } else {
-      removeTokens();
-      window.location.href = '/login';
-      throw new Error('Session expired');
+    if (accessToken) {
+      headers.Authorization = `Bearer ${accessToken}`;
     }
-  }
 
-  return response;
-}
+    let response = await fetch(url, { ...options, headers });
 
+    // Попытка обновить токен при 401
+    if (response.status === 401 && getRefreshToken()) {
+      const newTokens = await refreshAccessToken();
+      if (newTokens) {
+        headers.Authorization = `Bearer ${newTokens.accessToken}`;
+        response = await fetch(url, { ...options, headers });
+      } else {
+        removeTokens();
+        window.location.href = '/login';
+        throw new Error('Session expired');
+      }
+    }
+
+    return response;
+  };
+};
+
+// Функция обновления токена (использует baseURL Auth, так как endpoint принадлежит Auth)
 async function refreshAccessToken() {
   const refreshToken = getRefreshToken();
   if (!refreshToken) return null;
 
+  const authBaseURL = process.env.REACT_APP_AUTH_API_URL || 'http://localhost:5000';
   try {
-    const response = await fetch(`${API_BASE_URL}/api/auth/refresh?token=${refreshToken}`, {
+    const response = await fetch(`${authBaseURL}/api/auth/refresh?token=${refreshToken}`, {
       method: 'POST',
     });
     if (response.ok) {
@@ -81,8 +84,13 @@ async function refreshAccessToken() {
   }
 }
 
+// Создаём два экземпляра: для Auth и для Core
+const authApiRequest = createApiRequest(process.env.REACT_APP_AUTH_API_URL || 'http://localhost:5000');
+const coreApiRequest = createApiRequest(process.env.REACT_APP_CORE_API_URL || 'http://localhost:5001');
+
 export {
-  apiRequest,
+  authApiRequest,
+  coreApiRequest,
   setTokens,
   removeTokens,
   getAccessToken,
