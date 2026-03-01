@@ -4,7 +4,9 @@ using Application.Services.Abstractions;
 using Application.Services.Implementations;
 using Application.Services.Interfaces;
 using Application.Validators;
+using Common.Contracts.AuthServiceContracts;
 using Common.Enums.Common.Enums;
+using Common.Middlewares;
 using Common.Options;
 using Domain.Entities;
 using FluentValidation;
@@ -101,6 +103,8 @@ namespace Web
 
             builder.Services.AddMassTransit(x =>
             {
+                x.AddRequestClient<BlockUserAccountsCommand>();
+                x.AddRequestClient<UnblockUserAccountsCommand>();
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
@@ -117,7 +121,6 @@ namespace Web
                     cfg.ConfigureEndpoints(context);
                 });
             });
-
 
             builder.Services
                 .AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
@@ -164,6 +167,18 @@ namespace Web
                         b => b.MigrationsAssembly("AuthWeb")
                     ));
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowFrontend",
+                    policy =>
+                    {
+                        policy.SetIsOriginAllowed(origin => true)  // адрес вашего фронтенда
+                              .AllowAnyHeader()
+                              .AllowAnyMethod()
+                              .AllowCredentials(); // если используете куки / авторизацию
+                    });
+            });
+
 
             var app = builder.Build();
 
@@ -185,8 +200,7 @@ namespace Web
                 string[] roles =
                 {
                     RoleNames.Customer,
-                    RoleNames.Employee,
-                    RoleNames.Admin
+                    RoleNames.Employee
                 };
 
                 foreach (var role in roles)
@@ -199,13 +213,15 @@ namespace Web
                 }
             }
 
+
             app.UseSwagger();
             app.UseSwaggerUI();
-
+            app.UseMiddleware<ExceptionCatchMiddleware>();
             app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();
+            app.UseCors("AllowFrontend");
 
             app.Run();
 
