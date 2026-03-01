@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import {
-  apiRequest,
+  authApiRequest,
   setTokens,
   removeTokens,
   getAccessToken,
@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
           return;
         }
         try {
-          const response = await apiRequest('/api/users', { method: 'GET' });
+          const response = await authApiRequest('/api/users', { method: 'GET' });
           if (response.ok) {
             const userData = await response.json();
             setUser(userData);
@@ -58,7 +58,7 @@ export const AuthProvider = ({ children }) => {
         return { success: false, error: 'Доступ запрещён для данной роли' };
       }
       setTokens(data.accessToken, data.refreshToken);
-      const userResponse = await apiRequest('/api/users', { method: 'GET' });
+      const userResponse = await authApiRequest('/api/users', { method: 'GET' });
       if (userResponse.ok) {
         const userData = await userResponse.json();
         setUser(userData);
@@ -90,7 +90,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await apiRequest('/api/auth/logout', { method: 'POST' });
+      await authApiRequest('/api/auth/logout', { method: 'POST' });
     } finally {
       removeTokens();
       setUser(null);
@@ -98,12 +98,12 @@ export const AuthProvider = ({ children }) => {
   };
 
   const updateProfile = async (data) => {
-    const response = await apiRequest('/api/users', {
+    const response = await authApiRequest('/api/users', {
       method: 'PUT',
       body: JSON.stringify(data),
     });
     if (response.ok) {
-      const userResponse = await apiRequest('/api/users', { method: 'GET' });
+      const userResponse = await authApiRequest('/api/users', { method: 'GET' });
       const updatedUser = await userResponse.json();
       setUser(updatedUser);
       return { success: true };
@@ -114,7 +114,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const changePassword = async (oldPassword, newPassword) => {
-    const response = await apiRequest('/api/auth/change-password', {
+    const response = await authApiRequest('/api/auth/change-password', {
       method: 'POST',
       body: JSON.stringify({ oldPassword, newPassword }),
     });

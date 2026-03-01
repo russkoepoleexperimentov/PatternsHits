@@ -84,15 +84,16 @@ namespace Core.Web
                 config.OperationFilter<SwaggerAuthorizeFilter>();
             });
 
+
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowFrontend",
                     policy =>
                     {
-                        policy.SetIsOriginAllowed(origin => true)  // адрес вашего фронтенда
+                        policy.SetIsOriginAllowed(origin => true)
                               .AllowAnyHeader()
                               .AllowAnyMethod()
-                              .AllowCredentials(); // если используете куки / авторизацию
+                              .AllowCredentials();
                     });
             });
 

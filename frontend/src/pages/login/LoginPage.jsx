@@ -45,9 +45,6 @@ export const LoginPage = () => {
               Войти
             </Button>
           </Form.Item>
-          <div style={{ textAlign: 'center' }}>
-            Нет аккаунта? <Link to="/register">Зарегистрироваться</Link>
-          </div>
         </Form>
       </Card>
     </div>

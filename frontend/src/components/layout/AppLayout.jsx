@@ -16,6 +16,7 @@ export const AppLayout = ({ children }) => {
 
   const menuItems = [
     { key: '/', label: <Link to="/">Главная</Link> },
+    { key: '/accounts', label: <Link to="/accounts">Счета</Link> },
     user ? { key: '/profile', label: <Link to="/profile">Профиль</Link> } : null,
     user
       ? { key: 'logout', label: <span onClick={logout}>Выйти</span> }
