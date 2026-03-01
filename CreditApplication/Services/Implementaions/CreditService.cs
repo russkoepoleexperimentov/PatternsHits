@@ -81,7 +81,7 @@ namespace CreditService.Services
             credit.RemainingDebt = 0;
             credit.AccountId = request.AccountId;
             credit.RejectionReason = "";
-
+            credit.CreateDateTime = DateTime.UtcNow;
             _context.Credits.Add(credit);
             await _context.SaveChangesAsync();
 
