@@ -2,6 +2,7 @@
 using Application.Services.Abstractions;
 using Application.Services.Interfaces;
 using AutoMapper;
+using Common.Contracts.AuthServiceContracts;
 using Common.Enums.Common.Enums;
 using Common.Exceptions;
 using Common.Options;
@@ -23,6 +24,8 @@ public class AuthService : IAuthService
     private readonly IValidator<UserChangePassword> _changeValidator;
     private readonly IMapper _mapper;
     private readonly JwtOptions _jwtOptions;
+    private readonly IRequestClient<BlockUserAccountsCommand> _blockClient;
+    private readonly IRequestClient<UnblockUserAccountsCommand> _unblockClient;
 
     public AuthService(
         UserManager<ApplicationUser> userManager,
@@ -32,7 +35,9 @@ public class AuthService : IAuthService
         IValidator<UserLoginDto> loginValidator,
         IValidator<UserChangePassword> changeValidator,
         IMapper mapper,
-        IOptions<JwtOptions> jwtOptions)
+        IOptions<JwtOptions> jwtOptions,
+        IRequestClient<BlockUserAccountsCommand> blockClient,
+        IRequestClient<UnblockUserAccountsCommand> unblockClient) 
     {
         _userManager = userManager;
         _context = context;
@@ -42,6 +47,8 @@ public class AuthService : IAuthService
         _changeValidator = changeValidator;
         _mapper = mapper;
         _jwtOptions = jwtOptions.Value;
+        _blockClient = blockClient;
+        _unblockClient = unblockClient;
     }
 
     public async Task<TokenResponse> RegisterAsync(UserRegisterDto dto)
@@ -88,6 +95,10 @@ public class AuthService : IAuthService
             !await _userManager.CheckPasswordAsync(user, dto.Password))
             throw new BadRequestException("Wrong login or password");
 
+
+        if (user.LockoutEnabled && user.LockoutEnd.HasValue && user.LockoutEnd > DateTimeOffset.UtcNow)
+            throw new BadRequestException("User is blocked");
+
         var roles = await _userManager.GetRolesAsync(user);
 
         var tokens = _jwtService.GenerateTokens(user, roles.ToList());
@@ -102,6 +113,56 @@ public class AuthService : IAuthService
         await _context.SaveChangesAsync();
 
         return tokens;
+    }
+
+    public async Task BlockUserAsync(Guid userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user == null)
+            throw new NotFoundException("User not found");
+
+
+        if (!user.LockoutEnabled)
+            user.LockoutEnabled = true;
+
+        user.LockoutEnd = DateTimeOffset.UtcNow.AddYears(100);
+        var result = await _userManager.UpdateAsync(user);
+        if (!result.Succeeded)
+            throw new BadRequestException(string.Join(", ", result.Errors.Select(e => e.Description)));
+
+        var correlationId = Guid.NewGuid();
+        var response = await _blockClient.GetResponse<BlockUserAccountsResponse>(
+            new BlockUserAccountsCommand(userId, correlationId));
+
+        if (!response.Message.Success)
+        {
+            user.LockoutEnd = null;
+            await _userManager.UpdateAsync(user);
+            throw new InvalidOperationException($"Core service error: {response.Message.ErrorMessage}");
+        }
+
+    }
+
+    public async Task UnblockUserAsync(Guid userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user == null)
+            throw new NotFoundException("User not found");
+
+        user.LockoutEnd = null;
+        var result = await _userManager.UpdateAsync(user);
+        if (!result.Succeeded)
+            throw new BadRequestException(string.Join(", ", result.Errors.Select(e => e.Description)));
+
+        var correlationId = Guid.NewGuid();
+        var response = await _unblockClient.GetResponse<UnblockUserAccountsResponse>(
+            new UnblockUserAccountsCommand(userId, correlationId));
+
+        if (!response.Message.Success)
+        {
+            await _userManager.UpdateAsync(user);
+            throw new InvalidOperationException($"Core service error: {response.Message.ErrorMessage}");
+        }
     }
 
     public async Task<TokenResponse> RefreshAsync(string refreshToken)

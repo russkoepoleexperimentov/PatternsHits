@@ -4,6 +4,7 @@ using Application.Services.Abstractions;
 using Application.Services.Implementations;
 using Application.Services.Interfaces;
 using Application.Validators;
+using Common.Contracts.AuthServiceContracts;
 using Common.Enums.Common.Enums;
 using Common.Middlewares;
 using Common.Options;
@@ -102,6 +103,8 @@ namespace Web
 
             builder.Services.AddMassTransit(x =>
             {
+                x.AddRequestClient<BlockUserAccountsCommand>();
+                x.AddRequestClient<UnblockUserAccountsCommand>();
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
