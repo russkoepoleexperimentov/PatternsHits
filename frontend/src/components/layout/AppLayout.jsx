@@ -2,7 +2,7 @@ import React from 'react';
 import { Layout, Menu } from 'antd';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/authContext';
-import { AccountBookOutlined, ContactsOutlined, ExceptionOutlined, HomeOutlined, ProfileOutlined } from '@ant-design/icons';
+import { AccountBookOutlined, ContactsOutlined, CreditCardOutlined, ExceptionOutlined, HomeOutlined, ProfileOutlined } from '@ant-design/icons';
 
 const { Header, Content, Footer } = Layout;
 
@@ -19,6 +19,7 @@ export const AppLayout = ({ children }) => {
     { key: '/', icon: <HomeOutlined/>, label: <Link to="/">Главная</Link> },
     { key: '/users', icon: <ContactsOutlined/>, label: <Link to="/users">Пользователи</Link> },
     { key: '/accounts', icon: <AccountBookOutlined/>, label: <Link to="/accounts">Счета</Link> },
+    { key: '/tariffs', icon: <CreditCardOutlined />, label: <Link to="/tariffs">Тарифы</Link> },
     user ? { key: '/profile', icon: <ProfileOutlined/>, label: <Link to="/profile">Профиль</Link> } : null,
     user
       ? { key: 'logout', icon: <ExceptionOutlined/>, label: <span onClick={logout}>Выйти</span> }
