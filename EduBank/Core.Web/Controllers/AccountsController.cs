@@ -88,12 +88,29 @@ namespace Core.Web.Controllers
             return Ok(accounts);
         }
 
+        [HttpGet("employee/ofUser{id}")]
+        public async Task<IActionResult> GetAccountsOfUserEmployee(Guid id)
+        {
+            if (!IsEmployeeOrAdmin()) return Forbid();
+            var account = await _accountService.GetAccountsAsync(id, null);
+            return Ok(account);
+        }
+
         [HttpGet("employee/{id}")]
         public async Task<IActionResult> GetAccountEmployee(Guid id)
         {
             if (!IsEmployeeOrAdmin()) return Forbid();
             var account = await _accountService.GetAccountByIdAsync(id, null);
             return Ok(account);
+        }
+
+        [HttpDelete("employee/{id}")]
+        [Authorize]
+        public async Task<IActionResult> CloseAccountEmployee(Guid id)
+        {
+            if (!IsEmployeeOrAdmin()) return Forbid();
+            await _accountService.CloseAccountAsync(id, null);
+            return Ok();
         }
 
         [HttpGet("employee/{id}/transactions")]
