@@ -2,6 +2,7 @@ import React from 'react';
 import { Layout, Menu } from 'antd';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/authContext';
+import { AccountBookOutlined, ContactsOutlined, CreditCardOutlined, ExceptionOutlined, HomeOutlined, ProfileOutlined, ReconciliationOutlined } from '@ant-design/icons';
 
 const { Header, Content, Footer } = Layout;
 
@@ -15,11 +16,14 @@ export const AppLayout = ({ children }) => {
   }
 
   const menuItems = [
-    { key: '/', label: <Link to="/">Главная</Link> },
-    { key: '/accounts', label: <Link to="/accounts">Счета</Link> },
-    user ? { key: '/profile', label: <Link to="/profile">Профиль</Link> } : null,
+    { key: '/', icon: <HomeOutlined/>, label: <Link to="/">Главная</Link> },
+    { key: '/users', icon: <ContactsOutlined/>, label: <Link to="/users">Пользователи</Link> },
+    { key: '/accounts', icon: <AccountBookOutlined/>, label: <Link to="/accounts">Счета</Link> },
+    { key: '/tariffs', icon: <CreditCardOutlined />, label: <Link to="/tariffs">Тарифы</Link> },
+    { key: '/credits', icon: <ReconciliationOutlined />, label: <Link to="/credits">Кредиты</Link> },
+    user ? { key: '/profile', icon: <ProfileOutlined/>, label: <Link to="/profile">Профиль</Link> } : null,
     user
-      ? { key: 'logout', label: <span onClick={logout}>Выйти</span> }
+      ? { key: 'logout', icon: <ExceptionOutlined/>, label: <span onClick={logout}>Выйти</span> }
       : { key: '/login', label: <Link to="/login">Вход</Link> },
   ].filter(Boolean);
 
@@ -27,7 +31,7 @@ export const AppLayout = ({ children }) => {
     <Layout className="layout" style={{ minHeight: '100vh' }}>
       <Header>
         <div className="logo" style={{ float: 'left', color: '#fff', marginRight: 20 }}>
-          MyApp
+          Банк 
         </div>
         <Menu
           theme="dark"
@@ -41,7 +45,7 @@ export const AppLayout = ({ children }) => {
           {children}
         </div>
       </Content>
-      <Footer style={{ textAlign: 'center' }}>MyApp ©2025</Footer>
+      <Footer style={{ textAlign: 'center' }}>Банк</Footer>
     </Layout>
   );
 };

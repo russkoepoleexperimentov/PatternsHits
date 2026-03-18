@@ -141,6 +141,8 @@ namespace Core.Web
             {
                 x.SetKebabCaseEndpointNameFormatter();
                 x.AddConsumer<DepositFundsConsumer>();
+                x.AddConsumer<UserBlockConsumer>();
+                x.AddConsumer<UserUnblockConsumer>();
                 x.AddRequestClient<ProcessExternalPaymentCommand>();
 
                 x.UsingRabbitMq((context, cfg) =>

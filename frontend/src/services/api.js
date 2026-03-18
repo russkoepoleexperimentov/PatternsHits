@@ -87,10 +87,12 @@ async function refreshAccessToken() {
 // Создаём два экземпляра: для Auth и для Core
 const authApiRequest = createApiRequest(process.env.REACT_APP_AUTH_API_URL || 'http://localhost:5000');
 const coreApiRequest = createApiRequest(process.env.REACT_APP_CORE_API_URL || 'http://localhost:5001');
+const creditApiRequest = createApiRequest(process.env.REACT_APP_CREDIT_API_URL || 'http://localhost:5002');
 
 export {
   authApiRequest,
   coreApiRequest,
+  creditApiRequest,
   setTokens,
   removeTokens,
   getAccessToken,

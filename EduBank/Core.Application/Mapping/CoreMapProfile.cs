@@ -12,12 +12,14 @@ namespace Core.Application.Mapping
             CreateMap<Account, AccountDto>();
 
             CreateMap<Transaction, TransactionDto>()
-                .ForMember(dest => dest.DisplayType, opt => opt.MapFrom(src => CalculateTransactionType(src)));
+                .ForMember(dest => dest.DisplayType, opt => opt.MapFrom(src => CalculateTransactionType(src)))
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(x => x.CreateDateTime));
 
             CreateMap<CreateTransactionDto, Transaction>()
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(_ => TransactionStatus.Pending))
                 .ForMember(dest => dest.ResolutionMessage, opt => opt.MapFrom<string?>(_ => null))
-                .ForMember(dest => dest.ResolvedAt, opt => opt.MapFrom<DateTime?>(_ => null));
+                .ForMember(dest => dest.ResolvedAt, opt => opt.MapFrom<DateTime?>(_ => null))
+                .ForMember(dest => dest.CreateDateTime, opt => opt.MapFrom(_ => DateTime.UtcNow));
         }
 
         private static TransactionType CalculateTransactionType(Transaction src)

@@ -13,7 +13,8 @@ namespace CreditApplication.Profiles
     {
         public CreditProfile()
         {
-            CreateMap<Credit, CreditDto>();
+            CreateMap<Credit, CreditDto>()
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(x=>x.CreateDateTime));
 
             CreateMap<CreateCreditRequest, Credit>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())

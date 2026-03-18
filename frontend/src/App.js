@@ -11,6 +11,9 @@ import { NotFoundPage } from './pages/notFound/NotFoundPage';
 import { Spin } from 'antd'; // для индикатора загрузки
 import { ForbiddenPage } from './pages/forbidden/ForbiddenPage';
 import { AccountsPage } from './pages/accounts/AccountsPage';
+import { UsersPage } from './pages/users/UsersPage';
+import { TariffsPage } from './pages/tariffs/TariffsPage';
+import { CreditsPage } from './pages/credits/CreditsPage';
 
 function AppRoutes() {
   const { loading } = useAuth();
@@ -52,6 +55,30 @@ function AppRoutes() {
         element={
           <PrivateRoute>
             <AccountsPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/users"
+        element={
+          <PrivateRoute>
+            <UsersPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/tariffs"
+        element={
+          <PrivateRoute>
+            <TariffsPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/credits"
+        element={
+          <PrivateRoute>
+            <CreditsPage />
           </PrivateRoute>
         }
       />
