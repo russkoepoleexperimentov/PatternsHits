@@ -80,6 +80,14 @@ namespace Core.Web.Controllers
         private bool IsEmployeeOrAdmin() =>
             User.IsInRole(RoleNames.Employee);
 
+        [HttpGet("master")]
+        public async Task<IActionResult> GetMasterAccount()
+        {
+            if (!IsEmployeeOrAdmin()) return Forbid();
+            var account = await _accountService.GetMasterAccountAsync();
+            return Ok(account);
+        }
+
         [HttpGet("employee")]
         public async Task<IActionResult> GetAccountsEmployee()
         {

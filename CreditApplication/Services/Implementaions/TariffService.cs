@@ -14,18 +14,15 @@ namespace CreditService.Services
     {
         private readonly CreditDbContext _context;
         private readonly IMapper _mapper;
-        private readonly ILogger<TariffService> _logger;
         private readonly IValidator<CreateTariffRequest> _createValidator;
 
         public TariffService(
             CreditDbContext context,
             IMapper mapper,
-            ILogger<TariffService> logger,
             IValidator<CreateTariffRequest> createValidator)
         {
             _context = context;
             _mapper = mapper;
-            _logger = logger;
             _createValidator = createValidator;
         }
 
@@ -52,7 +49,6 @@ namespace CreditService.Services
             _context.Tariffs.Add(tariff);
             await _context.SaveChangesAsync();
 
-            _logger.LogInformation("Tariff created: {TariffId}", tariff.Id);
             return _mapper.Map<TariffDto>(tariff);
         }
 
@@ -67,7 +63,6 @@ namespace CreditService.Services
             _mapper.Map(request, tariff);
             await _context.SaveChangesAsync();
 
-            _logger.LogInformation("Tariff updated: {TariffId}", tariff.Id);
             return _mapper.Map<TariffDto>(tariff);
         }
 
@@ -86,7 +81,6 @@ namespace CreditService.Services
             _context.Tariffs.Remove(tariff);
             await _context.SaveChangesAsync();
 
-            _logger.LogInformation("Tariff deleted: {TariffId}", id);
         }
     }
 }

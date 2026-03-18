@@ -8,6 +8,7 @@ using Core.Domain;
 using Core.Infrastructure;
 using FluentValidation;
 using MassTransit;
+using Microsoft.EntityFrameworkCore;
 
 namespace Core.Application.Services.Implementations
 {
@@ -79,32 +80,41 @@ namespace Core.Application.Services.Implementations
         {
             try
             {
-                // ensure existance of target account
                 var targetAcc = await _accountService.GetAccountFromDbAsync(command.AccountId, command.UserId);
-                var transaction = new Transaction()
+                if (targetAcc == null)
+                    return new DepositFundsResponse(false, "Target account not found");
+                var masterAcc = await GetMasterAccountAsync();
+
+                if (masterAcc.Balance < command.Amount)
+                    return new DepositFundsResponse(false, "Insufficient funds on master account");
+
+                var transaction = new Transaction
                 {
-                    SourceId = command.CorrelationId,
-                    SourceType = TransactionObjectType.Credit,
+                    SourceId = masterAcc.Id,
+                    SourceType = TransactionObjectType.Account,
                     TargetId = targetAcc.Id,
                     TargetType = TransactionObjectType.Account,
-                    Description = "Кредит",
+                    Description = "Выдача кредита",
                     Amount = command.Amount,
                     Status = TransactionStatus.Completed,
+                    ResolvedAt = DateTime.UtcNow,
+                    ResolutionMessage = "Кредит выдан"
                 };
-                if (!EnsureCanInitialize(transaction, targetAcc)) return new(false, transaction.ResolutionMessage);
 
+                masterAcc.Balance -= command.Amount;
                 targetAcc.Balance += command.Amount;
 
                 _context.Transactions.Add(transaction);
+                _context.Accounts.Update(masterAcc);
                 _context.Accounts.Update(targetAcc);
                 await _context.SaveChangesAsync();
+
+                return new DepositFundsResponse(true, null);
             }
             catch (Exception ex)
             {
-                return new(false, ex.Message);
+                return new DepositFundsResponse(false, ex.Message);
             }
-
-            return new(true, null);
         }
 
         public async Task<TransactionDto> GetTransactionByIdAsync(Guid id, Guid currentUserId)
@@ -129,11 +139,14 @@ namespace Core.Application.Services.Implementations
             }
             else
             {
+                var master = await GetMasterAccountAsync();
+                source.Balance -= transaction.Amount;
+                master.Balance += transaction.Amount;
                 transaction.Status = TransactionStatus.Completed;
                 transaction.ResolutionMessage = "Оплата кредита";
                 transaction.ResolvedAt = DateTime.UtcNow;
-
-                source.Balance -= transaction.Amount;
+                _context.Accounts.Update(source);
+                _context.Accounts.Update(master);
             }
         }
 
@@ -193,6 +206,14 @@ namespace Core.Application.Services.Implementations
             transaction.Status = TransactionStatus.Completed;
             transaction.ResolvedAt = DateTime.UtcNow;
             transaction.ResolutionMessage = "Снятие денег со счёта";
+        }
+
+        private async Task<Account> GetMasterAccountAsync()
+        {
+            var master = await _context.Accounts.FirstOrDefaultAsync(a => a.IsMaster);
+            if (master == null)
+                throw new InvalidOperationException("Master account not found");
+            return master;
         }
 
         private async Task<Transaction> GetTransactionFromDbAsync(Guid transactionId)

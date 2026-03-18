@@ -6,6 +6,7 @@ using Core.Application.Mapping;
 using Core.Application.Services.Implementations;
 using Core.Application.Services.Interfaces;
 using Core.Application.Validity;
+using Core.Domain;
 using Core.Infrastructure;
 using FluentValidation;
 using MassTransit;
@@ -21,7 +22,7 @@ namespace Core.Web
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -158,6 +159,24 @@ namespace Core.Web
             });
 
             var app = builder.Build();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
+                if (!context.Accounts.Any(a => a.IsMaster))
+                    {
+                        context.Accounts.Add(new Account
+                        {
+                            Id = Guid.NewGuid(),
+                            UserId = Guid.Empty, 
+                            Balance = 148800000, 
+                            IsMaster = true,
+                            CreateDateTime = DateTime.UtcNow
+                        });
+                    }
+                
+                await context.SaveChangesAsync();
+            }
 
             using (var scope = app.Services.CreateScope())
             {

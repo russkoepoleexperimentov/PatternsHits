@@ -8,7 +8,7 @@ namespace Core.Domain
         public Guid UserId { get; set; }
         public decimal Balance { get; set; }
         public DateTime? ClosedAt { get; set; }
-
+        public bool IsMaster { get; set; }
         public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
     }
 }

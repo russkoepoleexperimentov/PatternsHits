@@ -90,6 +90,14 @@ namespace Core.Application.Services.Implementations
             return accounts.Select(_mapper.Map<AccountDto>).ToList();
         }
 
+        public async Task<AccountDto> GetMasterAccountAsync()
+        {
+            var master = await _context.Accounts.FirstOrDefaultAsync(a => a.IsMaster);
+            if (master == null)
+                throw new NotFoundException("Master account not found");
+            return _mapper.Map<AccountDto>(master);
+        }
+
         public async Task<BlockUserAccountsResponse> BlockAccountAsync(BlockUserAccountsCommand cmd)
         {
             try

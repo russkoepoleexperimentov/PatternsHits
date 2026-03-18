@@ -17,7 +17,6 @@ namespace CreditService.Services
     {
         private readonly CreditDbContext _context;
         private readonly IMapper _mapper;
-        private readonly ILogger<CreditsService> _logger;
         private readonly IRequestClient<DepositFundsCommand> _depositClient;
         private readonly IValidator<CreateCreditRequest> _createCreditValidator;
         private readonly IValidator<ApproveCreditRequest> _approveValidator;
@@ -26,7 +25,6 @@ namespace CreditService.Services
         public CreditsService(
             CreditDbContext context,
             IMapper mapper,
-            ILogger<CreditsService> logger,
             IRequestClient<DepositFundsCommand> depositClient,
             IValidator<CreateCreditRequest> createCreditValidator,
             IValidator<ApproveCreditRequest> approveValidator,
@@ -34,7 +32,6 @@ namespace CreditService.Services
         {
             _context = context;
             _mapper = mapper;
-            _logger = logger;
             _depositClient = depositClient;
             _createCreditValidator = createCreditValidator;
             _approveValidator = approveValidator;
@@ -85,7 +82,6 @@ namespace CreditService.Services
             _context.Credits.Add(credit);
             await _context.SaveChangesAsync();
 
-            _logger.LogInformation("Credit request {CreditId} created for user {UserId}", credit.Id, credit.UserId);
             return _mapper.Map<CreditDto>(credit);
         }
 
@@ -120,8 +116,6 @@ namespace CreditService.Services
                 credit.ApprovedAt = DateTime.UtcNow; 
 
                 await _context.SaveChangesAsync();
-                _logger.LogWarning("Credit {CreditId} rejected due to deposit failure: {Error}",
-                    credit.Id, response.Message.ErrorMessage);
             }
             else
             {
@@ -132,8 +126,6 @@ namespace CreditService.Services
                 credit.RemainingDebt = approvedAmount;
 
                 await _context.SaveChangesAsync();
-                _logger.LogInformation("Credit {CreditId} approved by {EmployeeId}, amount {Amount}",
-                    credit.Id, employeeId, approvedAmount);
             }
 
             return _mapper.Map<CreditDto>(credit);
@@ -157,7 +149,6 @@ namespace CreditService.Services
 
             await _context.SaveChangesAsync();
 
-            _logger.LogInformation("Credit {CreditId} rejected by {EmployeeId}", credit.Id, employeeId);
             return _mapper.Map<CreditDto>(credit);
         }
     }

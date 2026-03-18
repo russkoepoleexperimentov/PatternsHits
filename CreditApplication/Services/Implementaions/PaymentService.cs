@@ -17,7 +17,6 @@ namespace CreditService.Services
     {
         private readonly CreditDbContext _context;
         private readonly IMapper _mapper;
-        private readonly ILogger<PaymentService> _logger;
         private readonly IPublishEndpoint _publishEndpoint;
         private readonly IValidator<CreatePaymentRequest> _createPaymentValidator;
         private readonly IValidator<UpdatePaymentStatusRequest> _updateStatusValidator;
@@ -25,14 +24,12 @@ namespace CreditService.Services
         public PaymentService(
             CreditDbContext context,
             IMapper mapper,
-            ILogger<PaymentService> logger,
             IPublishEndpoint publishEndpoint,
             IValidator<CreatePaymentRequest> createPaymentValidator,
             IValidator<UpdatePaymentStatusRequest> updateStatusValidator)
         {
             _context = context;
             _mapper = mapper;
-            _logger = logger;
             _publishEndpoint = publishEndpoint;
             _createPaymentValidator = createPaymentValidator;
             _updateStatusValidator = updateStatusValidator;
@@ -83,12 +80,10 @@ namespace CreditService.Services
                     payment.ProcessedAt.Value
                 ));
 
-                _logger.LogInformation("External payment {PaymentId} processed for credit {CreditId}", payment.Id, command.CreditId);
                 return new ProcessExternalPaymentResponse(true, "OK", payment.Id);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "External payment processing failed for credit {CreditId}", command.CreditId);
                 return new ProcessExternalPaymentResponse(false, ex.Message, null);
             }
         }

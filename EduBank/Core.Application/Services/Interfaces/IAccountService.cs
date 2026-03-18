@@ -15,5 +15,6 @@ namespace Core.Application.Services.Interfaces
         Task<UnblockUserAccountsResponse> UnblockAccountAsync(UnblockUserAccountsCommand cmd);
         Task<List<TransactionDto>> GetAccountTransactionsAsync(Guid accountId, DateTime? from, DateTime? to, Guid? currentUserId);
         Task<Account> GetAccountFromDbAsync(Guid value, Guid? currentUserId);
+        Task<AccountDto> GetMasterAccountAsync();
     }
 }
