@@ -20,19 +20,10 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register(UserRegisterDto dto)
     {
-        return Ok(await _authService.RegisterAsync(dto));
-    }
-
-    [Authorize(AuthenticationSchemes = "Bearer")]
-    [HttpPost("logout")]
-    public async Task<IActionResult> Logout()
-    {
-        var id = HttpContext.GetUserId();
-
-        await _authService.LogoutAsync(id.Value);
-
+        await _authService.RegisterAsync(dto);
         return Ok();
     }
+
 
     [Authorize(AuthenticationSchemes = "Bearer", Roles = RoleNames.Employee)]
     [HttpPost("block/{userId}")]
@@ -48,18 +39,6 @@ public class AuthController : ControllerBase
     {
         await _authService.UnblockUserAsync(userId);
         return Ok();
-    }
-
-    [HttpPost("login")]
-    public async Task<IActionResult> Login(UserLoginDto dto)
-    {
-        return Ok(await _authService.LoginAsync(dto));
-    }
-
-    [HttpPost("refresh")]
-    public async Task<IActionResult> Refresh(string token)
-    {
-        return Ok(await _authService.RefreshAsync(token));
     }
 
     [Authorize(AuthenticationSchemes = "Bearer")]

@@ -11,6 +11,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="14.0.0" />
+		<PackageReference Include="Duende.IdentityServer" Version="7.4.7" />
+		<PackageReference Include="Duende.IdentityServer.AspNetIdentity" Version="7.4.7" />
 		<PackageReference Include="FluentValidation" Version="11.11.0" />
 		<PackageReference Include="MassTransit" Version="8.4.0" />
 		<PackageReference Include="MassTransit.RabbitMQ" Version="8.4.0" />

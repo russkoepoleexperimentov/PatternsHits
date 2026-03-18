@@ -1,22 +1,21 @@
-
-using System.Text.Json.Serialization;
-using System.Text;
+using Common.Contracts;
 using Common.Options;
+using Core.Application.Consumers;
+using Core.Application.Dtos;
 using Core.Application.Mapping;
 using Core.Application.Services.Implementations;
 using Core.Application.Services.Interfaces;
 using Core.Application.Validity;
 using Core.Infrastructure;
+using FluentValidation;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using FluentValidation;
-using Core.Application.Dtos;
-using MassTransit;
+using System.Text.Json.Serialization;
 using Web.Options;
-using Core.Application.Consumers;
-using Common.Contracts;
 
 namespace Core.Web
 {
@@ -25,65 +24,95 @@ namespace Core.Web
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            // Add services to the container.
-
-
-            builder.Services.Configure<JwtOptions>(
-                builder.Configuration.GetSection("Jwt"));
 
             builder.Services.Configure<RabbitMqOptions>(
                 builder.Configuration.GetSection("RabbitMq"));
-
-            var jwtOptions = builder.Configuration
-                .GetSection("Jwt")
-                .Get<JwtOptions>()!;
 
             var rabbitOptions = builder.Configuration
                 .GetSection("RabbitMq")
                 .Get<RabbitMqOptions>()!;
 
+            var authConfig = builder.Configuration.GetSection("Auth");
+            var jwtAuthority = authConfig["JwtAuthority"]; 
+            var swaggerAuthority = authConfig["SwaggerAuthority"]; 
+            var audience = authConfig["Audience"];
+
             builder.Services
                 .AddControllers()
                 .AddJsonOptions(options =>
                 {
-                    options.JsonSerializerOptions
-                        .Converters
-                        .Add(new JsonStringEnumConverter());
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
 
-
-            var accessKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(jwtOptions.Access.Secret));
-
-            builder.Services
-                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
-                    options.TokenValidationParameters =
-                        new TokenValidationParameters
+                    options.Authority = jwtAuthority;
+                    options.MetadataAddress = $"{jwtAuthority}/.well-known/openid-configuration";
+                    options.RequireHttpsMetadata = false;
+                    options.Audience = audience;
+
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = false,   
+                        ValidateAudience = true,
+                        ValidAudience = audience,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ClockSkew = TimeSpan.Zero
+                    };
+
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnAuthenticationFailed = context =>
                         {
-                            ValidateIssuer = false,
-                            ValidateAudience = false,
-                            IssuerSigningKey = accessKey,
-                        };
+                            Console.WriteLine($"JWT failed: {context.Exception.Message}");
+                            return Task.CompletedTask;
+                        },
+                        OnTokenValidated = context =>
+                        {
+                            Console.WriteLine("JWT validated");
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
+
 
             builder.Services.AddAuthorization();
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(config =>
             {
-                config.AddSecurityDefinition("bearerAuth", new OpenApiSecurityScheme
+                config.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
                 {
-                    Type = SecuritySchemeType.Http,
-                    Scheme = "bearer",
-                    BearerFormat = "JWT",
-                    Description = "JWT Authorization header using the Bearer scheme."
+                    Type = SecuritySchemeType.OAuth2,
+                    Flows = new OpenApiOAuthFlows
+                    {
+                        AuthorizationCode = new OpenApiOAuthFlow
+                        {
+                            AuthorizationUrl = new Uri($"{swaggerAuthority}/connect/authorize"),
+                            TokenUrl = new Uri($"{swaggerAuthority}/connect/token"),
+                            Scopes = new Dictionary<string, string>
+                {
+                    { audience, "API" },
+                    { "openid", "OpenID" },
+                    { "profile", "Profile" }
+                }
+                        }
+                    }
                 });
 
-                config.OperationFilter<SwaggerAuthorizeFilter>();
+                config.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "oauth2" }
+                        },
+                        new[] { audience }
+                    }
+                });
             });
-
 
             builder.Services.AddCors(options =>
             {
@@ -97,68 +126,55 @@ namespace Core.Web
                     });
             });
 
-
-
             builder.Services
                 .AddTransient<IAccountService, AccountService>()
                 .AddTransient<ITransactionService, TransactionService>()
                 .AddScoped<IValidator<CreateTransactionDto>, CreateTransactionValidator>()
                 .AddAutoMapper(typeof(CoreMapProfile));
-            //services.AddScoped<ITransactionService, TransactionService>();
 
             builder.Services.AddDbContext<CoreDbContext>(options =>
-                options
-                    .UseLazyLoadingProxies()
-                    .UseNpgsql(
-                        builder.Configuration.GetConnectionString("DefaultConnection"),
-                        b => b.MigrationsAssembly("Core.Web")
-                    ));
-
-
-
+                options.UseLazyLoadingProxies()
+                       .UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"),
+                                  b => b.MigrationsAssembly("Core.Web")));
 
             builder.Services.AddMassTransit(x =>
             {
                 x.SetKebabCaseEndpointNameFormatter();
-
                 x.AddConsumer<DepositFundsConsumer>();
                 x.AddRequestClient<ProcessExternalPaymentCommand>();
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
-                    cfg.Host(rabbitOptions.Host,
-                             rabbitOptions.VirtualHost,
-                             h =>
-                             {
-                                 h.Username(rabbitOptions.Username);
-                                 h.Password(rabbitOptions.Password);
-                             });
+                    cfg.Host(rabbitOptions.Host, rabbitOptions.VirtualHost, h =>
+                    {
+                        h.Username(rabbitOptions.Username);
+                        h.Password(rabbitOptions.Password);
+                    });
 
                     cfg.ConfigureEndpoints(context);
                 });
             });
 
-
             var app = builder.Build();
-
-
 
             using (var scope = app.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
-
                 if (context.Database.GetPendingMigrations().Any())
                     context.Database.Migrate();
             }
 
             app.UseSwagger();
-            app.UseSwaggerUI();
+            app.UseSwaggerUI(options =>
+            {
+                options.OAuthClientId("account_service_swagger"); 
+                options.OAuthScopes(new[] { audience, "openid", "profile" });
+            });
 
             app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();
-
             app.UseCors("AllowFrontend");
 
             app.Run();

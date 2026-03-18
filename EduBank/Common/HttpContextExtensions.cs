@@ -7,8 +7,8 @@ namespace Common
     {
         public static Guid? GetUserId(this HttpContext context)
         {
-            var str = context.User?.Claims?.FirstOrDefault(c => c.Type.Equals(ClaimTypes.NameIdentifier, StringComparison.OrdinalIgnoreCase))?.Value;
-            return str == null ? null : new Guid(str);
+            var sub = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            return sub != null ? Guid.Parse(sub) : null;
         }
     }
 }

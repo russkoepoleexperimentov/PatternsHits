@@ -9,12 +9,9 @@ namespace Application.Services.Interfaces
 {
     public interface IAuthService
     {
-        Task<TokenResponse> RegisterAsync(UserRegisterDto dto);
-        Task<TokenResponse> LoginAsync(UserLoginDto dto);
-        Task<TokenResponse> RefreshAsync(string refreshToken);
-        Task LogoutAsync(Guid userId);
-        Task ChangePasswordAsync(Guid userId, UserChangePassword dto);
+        Task RegisterAsync(UserRegisterDto dto);
         Task BlockUserAsync(Guid userId);
         Task UnblockUserAsync(Guid userId);
+        Task ChangePasswordAsync(Guid userId, UserChangePassword dto);
     }
 }

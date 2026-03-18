@@ -1,3 +1,5 @@
+п»їusing System.Security.Cryptography;
+using Microsoft.IdentityModel.Tokens;
 using Application.Dtos;
 using Application.Profiles;
 using Application.Services.Abstractions;
@@ -9,223 +11,228 @@ using Common.Enums.Common.Enums;
 using Common.Middlewares;
 using Common.Options;
 using Domain.Entities;
+using Duende.IdentityServer;
+using Duende.IdentityServer.Configuration;
 using FluentValidation;
 using MassTransit;
-using MassTransit.JobService;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using Web.Options;
 
-namespace Web
+namespace Web;
+
+public class Program
 {
-    public class Program
+    public static async Task Main(string[] args)
     {
-        public static async Task Main(string[] args)
+        var builder = WebApplication.CreateBuilder(args);
+        var configuration = builder.Configuration;
+
+        builder.Services.Configure<RabbitMqOptions>(configuration.GetSection("RabbitMq"));
+        var rabbitOptions = configuration.GetSection("RabbitMq").Get<RabbitMqOptions>()!;
+
+        var authConfig = configuration.GetSection("Auth");
+        var authority = authConfig["InternalAuthority"] ?? "http://localhost:2280";
+
+        var rsa = RSA.Create(2048);
+        var signingKey = new RsaSecurityKey(rsa);
+        var signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.RsaSha256);
+
+        builder.Services.AddControllersWithViews()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
+
+        builder.Services.AddDbContext<UserDbContext>(options =>
+            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+
+        builder.Services
+            .AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
+            {
+                options.Password.RequiredLength = 6;
+                options.Password.RequireDigit = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+            })
+            .AddEntityFrameworkStores<UserDbContext>()
+            .AddDefaultTokenProviders();
+
+        builder.Services.Configure<CookiePolicyOptions>(options =>
         {
-            var builder = WebApplication.CreateBuilder(args);
+            options.MinimumSameSitePolicy = SameSiteMode.Lax;
+            options.Secure = CookieSecurePolicy.None;
+        });
 
-            builder.Services.Configure<JwtOptions>(
-                builder.Configuration.GetSection("Jwt"));
+        builder.Services.ConfigureApplicationCookie(options =>
+        {
+            options.Cookie.HttpOnly = true;
+            options.Cookie.SameSite = SameSiteMode.None;
+            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        });
 
-            builder.Services.Configure<RabbitMqOptions>(
-                builder.Configuration.GetSection("RabbitMq"));
-
-            builder.Services.Configure<IdentityPasswordOptions>(
-                builder.Configuration.GetSection("Identity:Password"));
-
-            var jwtOptions = builder.Configuration
-                .GetSection("Jwt")
-                .Get<JwtOptions>()!;
-
-            var rabbitOptions = builder.Configuration
-                .GetSection("RabbitMq")
-                .Get<RabbitMqOptions>()!;
-
-            var identityOptions = builder.Configuration
-                .GetSection("Identity:Password")
-                .Get<IdentityPasswordOptions>()!;
-
-
-            builder.Services.AddLogging(logging =>
-                logging.AddConsole());
-
-
-            builder.Services
-                .AddControllers()
-                .AddJsonOptions(options =>
-                {
-                    options.JsonSerializerOptions
-                        .Converters
-                        .Add(new JsonStringEnumConverter());
-                });
-
-
-            var accessKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(jwtOptions.Access.Secret));
-
-            builder.Services
-                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.TokenValidationParameters =
-                        new TokenValidationParameters
-                        {
-                            ValidateIssuer = false,
-                            ValidateAudience = false,
-                            IssuerSigningKey = accessKey,
-                        };
-                });
-
-            builder.Services.AddAuthorization();
-
-
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen(config =>
+        builder.Services.AddIdentityServer(options =>
+        {
+            options.IssuerUri = authority;
+            options.KeyManagement.Enabled = false;
+            options.UserInteraction = new UserInteractionOptions
             {
-                config.AddSecurityDefinition("bearerAuth", new OpenApiSecurityScheme
-                {
-                    Type = SecuritySchemeType.Http,
-                    Scheme = "bearer",
-                    BearerFormat = "JWT",
-                    Description = "JWT Authorization header using the Bearer scheme."
-                });
+                LoginUrl = "/Account/Login",
+                LogoutUrl = "/Account/Logout",
+                ErrorUrl = "/home/error"
+            };
+        })
+            .AddAspNetIdentity<ApplicationUser>()
+            .AddInMemoryClients(Config.GetClients(configuration))
+            .AddInMemoryApiScopes(Config.ApiScopes)
+            .AddInMemoryApiResources(Config.ApiResources)
+            .AddInMemoryIdentityResources(Config.IdentityResources)
+            .AddProfileService<ProfileService>()
+            .AddSigningCredential(signingCredentials); 
 
-                config.OperationFilter<SwaggerAuthorizeFilter>();
+        builder.Services.PostConfigure<CookieAuthenticationOptions>(
+            IdentityServerConstants.DefaultCookieAuthenticationScheme,
+            options =>
+            {
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             });
 
-
-            builder.Services.AddMassTransit(x =>
+        builder.Services.AddAuthentication()
+            .AddJwtBearer("Bearer", options =>
             {
-                x.AddRequestClient<BlockUserAccountsCommand>();
-                x.AddRequestClient<UnblockUserAccountsCommand>();
-
-                x.UsingRabbitMq((context, cfg) =>
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    cfg.Host(rabbitOptions.Host,
-                             rabbitOptions.VirtualHost,
-                             h =>
-                             {
-                                 h.Username(rabbitOptions.Username);
-                                 h.Password(rabbitOptions.Password);
-                             });
-
-                    cfg.ReceiveEndpoint();
-
-                    cfg.ConfigureEndpoints(context);
-                });
-            });
-
-            builder.Services
-                .AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
-                {
-                    options.Password.RequiredLength = identityOptions.RequiredLength;
-                    options.Password.RequireDigit = identityOptions.RequireDigit;
-                    options.Password.RequireUppercase = identityOptions.RequireUppercase;
-                    options.Password.RequireLowercase = identityOptions.RequireLowercase;
-                    options.Password.RequireNonAlphanumeric = identityOptions.RequireNonAlphanumeric;
-                })
-                .AddEntityFrameworkStores<UserDbContext>()
-                .AddDefaultTokenProviders();
-
-
-            builder.Services
-                .AddScoped<IUserService, UserService>()
-                .AddScoped<IAuthService, AuthService>()
-                .AddScoped<IValidator<UserRegisterDto>, UserRegistrationValidator>()
-                .AddScoped<IValidator<UserUpdateDto>, UserUpdateValidator>()
-                .AddScoped<IValidator<UserLoginDto>, UserLoginValidator>()
-                .AddScoped<IValidator<UserChangePassword>, ChangePasswordValidator>()
-                .AddAutoMapper(typeof(UserMapProfile));
-
-            builder.Services.AddSingleton<IJwtService>(sp =>
-            {
-                var jwtOptions = sp.GetRequiredService<IOptions<JwtOptions>>().Value;
-
-                return new JWTService(
-                    new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(jwtOptions.Access.Secret)),
-                    jwtOptions.Access.LifetimeMinutes,
-                    new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(jwtOptions.Refresh.Secret)),
-                    jwtOptions.Refresh.LifetimeDays
-                );
-            });
-
-
-            builder.Services.AddDbContext<UserDbContext>(options =>
-                options
-                    .UseLazyLoadingProxies()
-                    .UseNpgsql(
-                        builder.Configuration.GetConnectionString("DefaultConnection"),
-                        b => b.MigrationsAssembly("AuthWeb")
-                    ));
-
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowFrontend",
-                    policy =>
-                    {
-                        policy.SetIsOriginAllowed(origin => true)  // адрес вашего фронтенда
-                              .AllowAnyHeader()
-                              .AllowAnyMethod()
-                              .AllowCredentials(); // если используете куки / авторизацию
-                    });
-            });
-
-
-            var app = builder.Build();
-
-
-
-            using (var scope = app.Services.CreateScope())
-            {
-                var context = scope.ServiceProvider.GetRequiredService<UserDbContext>();
-
-                if (context.Database.GetPendingMigrations().Any())
-                    context.Database.Migrate();
-            }
-
-            using (var scope = app.Services.CreateScope())
-            {
-                var roleManager = scope.ServiceProvider
-                    .GetRequiredService<RoleManager<IdentityRole<Guid>>>();
-
-                string[] roles =
-                {
-                    RoleNames.Customer,
-                    RoleNames.Employee
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = signingKey,
+                    ValidateIssuer = true,
+                    ValidIssuer = authority,
+                    ValidateAudience = true,
+                    ValidAudience = "account_api",
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
                 };
 
-                foreach (var role in roles)
+                options.Authority = null;
+                options.MetadataAddress = null;
+               
+            });
+
+        builder.Services.AddAuthorization(options =>
+        {
+            options.AddPolicy("EmployeeOnly", p => p.RequireRole(RoleNames.Employee));
+            options.AddPolicy("CustomerOnly", p => p.RequireRole(RoleNames.Customer));
+        });
+
+        builder.Services.AddMassTransit(x =>
+        {
+            x.AddRequestClient<BlockUserAccountsCommand>();
+            x.AddRequestClient<UnblockUserAccountsCommand>();
+            x.UsingRabbitMq((context, cfg) =>
+            {
+                cfg.Host(rabbitOptions.Host, rabbitOptions.VirtualHost, h =>
                 {
-                    if (!await roleManager.RoleExistsAsync(role))
+                    h.Username(rabbitOptions.Username);
+                    h.Password(rabbitOptions.Password);
+                });
+                cfg.ConfigureEndpoints(context);
+            });
+        });
+
+        builder.Services
+            .AddScoped<IUserService, UserService>()
+            .AddScoped<IAuthService, AuthService>()
+            .AddScoped<IValidator<UserRegisterDto>, UserRegistrationValidator>()
+            .AddScoped<IValidator<UserUpdateDto>, UserUpdateValidator>()
+            .AddScoped<IValidator<UserLoginDto>, UserLoginValidator>()
+            .AddScoped<IValidator<UserChangePassword>, ChangePasswordValidator>()
+            .AddAutoMapper(typeof(UserMapProfile));
+
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen(options =>
+        {
+            options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+            {
+                Type = SecuritySchemeType.OAuth2,
+                Flows = new OpenApiOAuthFlows
+                {
+                    AuthorizationCode = new OpenApiOAuthFlow
                     {
-                         await roleManager.CreateAsync(
-                            new IdentityRole<Guid>(role));
+                        AuthorizationUrl = new Uri($"{authority}/connect/authorize"),
+                        TokenUrl = new Uri($"{authority}/connect/token"),
+                        Scopes = new Dictionary<string, string>
+                        {
+                            { "account_api", "Account API" },
+                            { "openid", "OpenId" },
+                            { "profile", "Profile" }
+                        }
                     }
                 }
-            }
+            });
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "oauth2" }
+                    },
+                    new[] { "account_api", "openid", "profile" }
+                }
+            });
+        });
 
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll", policy => policy
+                .AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod());
+        });
 
-            app.UseSwagger();
-            app.UseSwaggerUI();
-            app.UseMiddleware<ExceptionCatchMiddleware>();
-            app.UseAuthentication();
-            app.UseAuthorization();
-
-            app.MapControllers();
-            app.UseCors("AllowFrontend");
-
-            app.Run();
-
-
+        var app = builder.Build();
+        using (var scope = app.Services.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<UserDbContext>();
+            if (context.Database.GetPendingMigrations().Any())
+                context.Database.Migrate();
         }
+
+        using (var scope = app.Services.CreateScope())
+        {
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+            foreach (var role in new[] { RoleNames.Customer, RoleNames.Employee })
+            {
+                if (!await roleManager.RoleExistsAsync(role))
+                    await roleManager.CreateAsync(new IdentityRole<Guid>(role));
+            }
+        }
+
+        app.UseSwagger();
+        app.UseSwaggerUI(options =>
+        {
+            options.OAuthClientId(authConfig["SwaggerClientId"] ?? "swagger");
+            options.OAuthScopes(new[] { "account_api", "openid", "profile" });
+            options.OAuth2RedirectUrl($"{authConfig["SwaggerUrl"]}/swagger/oauth2-redirect.html");
+        });
+
+        app.UseStaticFiles();
+        app.UseRouting();
+        app.UseCookiePolicy();
+        app.UseIdentityServer();
+        app.UseMiddleware<ExceptionCatchMiddleware>();
+        app.UseAuthentication();
+        app.UseAuthorization();
+        app.UseCors("AllowAll");
+
+        app.MapDefaultControllerRoute();
+        app.MapControllers();
+
+        app.Run();
     }
 }

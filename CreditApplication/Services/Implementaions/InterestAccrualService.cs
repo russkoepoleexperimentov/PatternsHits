@@ -35,7 +35,7 @@ public class InterestAccrualService : BackgroundService
         using var scope = _services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<CreditDbContext>();
 
-        var openCredits = await dbContext.Credits
+        var openCredits = await dbContext.Credits.Include(x => x.Tariff)
             .Where(c => c.Status == Common.Enums.CreditStatus.Approved)
             .ToListAsync(cancellationToken);
 
