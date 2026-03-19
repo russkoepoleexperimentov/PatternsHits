@@ -8,13 +8,15 @@
         decimal Amount,
         string PaymentId,
         DateTime PaymentDate,
-        string Currency 
+        string SourceCurrency 
     );
     public record ProcessExternalPaymentResponse(
         bool Success,
-        string? Message,
-        Guid? PaymentId
-    );
+        string Message,
+        Guid? PaymentId,
+        decimal AmountInCreditCurrency, 
+        string CreditCurrency,        
+        decimal? ExchangeRate ); 
 
     public record PaymentProcessedEvent(
         Guid PaymentId,

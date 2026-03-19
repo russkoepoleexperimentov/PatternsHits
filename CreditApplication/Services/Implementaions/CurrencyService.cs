@@ -1,5 +1,4 @@
-﻿using Core.Application.Services.Interfaces;
-using CreditApplication.Services.Interfaces;
+﻿using CreditApplication.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Net.Http.Json;

@@ -142,7 +142,13 @@ namespace Core.Application.Services.Implementations
             if (!EnsureCanWithdraw(transaction, source)) return;
 
             var response = await _paymentClient.GetResponse<ProcessExternalPaymentResponse>(
-                new ProcessExternalPaymentCommand(transaction.TargetId!.Value, transaction.Amount, transaction.Id.ToString(), DateTime.UtcNow));
+                new ProcessExternalPaymentCommand(
+                    transaction.TargetId!.Value,
+                    transaction.Amount,
+                    transaction.Id.ToString(),
+                    DateTime.UtcNow,
+                    source.Currency 
+                ));
 
             if (!response.Message.Success)
             {
@@ -152,17 +158,30 @@ namespace Core.Application.Services.Implementations
             }
             else
             {
-                var master = await GetMasterAccountAsync();
+                var master = await _context.Accounts
+                    .FirstOrDefaultAsync(a => a.IsMaster && a.Currency == response.Message.CreditCurrency);
+                if (master == null)
+                {
+                    transaction.Status = TransactionStatus.Failed;
+                    transaction.ResolutionMessage = $"Master account for currency {response.Message.CreditCurrency} not found";
+                    transaction.ResolvedAt = DateTime.UtcNow;
+                    return;
+                }
                 source.Balance -= transaction.Amount;
-                master.Balance += transaction.Amount;
+                master.Balance += response.Message.AmountInCreditCurrency;
+                transaction.ConvertedAmount = response.Message.AmountInCreditCurrency;
+                transaction.FromCurrency = source.Currency;
+                transaction.ToCurrency = response.Message.CreditCurrency;
+                transaction.ExchangeRate = response.Message.ExchangeRate;
+
                 transaction.Status = TransactionStatus.Completed;
                 transaction.ResolutionMessage = "Оплата кредита";
                 transaction.ResolvedAt = DateTime.UtcNow;
+
                 _context.Accounts.Update(source);
                 _context.Accounts.Update(master);
             }
         }
-
         private void ApplyTransferWithConversion(Transaction transaction, Account source, Account target, decimal convertedAmount)
         {
             if (!EnsureCanInitialize(transaction, source)) return;

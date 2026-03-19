@@ -44,36 +44,37 @@ namespace CreditService.Services
             {
                 var credit = await _context.Credits.FindAsync(command.CreditId);
                 if (credit == null)
-                    return new ProcessExternalPaymentResponse(false, $"Credit {command.CreditId} not found", null);
+                    return new ProcessExternalPaymentResponse(false, $"Credit {command.CreditId} not found", null, 0, "", null);
 
                 if (credit.Status != CreditStatus.Approved)
-                    return new ProcessExternalPaymentResponse(false, $"Payments not allowed for credit in status {credit.Status}", null);
+                    return new ProcessExternalPaymentResponse(false, $"Payments not allowed for credit in status {credit.Status}", null, 0, "", null);
                 if (credit.RemainingDebt <= 0)
-                    return new ProcessExternalPaymentResponse(false, "No remaining debt", null);
+                    return new ProcessExternalPaymentResponse(false, "No remaining debt", null, 0, "", null);
 
-                var paymentCurrency = command.Currency;
+                var sourceCurrency = command.SourceCurrency;
                 var creditCurrency = credit.Currency;
 
                 decimal amountInCreditCurrency;
                 decimal? exchangeRate = null;
                 decimal? originalAmount = null;
+                string? originalCurrency = null;
 
-                if (paymentCurrency == creditCurrency)
+                if (sourceCurrency == creditCurrency)
                 {
                     amountInCreditCurrency = command.Amount;
                 }
                 else
                 {
-                    exchangeRate = await _currencyRateService.GetExchangeRateAsync(paymentCurrency, creditCurrency);
+                    exchangeRate = await _currencyRateService.GetExchangeRateAsync(sourceCurrency, creditCurrency);
                     amountInCreditCurrency = command.Amount * exchangeRate.Value;
                     originalAmount = command.Amount;
+                    originalCurrency = sourceCurrency;
                 }
 
                 if (amountInCreditCurrency >= credit.RemainingDebt)
                 {
                     if (amountInCreditCurrency > credit.RemainingDebt + 0.01m)
-                        return new ProcessExternalPaymentResponse(false, $"Amount after conversion exceeds remaining debt {credit.RemainingDebt}", null);
-
+                        return new ProcessExternalPaymentResponse(false, $"Amount after conversion exceeds remaining debt {credit.RemainingDebt}", null, 0, "", null);
 
                     var pending = await _context.Payments
                         .Where(p => p.CreditId == credit.Id && p.Status == PaymentStatus.Pending)
@@ -83,9 +84,9 @@ namespace CreditService.Services
                     var finalPayment = new Payment
                     {
                         CreditId = credit.Id,
-                        Amount = credit.RemainingDebt, 
+                        Amount = credit.RemainingDebt,
                         OriginalAmount = originalAmount,
-                        OriginalCurrency = originalAmount.HasValue ? paymentCurrency : null,
+                        OriginalCurrency = originalCurrency,
                         ExchangeRate = exchangeRate,
                         DueDate = DateTime.UtcNow,
                         Status = PaymentStatus.Processed,
@@ -109,7 +110,14 @@ namespace CreditService.Services
                         finalPayment.ProcessedAt.Value
                     ));
 
-                    return new ProcessExternalPaymentResponse(true, "Credit fully repaid", finalPayment.Id);
+                    return new ProcessExternalPaymentResponse(
+                        true,
+                        "Credit fully repaid",
+                        finalPayment.Id,
+                        amountInCreditCurrency,
+                        creditCurrency,
+                        exchangeRate
+                    );
                 }
 
                 var currentPayment = await _context.Payments
@@ -118,16 +126,16 @@ namespace CreditService.Services
                     .FirstOrDefaultAsync();
 
                 if (currentPayment == null)
-                    return new ProcessExternalPaymentResponse(false, "No pending payment found", null);
+                    return new ProcessExternalPaymentResponse(false, "No pending payment found", null, 0, "", null);
 
                 if (Math.Abs(amountInCreditCurrency - currentPayment.Amount) > 0.01m)
                     return new ProcessExternalPaymentResponse(false,
-                        $"Amount after conversion ({amountInCreditCurrency:F2}) must equal current payment amount {currentPayment.Amount:F2} or full debt {credit.RemainingDebt:F2}", null);
+                        $"Amount after conversion ({amountInCreditCurrency:F2}) must equal current payment amount {currentPayment.Amount:F2} or full debt {credit.RemainingDebt:F2}", null, 0, "", null);
 
                 currentPayment.Status = PaymentStatus.Processed;
                 currentPayment.ProcessedAt = DateTime.UtcNow;
                 currentPayment.OriginalAmount = originalAmount;
-                currentPayment.OriginalCurrency = originalAmount.HasValue ? paymentCurrency : null;
+                currentPayment.OriginalCurrency = originalCurrency;
                 currentPayment.ExchangeRate = exchangeRate;
 
                 credit.RemainingDebt -= amountInCreditCurrency;
@@ -176,11 +184,18 @@ namespace CreditService.Services
                     currentPayment.ProcessedAt.Value
                 ));
 
-                return new ProcessExternalPaymentResponse(true, "OK", currentPayment.Id);
+                return new ProcessExternalPaymentResponse(
+                    true,
+                    "OK",
+                    currentPayment.Id,
+                    amountInCreditCurrency,
+                    creditCurrency,
+                    exchangeRate
+                );
             }
             catch (Exception ex)
             {
-                return new ProcessExternalPaymentResponse(false, ex.Message, null);
+                return new ProcessExternalPaymentResponse(false, ex.Message, null, 0, "", null);
             }
         }
 

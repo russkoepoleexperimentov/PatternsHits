@@ -32,7 +32,7 @@ services:
   currencyweb:
     image: ${DOCKER_REGISTRY-}currencyweb
     build:
-      context: ../CurrencyWeb
+      context: ../ConcurrencyService
       dockerfile: Dockerfile
     depends_on:
       - db

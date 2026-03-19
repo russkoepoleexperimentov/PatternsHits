@@ -1,11 +1,10 @@
 using Common.Contracts;
 using Common.Middlewares;
 using Common.Options;
-using Core.Application.Services.Implementations;
-using Core.Application.Services.Interfaces;
 using CreditApplication.Consumers;
 using CreditApplication.Dtos;
 using CreditApplication.Profiles;
+using CreditApplication.Services.Implementations;
 using CreditApplication.Services.Interfaces;
 using CreditApplication.Validators;
 using CreditInfrastructure;
