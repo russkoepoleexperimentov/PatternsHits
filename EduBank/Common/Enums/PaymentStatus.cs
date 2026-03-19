@@ -10,6 +10,7 @@ namespace Common.Enums
     {
         Pending,
         Processed,
-        Failed
+        Failed,
+        Overdue
     }
 }

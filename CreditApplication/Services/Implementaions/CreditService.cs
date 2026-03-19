@@ -113,7 +113,18 @@ namespace CreditService.Services
                 credit.Status = CreditStatus.Rejected;
                 credit.RejectionReason = response.Message.ErrorMessage ?? "Failed to deposit funds";
                 credit.ApprovedBy = employeeId;
-                credit.ApprovedAt = DateTime.UtcNow; 
+                credit.ApprovedAt = DateTime.UtcNow;
+
+                decimal firstAmount = Math.Round(approvedAmount / credit.TermDays, 2);
+                var firstPayment = new Payment
+                {
+                    CreditId = credit.Id,
+                    Amount = firstAmount,
+                    DueDate = credit.ApprovedAt.Value.AddHours(1),
+                    Status = PaymentStatus.Pending,
+                    CreateDateTime = DateTime.UtcNow
+                };
+                _context.Payments.Add(firstPayment);
 
                 await _context.SaveChangesAsync();
             }

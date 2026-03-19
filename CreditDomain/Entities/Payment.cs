@@ -13,6 +13,7 @@ namespace CreditDomain.Entities
         public Guid CreditId { get; set; }
         public virtual Credit Credit { get; set; }
         public decimal Amount { get; set; }
+        public DateTime? DueDate { get; set; }
         public PaymentStatus Status { get; set; }
         public DateTime? ProcessedAt { get; set; }
         public string FailureReason { get; set; } = null!;

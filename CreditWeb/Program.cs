@@ -7,6 +7,7 @@ using CreditApplication.Profiles;
 using CreditApplication.Services.Interfaces;
 using CreditApplication.Validators;
 using CreditInfrastructure;
+using CreditService.Jobs;
 using CreditService.Services;
 using FluentValidation;
 using MassTransit;
@@ -15,6 +16,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Quartz;
 using System.Text.Json.Serialization;
 using Web.Options;
 
@@ -117,7 +119,33 @@ namespace Web
                 });
             });
 
-            builder.Services.AddHostedService<InterestAccrualService>();
+            builder.Services.AddQuartz(q =>
+            {
+                q.UseMicrosoftDependencyInjectionJobFactory();
+
+                q.AddJob<InterestAccrualJob>(opts => opts.WithIdentity("InterestAccrualJob"))
+                    .AddTrigger(opts => opts
+                        .ForJob("InterestAccrualJob")
+                        .WithIdentity("InterestAccrualTrigger")
+                        .StartNow()
+                        .WithSimpleSchedule(x => x
+                            .WithIntervalInHours(1)
+                            .RepeatForever()));
+
+                q.AddJob<OverduePaymentsJob>(opts => opts.WithIdentity("OverduePaymentsJob"))
+                    .AddTrigger(opts => opts
+                        .ForJob("OverduePaymentsJob")
+                        .WithIdentity("OverduePaymentsTrigger")
+                        .StartNow()
+                        .WithSimpleSchedule(x => x
+                            .WithIntervalInHours(1)
+                            .RepeatForever()));
+            });
+
+            builder.Services.AddQuartzHostedService(options =>
+            {
+                options.WaitForJobsToComplete = true; 
+            });
             builder.Services.AddScoped<IValidator<CreateTariffRequest>, TariffValidator>();
             builder.Services.AddScoped<IValidator<CreateCreditRequest>, CreateCreditRequestValidator>();
             builder.Services.AddScoped<IValidator<ApproveCreditRequest>, ApproveCreditRequestValidator>();

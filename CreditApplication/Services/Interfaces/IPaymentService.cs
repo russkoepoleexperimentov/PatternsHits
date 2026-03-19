@@ -13,5 +13,7 @@ namespace CreditApplication.Services.Interfaces
         Task<ProcessExternalPaymentResponse> ProcessExternalPaymentAsync(ProcessExternalPaymentCommand command);
         Task<IEnumerable<PaymentDto>> GetPaymentsByCreditIdAsync(Guid creditId);
         Task<PaymentDto> GetPaymentByIdAsync(Guid id);
+        Task<IEnumerable<PaymentDto>> GetOverdueByCreditIdAsync(Guid creditId);
+        Task<IEnumerable<PaymentDto>> GetOverdueByUserIdAsync(Guid userId);
     }
 }
