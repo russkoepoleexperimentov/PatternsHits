@@ -6,14 +6,16 @@ public static class Config
         new List<ApiScope>
         {
         new ApiScope("account_api", "Account API"),
-        new ApiScope("credit_api", "Credit API")
+        new ApiScope("credit_api", "Credit API"),
+        new ApiScope("currency_api", "Currency API")
         };
 
     public static IEnumerable<ApiResource> ApiResources =>
         new List<ApiResource>
         {
         new ApiResource("account_api", "Account API") { Scopes = { "account_api" } },
-        new ApiResource("credit_api", "Credit API") { Scopes = { "credit_api" } }
+        new ApiResource("credit_api", "Credit API") { Scopes = { "credit_api" } },
+        new ApiResource("currency_api", "Currency API") { Scopes = { "currency_api" } }
         };
 
     public static IEnumerable<IdentityResource> IdentityResources =>
@@ -69,6 +71,20 @@ public static class Config
                 AllowedScopes = { "openid", "profile", "credit_api" },
                 AllowAccessTokensViaBrowser = true
             },
+
+
+            new Client
+            {
+                ClientId = "currency_service_swagger",
+                AllowedGrantTypes = GrantTypes.Code,
+                RequirePkce = false,
+                RequireClientSecret = false,
+                RedirectUris = { "http://localhost:5002/swagger/oauth2-redirect.html" },
+                AllowedCorsOrigins = { "http://localhost:5002" },
+                AllowedScopes = { "openid", "profile", "currency_api" },
+                AllowAccessTokensViaBrowser = true
+            },
+
             new Client
             {
                 ClientId = auth["WebClientId"] ?? "web_client",

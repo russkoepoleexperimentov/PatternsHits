@@ -20,5 +20,6 @@ namespace CreditApplication.Dtos
         public Guid? ApprovedBy { get; set; }
         public decimal? ApprovedAmount { get; set; }
         public string? RejectionReason { get; set; }
+        public string Currency { get; set; }
     }
 }

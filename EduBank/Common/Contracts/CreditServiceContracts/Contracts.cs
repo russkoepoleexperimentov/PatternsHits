@@ -1,13 +1,14 @@
 ﻿namespace Common.Contracts
 {
-    public record DepositFundsCommand(Guid UserId, Guid AccountId, decimal Amount, Guid CorrelationId);
+    public record DepositFundsCommand(Guid UserId, Guid AccountId, decimal Amount, Guid CorrelationId, string Currency);
     public record DepositFundsResponse(bool Success, string? ErrorMessage);
 
     public record ProcessExternalPaymentCommand(
         Guid CreditId,
         decimal Amount,
-        string ExternalTransactionId,
-        DateTime PaymentDate
+        string PaymentId,
+        DateTime PaymentDate,
+        string Currency 
     );
     public record ProcessExternalPaymentResponse(
         bool Success,

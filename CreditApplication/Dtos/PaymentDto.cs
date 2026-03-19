@@ -16,6 +16,9 @@ namespace CreditApplication.Dtos
         public PaymentStatus Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? ProcessedAt { get; set; }
+        public decimal? OriginalAmount { get; set; }
+        public string? OriginalCurrency { get; set; }
+        public decimal? ExchangeRate { get; set; }
     }
 
     public class CreatePaymentRequest

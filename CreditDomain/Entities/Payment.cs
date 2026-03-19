@@ -17,5 +17,8 @@ namespace CreditDomain.Entities
         public PaymentStatus Status { get; set; }
         public DateTime? ProcessedAt { get; set; }
         public string FailureReason { get; set; } = null!;
+        public decimal? OriginalAmount { get; set; }
+        public string? OriginalCurrency { get; set; }
+        public decimal? ExchangeRate { get; set; }
     }
 }

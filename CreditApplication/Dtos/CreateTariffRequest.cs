@@ -23,6 +23,8 @@ namespace CreditApplication.Dtos
         [Required]
         [Range(1, int.MaxValue)]
         public int MaxTermDays { get; set; }
+
+        public string Currency { get; set; }
     }
 
     public class UpdateTariffRequest : CreateTariffRequest { }

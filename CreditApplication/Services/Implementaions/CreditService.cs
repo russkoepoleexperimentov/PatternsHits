@@ -79,6 +79,7 @@ namespace CreditService.Services
             credit.AccountId = request.AccountId;
             credit.RejectionReason = "";
             credit.CreateDateTime = DateTime.UtcNow;
+            credit.Currency = tariff.Currency;
             _context.Credits.Add(credit);
             await _context.SaveChangesAsync();
 
@@ -106,7 +107,13 @@ namespace CreditService.Services
 
             var correlationId = Guid.NewGuid();
             var response = await _depositClient.GetResponse<DepositFundsResponse>(
-                new DepositFundsCommand(credit.UserId, credit.AccountId, approvedAmount, correlationId));
+                new DepositFundsCommand(
+                    credit.UserId,
+                    credit.AccountId,
+                    approvedAmount,
+                    correlationId,
+                    credit.Currency 
+                ));
 
             if (!response.Message.Success)
             {
@@ -114,6 +121,16 @@ namespace CreditService.Services
                 credit.RejectionReason = response.Message.ErrorMessage ?? "Failed to deposit funds";
                 credit.ApprovedBy = employeeId;
                 credit.ApprovedAt = DateTime.UtcNow;
+
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                credit.Status = CreditStatus.Approved;
+                credit.ApprovedAmount = approvedAmount;
+                credit.ApprovedBy = employeeId;
+                credit.ApprovedAt = DateTime.UtcNow;
+                credit.RemainingDebt = approvedAmount;
 
                 decimal firstAmount = Math.Round(approvedAmount / credit.TermDays, 2);
                 var firstPayment = new Payment
@@ -125,16 +142,6 @@ namespace CreditService.Services
                     CreateDateTime = DateTime.UtcNow
                 };
                 _context.Payments.Add(firstPayment);
-
-                await _context.SaveChangesAsync();
-            }
-            else
-            {
-                credit.Status = CreditStatus.Approved;
-                credit.ApprovedAmount = approvedAmount;
-                credit.ApprovedBy = employeeId;
-                credit.ApprovedAt = DateTime.UtcNow;
-                credit.RemainingDebt = approvedAmount;
 
                 await _context.SaveChangesAsync();
             }

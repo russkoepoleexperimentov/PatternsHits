@@ -1,6 +1,8 @@
 using Common.Contracts;
 using Common.Middlewares;
 using Common.Options;
+using Core.Application.Services.Implementations;
+using Core.Application.Services.Interfaces;
 using CreditApplication.Consumers;
 using CreditApplication.Dtos;
 using CreditApplication.Profiles;
@@ -117,6 +119,11 @@ namespace Web
                     });
                     cfg.ConfigureEndpoints(context);
                 });
+            });
+
+            builder.Services.AddHttpClient<ICurrencyRateService, CurrencyRateService>(client =>
+            {
+                client.BaseAddress = new Uri(builder.Configuration["CurrencyService:BaseUrl"]);
             });
 
             builder.Services.AddQuartz(q =>

@@ -25,18 +25,22 @@ namespace Core.Application.Services.Implementations
 
         public async Task<AccountDto> CreateAccountAsync(Guid currentUserId, CreateAccountDto dto)
         {
-            var account = new Account()
+            var supportedCurrencies = new[] { "RUB", "PLN", "ILS" };
+            if (!supportedCurrencies.Contains(dto.Currency))
+                throw new InvalidOperationException($"Currency {dto.Currency} is not supported");
+
+            var account = new Account
             {
                 UserId = currentUserId,
                 Balance = dto.InitialBalance,
+                Currency = dto.Currency,
                 ClosedAt = null
             };
             _context.Accounts.Add(account);
             await _context.SaveChangesAsync();
 
-            return _mapper.Map<AccountDto>(account);    
+            return _mapper.Map<AccountDto>(account);
         }
-
         public async Task CloseAccountAsync(Guid id, Guid? currentUserId)
         {
             var account = await GetAccountFromDbAsync(id, currentUserId);

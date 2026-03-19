@@ -158,6 +158,11 @@ namespace Core.Web
                 });
             });
 
+            builder.Services.AddHttpClient<ICurrencyRateService, CurrencyRateService>(client =>
+            {
+                client.BaseAddress = new Uri(builder.Configuration["CurrencyService:BaseUrl"]);
+            });
+
             var app = builder.Build();
 
             using (var scope = app.Services.CreateScope())

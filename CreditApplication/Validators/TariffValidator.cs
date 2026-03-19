@@ -10,6 +10,7 @@ namespace CreditApplication.Validators
 {
     public class TariffValidator : AbstractValidator<CreateTariffRequest>
     {
+        private static readonly string[] SupportedCurrencies = { "RUB", "PLN", "ILS" };
         public TariffValidator()
         {
             RuleFor(x => x.Name)
@@ -27,6 +28,10 @@ namespace CreditApplication.Validators
             RuleFor(x => x.MaxTermDays)
                 .NotEmpty().WithMessage("Max term days is required.")
                 .GreaterThan(0).WithMessage("Max term days must be greater than 0.");
+
+            RuleFor(x => x.Currency)
+           .NotEmpty().WithMessage("Currency is required")
+           .Must(SupportedCurrencies.Contains).WithMessage("Currency is not supported");
         }
     }
 }

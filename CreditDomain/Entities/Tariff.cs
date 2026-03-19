@@ -19,5 +19,6 @@ namespace CreditDomain.Entities
         public decimal MaxAmount { get; set; }
         public int MaxTermDays { get; set; }
         public virtual ICollection<Credit> Credits { get; set; } = new List<Credit>();
+        public string Currency { get; set; } = "RUB";
     }
 }

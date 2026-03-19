@@ -20,19 +20,22 @@ namespace CreditService.Services
         private readonly IPublishEndpoint _publishEndpoint;
         private readonly IValidator<CreatePaymentRequest> _createPaymentValidator;
         private readonly IValidator<UpdatePaymentStatusRequest> _updateStatusValidator;
+        private readonly ICurrencyRateService _currencyRateService;
 
         public PaymentService(
             CreditDbContext context,
             IMapper mapper,
             IPublishEndpoint publishEndpoint,
             IValidator<CreatePaymentRequest> createPaymentValidator,
-            IValidator<UpdatePaymentStatusRequest> updateStatusValidator)
+            IValidator<UpdatePaymentStatusRequest> updateStatusValidator,
+            ICurrencyRateService currencyRateService)
         {
             _context = context;
             _mapper = mapper;
             _publishEndpoint = publishEndpoint;
             _createPaymentValidator = createPaymentValidator;
             _updateStatusValidator = updateStatusValidator;
+            _currencyRateService = currencyRateService;
         }
 
         public async Task<ProcessExternalPaymentResponse> ProcessExternalPaymentAsync(ProcessExternalPaymentCommand command)
@@ -48,10 +51,29 @@ namespace CreditService.Services
                 if (credit.RemainingDebt <= 0)
                     return new ProcessExternalPaymentResponse(false, "No remaining debt", null);
 
-                if (command.Amount >= credit.RemainingDebt)
+                var paymentCurrency = command.Currency;
+                var creditCurrency = credit.Currency;
+
+                decimal amountInCreditCurrency;
+                decimal? exchangeRate = null;
+                decimal? originalAmount = null;
+
+                if (paymentCurrency == creditCurrency)
                 {
-                    if (command.Amount > credit.RemainingDebt)
-                        return new ProcessExternalPaymentResponse(false, $"Amount exceeds remaining debt {credit.RemainingDebt}", null);
+                    amountInCreditCurrency = command.Amount;
+                }
+                else
+                {
+                    exchangeRate = await _currencyRateService.GetExchangeRateAsync(paymentCurrency, creditCurrency);
+                    amountInCreditCurrency = command.Amount * exchangeRate.Value;
+                    originalAmount = command.Amount;
+                }
+
+                if (amountInCreditCurrency >= credit.RemainingDebt)
+                {
+                    if (amountInCreditCurrency > credit.RemainingDebt + 0.01m)
+                        return new ProcessExternalPaymentResponse(false, $"Amount after conversion exceeds remaining debt {credit.RemainingDebt}", null);
+
 
                     var pending = await _context.Payments
                         .Where(p => p.CreditId == credit.Id && p.Status == PaymentStatus.Pending)
@@ -61,7 +83,10 @@ namespace CreditService.Services
                     var finalPayment = new Payment
                     {
                         CreditId = credit.Id,
-                        Amount = credit.RemainingDebt,
+                        Amount = credit.RemainingDebt, 
+                        OriginalAmount = originalAmount,
+                        OriginalCurrency = originalAmount.HasValue ? paymentCurrency : null,
+                        ExchangeRate = exchangeRate,
                         DueDate = DateTime.UtcNow,
                         Status = PaymentStatus.Processed,
                         ProcessedAt = DateTime.UtcNow,
@@ -95,13 +120,17 @@ namespace CreditService.Services
                 if (currentPayment == null)
                     return new ProcessExternalPaymentResponse(false, "No pending payment found", null);
 
-                if (command.Amount != currentPayment.Amount)
-                    return new ProcessExternalPaymentResponse(false, $"Amount must equal current payment amount {currentPayment.Amount} or full debt {credit.RemainingDebt}", null);
+                if (Math.Abs(amountInCreditCurrency - currentPayment.Amount) > 0.01m)
+                    return new ProcessExternalPaymentResponse(false,
+                        $"Amount after conversion ({amountInCreditCurrency:F2}) must equal current payment amount {currentPayment.Amount:F2} or full debt {credit.RemainingDebt:F2}", null);
 
                 currentPayment.Status = PaymentStatus.Processed;
                 currentPayment.ProcessedAt = DateTime.UtcNow;
+                currentPayment.OriginalAmount = originalAmount;
+                currentPayment.OriginalCurrency = originalAmount.HasValue ? paymentCurrency : null;
+                currentPayment.ExchangeRate = exchangeRate;
 
-                credit.RemainingDebt -= command.Amount;
+                credit.RemainingDebt -= amountInCreditCurrency;
 
                 var createdCount = await _context.Payments
                     .CountAsync(p => p.CreditId == credit.Id && (p.Status == PaymentStatus.Processed || p.Status == PaymentStatus.Overdue));
@@ -109,11 +138,9 @@ namespace CreditService.Services
                 if (createdCount < credit.TermDays)
                 {
                     int remainingDays = credit.TermDays - createdCount;
-                    decimal nextAmount;
-                    if (remainingDays == 1)
-                        nextAmount = credit.RemainingDebt;
-                    else
-                        nextAmount = Math.Round(credit.RemainingDebt / remainingDays, 2);
+                    decimal nextAmount = (remainingDays == 1)
+                        ? credit.RemainingDebt
+                        : Math.Round(credit.RemainingDebt / remainingDays, 2);
 
                     var nextPayment = new Payment
                     {
@@ -125,20 +152,17 @@ namespace CreditService.Services
                     };
                     _context.Payments.Add(nextPayment);
                 }
-                else
+                else if (credit.RemainingDebt > 0)
                 {
-                    if (credit.RemainingDebt > 0)
+                    var lastPayment = new Payment
                     {
-                        var lastPayment = new Payment
-                        {
-                            CreditId = credit.Id,
-                            Amount = credit.RemainingDebt,
-                            DueDate = DateTime.UtcNow.AddHours(1),
-                            Status = PaymentStatus.Pending,
-                            CreateDateTime = DateTime.UtcNow
-                        };
-                        _context.Payments.Add(lastPayment);
-                    }
+                        CreditId = credit.Id,
+                        Amount = credit.RemainingDebt,
+                        DueDate = DateTime.UtcNow.AddHours(1),
+                        Status = PaymentStatus.Pending,
+                        CreateDateTime = DateTime.UtcNow
+                    };
+                    _context.Payments.Add(lastPayment);
                 }
 
                 await _context.SaveChangesAsync();

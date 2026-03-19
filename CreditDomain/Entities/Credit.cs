@@ -38,5 +38,7 @@ namespace CreditDomain.Entities
         public DateTime? ClosedAt { get; set; }
 
         public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
+
+        public string Currency { get; set; } = "RUB";
     }
 }

@@ -13,5 +13,6 @@ namespace CreditApplication.Dtos
         public decimal InterestRate { get; set; }
         public decimal MaxAmount { get; set; }
         public int MaxTermDays { get; set; }
+        public string Currency { get; set; }
     }
 }

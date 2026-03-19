@@ -20,16 +20,17 @@ namespace Core.Application.Services.Implementations
         private readonly IValidator<CreateTransactionDto> _createValidator;
         private readonly IRequestClient<ProcessExternalPaymentCommand> _paymentClient;
         private readonly IMapper _mapper;
+        private readonly ICurrencyRateService _currencyRateService;
 
-        public TransactionService(CoreDbContext context, IAccountService accountService, IValidator<CreateTransactionDto> createValidator, IMapper mapper, IRequestClient<ProcessExternalPaymentCommand> paymentClient)
+        public TransactionService(CoreDbContext context, IAccountService accountService, IValidator<CreateTransactionDto> createValidator, IMapper mapper, IRequestClient<ProcessExternalPaymentCommand> paymentClient, ICurrencyRateService currencyRateService)
         {
             _context = context;
             _accountService = accountService;
             _createValidator = createValidator;
             _mapper = mapper;
             _paymentClient = paymentClient;
+            _currencyRateService = currencyRateService;
         }
-
         public async Task<TransactionDto> InitializeTransactionAsync(CreateTransactionDto dto, Guid currentUserId)
         {
             _createValidator.ValidateAndThrow(dto);
@@ -38,20 +39,34 @@ namespace Core.Application.Services.Implementations
 
             if (transaction.SourceType == TransactionObjectType.Account)
             {
-                // счёт-источник (привязанный к юзеру)
                 var sourceAcc = await _accountService.GetAccountFromDbAsync(transaction.SourceId!.Value, currentUserId);
 
-                if (transaction.TargetType == TransactionObjectType.Account) // перевод со счёта на счёт
+                if (transaction.TargetType == TransactionObjectType.Account) 
                 {
-                    // счёт-цель (любой!!)
                     var targetAcc = await _accountService.GetAccountFromDbAsync(transaction.TargetId!.Value, null);
-                    ApplyTransfer(transaction, sourceAcc, targetAcc);
+
+                    if (sourceAcc.Currency != targetAcc.Currency)
+                    {
+                        var rate = await _currencyRateService.GetExchangeRateAsync(sourceAcc.Currency, targetAcc.Currency);
+                        var convertedAmount = transaction.Amount * rate;
+
+                        transaction.ConvertedAmount = convertedAmount;
+                        transaction.FromCurrency = sourceAcc.Currency;
+                        transaction.ToCurrency = targetAcc.Currency;
+                        transaction.ExchangeRate = rate;
+
+                        ApplyTransferWithConversion(transaction, sourceAcc, targetAcc, convertedAmount);
+                    }
+                    else
+                    {
+                        ApplyTransfer(transaction, sourceAcc, targetAcc);
+                    }
                 }
-                else if (transaction.TargetType == TransactionObjectType.RealWorld) // снятие денег
+                else if (transaction.TargetType == TransactionObjectType.RealWorld)
                 {
                     ApplyWithdraw(transaction, sourceAcc);
                 }
-                else if (transaction.TargetType == TransactionObjectType.Credit) // платеж по кредиту
+                else if (transaction.TargetType == TransactionObjectType.Credit)
                 {
                     await ApplyCreditPayment(transaction, sourceAcc);
                 }
@@ -59,10 +74,8 @@ namespace Core.Application.Services.Implementations
             }
             else if (transaction.SourceType == TransactionObjectType.RealWorld)
             {
-                // счёт-цель (привязанный к юзеру)
-                if (transaction.TargetType == TransactionObjectType.Account) // пополнение
+                if (transaction.TargetType == TransactionObjectType.Account)
                 {
-                    // ensure existance of target account
                     var targetAcc = await _accountService.GetAccountFromDbAsync(transaction.TargetId!.Value, null);
                     ApplyDeposit(transaction, targetAcc);
                 }
@@ -148,6 +161,20 @@ namespace Core.Application.Services.Implementations
                 _context.Accounts.Update(source);
                 _context.Accounts.Update(master);
             }
+        }
+
+        private void ApplyTransferWithConversion(Transaction transaction, Account source, Account target, decimal convertedAmount)
+        {
+            if (!EnsureCanInitialize(transaction, source)) return;
+            if (!EnsureCanInitialize(transaction, target)) return;
+            if (!EnsureCanWithdraw(transaction, source)) return;
+
+            source.Balance -= transaction.Amount;
+            target.Balance += convertedAmount;
+
+            transaction.Status = TransactionStatus.Completed;
+            transaction.ResolvedAt = DateTime.UtcNow;
+            transaction.ResolutionMessage = $"Перевод с конвертацией {source.Currency} → {target.Currency}";
         }
 
         private void ApplyTransfer(Transaction transaction, Account source, Account target)
