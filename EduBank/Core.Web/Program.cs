@@ -168,26 +168,26 @@ namespace Core.Web
             using (var scope = app.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
-                if (!context.Accounts.Any(a => a.IsMaster))
-                    {
-                        context.Accounts.Add(new Account
-                        {
-                            Id = Guid.NewGuid(),
-                            UserId = Guid.Empty, 
-                            Balance = 148800000, 
-                            IsMaster = true,
-                            CreateDateTime = DateTime.UtcNow
-                        });
-                    }
-                
-                await context.SaveChangesAsync();
+                if (context.Database.GetPendingMigrations().Any())
+                    context.Database.Migrate();
             }
 
             using (var scope = app.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
-                if (context.Database.GetPendingMigrations().Any())
-                    context.Database.Migrate();
+                if (!context.Accounts.Any(a => a.IsMaster))
+                {
+                    context.Accounts.Add(new Account
+                    {
+                        Id = Guid.NewGuid(),
+                        UserId = Guid.Empty,
+                        Balance = 148800000,
+                        IsMaster = true,
+                        CreateDateTime = DateTime.UtcNow
+                    });
+                }
+
+                await context.SaveChangesAsync();
             }
 
             app.UseSwagger();
