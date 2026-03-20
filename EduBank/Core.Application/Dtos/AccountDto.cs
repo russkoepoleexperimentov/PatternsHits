@@ -9,5 +9,6 @@ namespace Core.Application.Dtos
         public DateTime CreatedAt { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime? ClosedAt { get; set; }
+        public string Currency { get; set; } = null!; 
     }
 }
