@@ -129,29 +129,48 @@ namespace Core.Application.Services.Implementations
                 var targetAcc = await _accountService.GetAccountFromDbAsync(command.AccountId, command.UserId);
                 if (targetAcc == null)
                     return new DepositFundsResponse(false, "Target account not found");
-                var masterAcc = await GetMasterAccountAsync();
 
-                if (masterAcc.Balance < command.Amount)
+                var master = await GetMasterAccountAsync();
+
+                decimal amountInCreditCurrency = command.Amount;
+                decimal amountForMaster;
+                decimal? exchangeRate = null;
+
+                if (command.Currency != master.Currency)
+                {
+                    exchangeRate = await _currencyRateService.GetExchangeRateAsync(command.Currency, master.Currency);
+                    amountForMaster = amountInCreditCurrency * exchangeRate.Value;
+                }
+                else
+                {
+                    amountForMaster = amountInCreditCurrency;
+                }
+
+                if (master.Balance < amountForMaster)
                     return new DepositFundsResponse(false, "Insufficient funds on master account");
+
+                master.Balance -= amountForMaster;
+                targetAcc.Balance += amountInCreditCurrency;
 
                 var transaction = new Transaction
                 {
-                    SourceId = masterAcc.Id,
+                    SourceId = master.Id,
                     SourceType = TransactionObjectType.Account,
                     TargetId = targetAcc.Id,
                     TargetType = TransactionObjectType.Account,
                     Description = "Выдача кредита",
-                    Amount = command.Amount,
+                    Amount = amountInCreditCurrency,
                     Status = TransactionStatus.Completed,
                     ResolvedAt = DateTime.UtcNow,
-                    ResolutionMessage = "Кредит выдан"
+                    ResolutionMessage = "Кредит выдан",
+                    FromCurrency = master.Currency,
+                    ToCurrency = command.Currency,
+                    ConvertedAmount = amountForMaster,
+                    ExchangeRate = exchangeRate
                 };
 
-                masterAcc.Balance -= command.Amount;
-                targetAcc.Balance += command.Amount;
-
                 _context.Transactions.Add(transaction);
-                _context.Accounts.Update(masterAcc);
+                _context.Accounts.Update(master);
                 _context.Accounts.Update(targetAcc);
                 await _context.SaveChangesAsync();
 
@@ -162,7 +181,6 @@ namespace Core.Application.Services.Implementations
                 return new DepositFundsResponse(false, ex.Message);
             }
         }
-
         public async Task<TransactionDto> GetTransactionByIdAsync(Guid id, Guid currentUserId)
         {
             var transaction = await GetTransactionFromDbAsync(id);
@@ -190,17 +208,27 @@ namespace Core.Application.Services.Implementations
             }
             else
             {
-                var master = await _context.Accounts
-                    .FirstOrDefaultAsync(a => a.IsMaster && a.Currency == response.Message.CreditCurrency);
+                var master = await _context.Accounts.FirstOrDefaultAsync(a => a.IsMaster);
                 if (master == null)
                 {
                     transaction.Status = TransactionStatus.Failed;
-                    transaction.ResolutionMessage = $"Master account for currency {response.Message.CreditCurrency} not found";
+                    transaction.ResolutionMessage = "Master account not found";
                     transaction.ResolvedAt = DateTime.UtcNow;
                     return;
                 }
+
+                decimal amountInCreditCurrency = response.Message.AmountInCreditCurrency;
+
+                decimal amountForMaster = amountInCreditCurrency;
+                if (response.Message.CreditCurrency != master.Currency)
+                {
+                    var rate = await _currencyRateService.GetExchangeRateAsync(response.Message.CreditCurrency, master.Currency);
+                    amountForMaster = amountInCreditCurrency * rate;
+                }
+
                 source.Balance -= transaction.Amount;
-                master.Balance += response.Message.AmountInCreditCurrency;
+                master.Balance += amountForMaster;
+
                 transaction.ConvertedAmount = response.Message.AmountInCreditCurrency;
                 transaction.FromCurrency = source.Currency;
                 transaction.ToCurrency = response.Message.CreditCurrency;
@@ -214,7 +242,6 @@ namespace Core.Application.Services.Implementations
                 _context.Accounts.Update(master);
             }
         }
-
         private void ApplyTransferWithConversion(Transaction transaction, Account source, Account target, decimal convertedAmount)
         {
             if (!EnsureCanInitialize(transaction, source)) return;
