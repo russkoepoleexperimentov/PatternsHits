@@ -56,7 +56,8 @@ public class OverduePaymentsJob : IJob
                         Amount = nextAmount,
                         DueDate = now.AddHours(1),
                         Status = PaymentStatus.Pending,
-                        CreateDateTime = now
+                        CreateDateTime = now,
+                        FailureReason = string.Empty
                     };
                     dbContext.Payments.Add(nextPayment);
                 }

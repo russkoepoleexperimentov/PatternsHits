@@ -139,7 +139,8 @@ namespace CreditService.Services
                     Amount = firstAmount,
                     DueDate = credit.ApprovedAt.Value.AddHours(1),
                     Status = PaymentStatus.Pending,
-                    CreateDateTime = DateTime.UtcNow
+                    CreateDateTime = DateTime.UtcNow,
+                    FailureReason = string.Empty
                 };
                 _context.Payments.Add(firstPayment);
 

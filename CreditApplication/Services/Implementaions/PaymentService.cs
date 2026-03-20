@@ -91,7 +91,8 @@ namespace CreditService.Services
                         DueDate = DateTime.UtcNow,
                         Status = PaymentStatus.Processed,
                         ProcessedAt = DateTime.UtcNow,
-                        CreateDateTime = DateTime.UtcNow
+                        CreateDateTime = DateTime.UtcNow,
+                        FailureReason = string.Empty
                     };
                     _context.Payments.Add(finalPayment);
 
@@ -156,7 +157,8 @@ namespace CreditService.Services
                         Amount = nextAmount,
                         DueDate = DateTime.UtcNow.AddHours(1),
                         Status = PaymentStatus.Pending,
-                        CreateDateTime = DateTime.UtcNow
+                        CreateDateTime = DateTime.UtcNow,
+                        FailureReason = string.Empty
                     };
                     _context.Payments.Add(nextPayment);
                 }
@@ -168,7 +170,8 @@ namespace CreditService.Services
                         Amount = credit.RemainingDebt,
                         DueDate = DateTime.UtcNow.AddHours(1),
                         Status = PaymentStatus.Pending,
-                        CreateDateTime = DateTime.UtcNow
+                        CreateDateTime = DateTime.UtcNow,
+                        FailureReason = string.Empty
                     };
                     _context.Payments.Add(lastPayment);
                 }
