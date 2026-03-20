@@ -88,6 +88,60 @@ namespace Core.Application.Services.Implementations
             return account;
         }
 
+        public async Task<List<AccountTransactionDto>> GetAccountTransactionsForDisplayAsync(Guid accountId, DateTime? from, DateTime? to, Guid? currentUserId)
+        {
+            var account = await GetAccountFromDbAsync(accountId, currentUserId);
+
+            var query = _context.Transactions
+                .Where(t => (t.SourceId == accountId && t.SourceType == TransactionObjectType.Account) ||
+                            (t.TargetId == accountId && t.TargetType == TransactionObjectType.Account));
+
+            if (from.HasValue)
+                query = query.Where(t => t.CreateDateTime >= from.Value);
+            if (to.HasValue)
+                query = query.Where(t => t.CreateDateTime <= to.Value);
+
+            var transactions = await query
+                .OrderByDescending(t => t.CreateDateTime)
+                .ToListAsync();
+
+            var dtos = _mapper.Map<List<AccountTransactionDto>>(transactions);
+
+            for (int i = 0; i < dtos.Count; i++)
+            {
+                var t = transactions[i];
+                var dto = dtos[i];
+
+                if (t.SourceId == accountId && t.SourceType == TransactionObjectType.Account)
+                {
+                    dto.Amount = -t.Amount;
+                    dto.Currency = t.FromCurrency ?? account.Currency;
+                }
+                else if (t.TargetId == accountId && t.TargetType == TransactionObjectType.Account)
+                {
+                    dto.Amount = t.ConvertedAmount ?? t.Amount;
+                    dto.Currency = t.ToCurrency ?? account.Currency;
+                }
+                else if (t.SourceType == TransactionObjectType.RealWorld)
+                {
+                    dto.Amount = t.Amount;
+                    dto.Currency = t.ToCurrency ?? account.Currency;
+                }
+                else if (t.TargetType == TransactionObjectType.RealWorld)
+                {
+                    dto.Amount = -t.Amount;
+                    dto.Currency = t.FromCurrency ?? account.Currency;
+                }
+                else
+                {
+                    dto.Amount = 0;
+                    dto.Currency = account.Currency;
+                }
+            }
+
+            return dtos;
+        }
+
         public async Task<List<AccountDto>> GetAllAccountsAsync()
         {
             var accounts = await _context.Accounts.ToListAsync();

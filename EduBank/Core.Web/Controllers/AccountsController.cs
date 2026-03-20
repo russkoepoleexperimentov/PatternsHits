@@ -76,6 +76,14 @@ namespace Core.Web.Controllers
         }
 
 
+        [HttpGet("{id}/transactions/display")]
+        [Authorize]
+        public async Task<IActionResult> GetAccountTransactionsDisplay(Guid id, [FromQuery] DateTime? from, [FromQuery] DateTime? to)
+        {
+            var currentUserId = HttpContext.GetUserId()!.Value;
+            var transactions = await _accountService.GetAccountTransactionsForDisplayAsync(id, from, to, currentUserId);
+            return Ok(transactions);
+        }
 
         private bool IsEmployeeOrAdmin() =>
             User.IsInRole(RoleNames.Employee);

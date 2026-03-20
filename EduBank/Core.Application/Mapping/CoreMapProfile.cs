@@ -20,6 +20,14 @@ namespace Core.Application.Mapping
                 .ForMember(dest => dest.ResolutionMessage, opt => opt.MapFrom<string?>(_ => null))
                 .ForMember(dest => dest.ResolvedAt, opt => opt.MapFrom<DateTime?>(_ => null))
                 .ForMember(dest => dest.CreateDateTime, opt => opt.MapFrom(_ => DateTime.UtcNow));
+
+            CreateMap<Transaction, AccountTransactionDto>()
+                .ForMember(dest => dest.Amount, opt => opt.Ignore())
+                .ForMember(dest => dest.Currency, opt => opt.Ignore())
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description ?? src.ResolutionMessage ?? "Транзакция"))
+                .ForMember(dest => dest.ResolutionMessage, opt => opt.MapFrom(src => src.ResolutionMessage))
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreateDateTime))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status));
         }
 
         private static TransactionType CalculateTransactionType(Transaction src)
