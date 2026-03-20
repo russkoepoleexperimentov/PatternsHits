@@ -145,6 +145,8 @@ namespace Core.Web
                 x.AddConsumer<UserBlockConsumer>();
                 x.AddConsumer<UserUnblockConsumer>();
                 x.AddRequestClient<ProcessExternalPaymentCommand>();
+                x.AddConsumer<ProcessTransactionConsumer>();
+                x.AddRequestClient<ProcessTransactionCommand>();
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
@@ -153,7 +155,7 @@ namespace Core.Web
                         h.Username(rabbitOptions.Username);
                         h.Password(rabbitOptions.Password);
                     });
-
+                    cfg.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(5)));
                     cfg.ConfigureEndpoints(context);
                 });
             });

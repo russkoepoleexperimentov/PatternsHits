@@ -14,15 +14,22 @@ namespace Core.Application.Services.Implementations
 {
     public class TransactionService : ITransactionService
     {
-
         private readonly CoreDbContext _context;
         private readonly IAccountService _accountService;
         private readonly IValidator<CreateTransactionDto> _createValidator;
         private readonly IRequestClient<ProcessExternalPaymentCommand> _paymentClient;
         private readonly IMapper _mapper;
         private readonly ICurrencyRateService _currencyRateService;
+        private readonly IRequestClient<ProcessTransactionCommand> _transactionRequestClient;
 
-        public TransactionService(CoreDbContext context, IAccountService accountService, IValidator<CreateTransactionDto> createValidator, IMapper mapper, IRequestClient<ProcessExternalPaymentCommand> paymentClient, ICurrencyRateService currencyRateService)
+        public TransactionService(
+            CoreDbContext context,
+            IAccountService accountService,
+            IValidator<CreateTransactionDto> createValidator,
+            IMapper mapper,
+            IRequestClient<ProcessExternalPaymentCommand> paymentClient,
+            ICurrencyRateService currencyRateService,
+            IRequestClient<ProcessTransactionCommand> transactionRequestClient) 
         {
             _context = context;
             _accountService = accountService;
@@ -30,18 +37,38 @@ namespace Core.Application.Services.Implementations
             _mapper = mapper;
             _paymentClient = paymentClient;
             _currencyRateService = currencyRateService;
+            _transactionRequestClient = transactionRequestClient;
         }
+
         public async Task<TransactionDto> InitializeTransactionAsync(CreateTransactionDto dto, Guid currentUserId)
         {
             _createValidator.ValidateAndThrow(dto);
+
+            var transactionId = Guid.NewGuid();
+            var command = new ProcessTransactionCommand(transactionId, dto, currentUserId);
+
+            var response = await _transactionRequestClient.GetResponse<ProcessTransactionResponse>(command);
+
+            if (!response.Message.Success)
+                throw new BadRequestException(response.Message.ErrorMessage);
+
+            return response.Message.Transaction!;
+        }
+
+        public async Task<TransactionDto> ExecuteTransactionAsync(CreateTransactionDto dto, Guid userId, Guid transactionId)
+        {
+            var existing = await GetTransactionByIdIfExistsAsync(transactionId);
+            if (existing != null)
+                return existing;
+
             var transaction = _mapper.Map<Transaction>(dto);
-            transaction.Id = Guid.NewGuid();
+            transaction.Id = transactionId;
 
             if (transaction.SourceType == TransactionObjectType.Account)
             {
-                var sourceAcc = await _accountService.GetAccountFromDbAsync(transaction.SourceId!.Value, currentUserId);
+                var sourceAcc = await _accountService.GetAccountFromDbAsync(transaction.SourceId!.Value, userId);
 
-                if (transaction.TargetType == TransactionObjectType.Account) 
+                if (transaction.TargetType == TransactionObjectType.Account)
                 {
                     var targetAcc = await _accountService.GetAccountFromDbAsync(transaction.TargetId!.Value, null);
 
@@ -87,6 +114,12 @@ namespace Core.Application.Services.Implementations
             await _context.SaveChangesAsync();
 
             return _mapper.Map<TransactionDto>(transaction);
+        }
+
+        public async Task<TransactionDto?> GetTransactionByIdIfExistsAsync(Guid transactionId)
+        {
+            var transaction = await _context.Transactions.FindAsync(transactionId);
+            return transaction == null ? null : _mapper.Map<TransactionDto>(transaction);
         }
 
         public async Task<DepositFundsResponse> ProcessDepositFund(DepositFundsCommand command)
@@ -147,8 +180,7 @@ namespace Core.Application.Services.Implementations
                     transaction.Amount,
                     transaction.Id.ToString(),
                     DateTime.UtcNow,
-                    source.Currency 
-                ));
+                    source.Currency));
 
             if (!response.Message.Success)
             {
@@ -182,6 +214,7 @@ namespace Core.Application.Services.Implementations
                 _context.Accounts.Update(master);
             }
         }
+
         private void ApplyTransferWithConversion(Transaction transaction, Account source, Account target, decimal convertedAmount)
         {
             if (!EnsureCanInitialize(transaction, source)) return;
@@ -230,7 +263,6 @@ namespace Core.Application.Services.Implementations
                 transaction.ResolutionMessage = "На счёте недостаточно денег";
                 return false;
             }
-
             return true;
         }
 
@@ -264,14 +296,10 @@ namespace Core.Application.Services.Implementations
 
         private async Task<Transaction> GetTransactionFromDbAsync(Guid transactionId)
         {
-            var account = await _context.FindAsync<Transaction>(transactionId);
-
-            if (account == null)
-            {
+            var transaction = await _context.FindAsync<Transaction>(transactionId);
+            if (transaction == null)
                 throw new NotFoundException(nameof(Transaction));
-            }
-
-            return account;
+            return transaction;
         }
     }
 }

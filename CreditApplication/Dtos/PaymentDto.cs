@@ -19,6 +19,7 @@ namespace CreditApplication.Dtos
         public decimal? OriginalAmount { get; set; }
         public string? OriginalCurrency { get; set; }
         public decimal? ExchangeRate { get; set; }
+        public DateTime? DueDate { get; set; }
     }
 
     public class CreatePaymentRequest
