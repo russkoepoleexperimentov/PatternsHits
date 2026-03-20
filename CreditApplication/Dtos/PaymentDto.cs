@@ -1,4 +1,5 @@
 ﻿using Common.Enums;
+using CreditDomain.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -20,6 +21,7 @@ namespace CreditApplication.Dtos
         public string? OriginalCurrency { get; set; }
         public decimal? ExchangeRate { get; set; }
         public DateTime? DueDate { get; set; }
+        public string Currency { get; set; } = null!;
     }
 
     public class CreatePaymentRequest

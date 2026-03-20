@@ -13,7 +13,8 @@ namespace CreditApplication.Profiles
     {
         public PaymentProfile()
         {
-            CreateMap<Payment, PaymentDto>();
+            CreateMap<Payment, PaymentDto>()
+                    .ForMember(dest => dest.Currency, opt => opt.MapFrom(src => src.Credit != null ? src.Credit.Currency : src.OriginalCurrency ?? "RUB"));
 
             CreateMap<CreatePaymentRequest, Payment>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
