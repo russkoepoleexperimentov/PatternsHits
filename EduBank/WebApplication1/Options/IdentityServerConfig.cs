@@ -104,7 +104,7 @@ public static class Config
                 RequirePkce = true,
                 RequireClientSecret = false,
                 RequireConsent = false,
-                RedirectUris = { "myapp://callback" },
+                RedirectUris = { "bankclient://auth" },
                 AllowedScopes = { "openid", "profile", "account_api" }
             },
             new Client
