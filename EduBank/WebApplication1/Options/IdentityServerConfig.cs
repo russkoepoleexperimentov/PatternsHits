@@ -28,8 +28,8 @@ public static class Config
     public static IEnumerable<Client> GetClients(IConfiguration config)
     {
         var auth = config.GetSection("Auth");
-        var authority = auth["InternalAuthority"] ?? "http://localhost:2280";
-        var swaggerUrl = auth["SwaggerUrl"] ?? "http://localhost:2280";
+        var authority = auth["InternalAuthority"] ?? "http://localhost:5000";
+        var swaggerUrl = auth["SwaggerUrl"] ?? "http://localhost:5000";
 
         return new List<Client>
         {
@@ -54,8 +54,8 @@ public static class Config
                 AllowedGrantTypes = GrantTypes.Code,
                 RequirePkce = false,
                 RequireClientSecret = false,
-                RedirectUris = { "http://37.21.130.4:2281/swagger/oauth2-redirect.html" },
-                AllowedCorsOrigins = { "http://37.21.130.4:2281" },
+                RedirectUris = { "http://37.21.130.4:5001/swagger/oauth2-redirect.html" },
+                AllowedCorsOrigins = { "http://37.21.130.4:5001" },
                 AllowedScopes = { "openid", "profile", "account_api" },
                 AllowAccessTokensViaBrowser = true
             },
@@ -66,8 +66,8 @@ public static class Config
                 AllowedGrantTypes = GrantTypes.Code,
                 RequirePkce = false,
                 RequireClientSecret = false,
-                RedirectUris = { "http://37.21.130.4:5001/swagger/oauth2-redirect.html" },
-                AllowedCorsOrigins = { "http://37.21.130.4:5001" },
+                RedirectUris = { "http://37.21.130.4:5002/swagger/oauth2-redirect.html" },
+                AllowedCorsOrigins = { "http://37.21.130.4:5002" },
                 AllowedScopes = { "openid", "profile", "credit_api" },
                 AllowAccessTokensViaBrowser = true
             },
@@ -79,8 +79,8 @@ public static class Config
                 AllowedGrantTypes = GrantTypes.Code,
                 RequirePkce = false,
                 RequireClientSecret = false,
-                RedirectUris = { "http://37.21.130.4:5002/swagger/oauth2-redirect.html" },
-                AllowedCorsOrigins = { "http://37.21.130.4:5002" },
+                RedirectUris = { "http://37.21.130.4:5003/swagger/oauth2-redirect.html" },
+                AllowedCorsOrigins = { "http://37.21.130.4:5003" },
                 AllowedScopes = { "openid", "profile", "currency_api" },
                 AllowAccessTokensViaBrowser = true
             },
