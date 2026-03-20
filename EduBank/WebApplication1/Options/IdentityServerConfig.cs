@@ -95,7 +95,7 @@ public static class Config
                 RedirectUris = { $"{auth["WebUrl"]}/signin-oidc" },
                 PostLogoutRedirectUris = { $"{auth["WebUrl"]}/signout-callback-oidc" },
                 AllowedCorsOrigins = { auth["WebUrl"] },
-                AllowedScopes = { "openid", "profile", "account_api" }
+                AllowedScopes = { "openid", "profile", "account_api", "credit_api" }
             },
             new Client
             {
@@ -105,7 +105,7 @@ public static class Config
                 RequireClientSecret = false,
                 RequireConsent = false,
                 RedirectUris = { "bankclient://auth" },
-                AllowedScopes = { "openid", "profile", "account_api" }
+                AllowedScopes = { "openid", "profile", "account_api", "credit_api" }
             },
             new Client
             {
