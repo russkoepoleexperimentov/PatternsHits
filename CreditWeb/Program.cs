@@ -161,6 +161,7 @@ namespace Web
             builder.Services.AddScoped<ITariffService, TariffService>();
             builder.Services.AddScoped<ICreditService, CreditsService>();
             builder.Services.AddScoped<IPaymentService, PaymentService>();
+            builder.Services.AddScoped<ICreditRatingService, CreditRatingService>();
             builder.Services
                 .AddAutoMapper(typeof(CreditProfile))
                 .AddAutoMapper(typeof(TariffProfile))
