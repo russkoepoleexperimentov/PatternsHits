@@ -85,7 +85,16 @@ namespace Core.Application.Services.Implementations
             }
         }
 
-        private string Serialize<T>(T dto)
+        public bool IsDisplayMode(Guid connectionId)
+        {
+            if(_sockets.TryGetValue(connectionId, out var connection))
+            {
+                return connection.IsDisplayMode;
+            }
+            return false;
+        }
+
+        public string Serialize<T>(T dto)
         {
             return JsonSerializer.Serialize(dto, typeof(T),
                         new JsonSerializerOptions()

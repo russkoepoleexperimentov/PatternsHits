@@ -17,6 +17,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.Json.Serialization;
+using Core.Application.Services.Interfaces;
 
 namespace Core.Web
 {
@@ -29,6 +30,8 @@ namespace Core.Web
         private readonly string _authority;
         private readonly string _audience;
 
+        private readonly IAccountService _accountService;
+
 
         // Add these fields to the class (if not already present)
         private static IConfigurationManager<OpenIdConnectConfiguration> _configurationManager;
@@ -40,7 +43,8 @@ namespace Core.Web
             ILogger<TransactionsWebSocketMiddleware> logger, 
             TokenValidationParameters parameters,
             string authority,
-            string audience)
+            string audience,
+            IAccountService accountService)
         {
             _next = next;
             _manager = manager;
@@ -48,6 +52,7 @@ namespace Core.Web
             _tokenValidationParameters = parameters;
             _authority = authority;
             _audience = audience;
+            _accountService = accountService;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -112,19 +117,42 @@ namespace Core.Web
                     if (result.MessageType == WebSocketMessageType.Close)
                     {
                         await _manager.RemoveSocket(connectionId);
-                        /*var disconnectMessage = new { type = "system", content = $"User {connectionId} disconnected" };
-                        await _manager.BroadcastMessageAsync(JsonSerializer.Serialize(disconnectMessage));*/
                         break;
                     }
 
                     if (result.MessageType == WebSocketMessageType.Text)
                     {
                         string receivedMessage = Encoding.UTF8.GetString(buffer, 0, result.Count);
-                        /*Console.WriteLine($"Received from {connectionId}: {receivedMessage}");
+                        _logger.LogInformation($"Got: {receivedMessage} from {connectionId}");
+                        string[] tokens = receivedMessage.Split(" ");
 
-                        // Обработка полученного сообщения (ожидаем JSON вида { "user": "name", "text": "hello" })
-                        // Пересылаем всем клиентам
-                        await _manager.BroadcastMessageAsync(receivedMessage);*/
+                        if(tokens.Length >= 2 && tokens[0] == "get")
+                        {
+                            var id = Guid.Parse(tokens[1]);
+
+                            var from = tokens.Length >= 3 ? DateTime.Parse(tokens[2]) : DateTime.MinValue;
+                            var to = tokens.Length >= 4 ? DateTime.Parse(tokens[3]) : DateTime.MaxValue;
+                            _logger.LogInformation($"Got get cmd from {connectionId}: {id}, {from}, {to}");
+
+                            if (_manager.IsDisplayMode(connectionId))
+                            {
+                                var transactions = await _accountService.GetAccountTransactionsForDisplayAsync(id, from, to, connectionId);
+
+                                foreach (var transaction in transactions)
+                                {
+                                    await _manager.SendToClientAsync(connectionId, _manager.Serialize(transaction));
+                                }
+                            }
+                            else
+                            {
+                                var transactions = await _accountService.GetAccountTransactionsAsync(id, from, to, null);
+
+                                foreach (var transaction in transactions)
+                                {
+                                    await _manager.SendToClientAsync(connectionId, _manager.Serialize(transaction));
+                                }
+                            }
+                        }
                     }
                 }
             }
