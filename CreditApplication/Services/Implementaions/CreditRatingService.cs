@@ -22,14 +22,14 @@ namespace CreditService.Services
                 .OrderBy(c => c.CreateDateTime)
                 .ToListAsync();
 
-            int rating = 500;
+            long rating = 500;
             DateTime now = DateTime.UtcNow;
 
             var firstCredit = credits.OrderBy(c => c.CreateDateTime).FirstOrDefault();
             if (firstCredit != null)
             {
                 var monthsSinceFirst = (now - firstCredit.CreateDateTime).TotalDays / 30;
-                rating += (int)Math.Min(monthsSinceFirst, 60);
+                rating += (long)Math.Min(monthsSinceFirst, 60);
             }
 
             int closedCredits = credits.Count(c => c.Status == CreditStatus.Closed);
@@ -47,7 +47,7 @@ namespace CreditService.Services
                     if (credit.ApprovedAmount.HasValue && credit.ApprovedAmount > 0)
                     {
                         decimal paidRatio = 1m - (credit.RemainingDebt / credit.ApprovedAmount.Value);
-                        rating += (int)(paidRatio * 50);
+                        rating += (long)(paidRatio * 50);
                     }
                 }
 
@@ -59,23 +59,23 @@ namespace CreditService.Services
 
                 foreach (var payment in payments)
                 {
-                    double recencyWeight = 1.0 + (paymentIndex / (double)payments.Count);
+                    double recencyWeight = 1.0 + (paymentIndex / (double)Math.Max(payments.Count, 1));
                     paymentIndex++;
 
                     if (payment.Status == PaymentStatus.Processed && payment.ProcessedAt.HasValue)
                     {
                         if (payment.ProcessedAt <= payment.DueDate)
                         {
-                            rating += (int)(5 * recencyWeight);
+                            rating += (long)(5 * recencyWeight);
                         }
                         else
                         {
-                            rating -= (int)(8 * recencyWeight);
+                            rating -= (long)(8 * recencyWeight);
                         }
                     }
                     else if (payment.Status == PaymentStatus.Overdue)
                     {
-                        rating -= (int)(5 * recencyWeight);
+                        rating -= (long)(5 * recencyWeight);
                     }
                 }
 
@@ -89,7 +89,8 @@ namespace CreditService.Services
                     rating -= 20;
                 }
             }
-            return Math.Clamp(rating, 0, 1000);
+
+            return (int)Math.Clamp(rating, 0, 1000);
         }
     }
 }
