@@ -29,14 +29,12 @@ public class CurrencyRateService : ICurrencyRateService
         var clientSecret = _configuration["IdentityServer:ClientSecret"];
         var scope = _configuration["IdentityServer:Scope"];
 
-        var discovery = await _httpClient.GetDiscoveryDocumentAsync(authority);
-        if (discovery.IsError)
-            throw new Exception(discovery.Error);
+        var tokenEndpoint = $"{authority}/connect/token";
 
         var tokenResponse = await _httpClient.RequestClientCredentialsTokenAsync(
             new ClientCredentialsTokenRequest
             {
-                Address = discovery.TokenEndpoint,
+                Address = tokenEndpoint,
                 ClientId = clientId,
                 ClientSecret = clientSecret,
                 Scope = scope
