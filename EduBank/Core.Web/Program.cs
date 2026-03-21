@@ -12,6 +12,7 @@ using FluentValidation;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.WebSockets;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -45,6 +46,16 @@ namespace Core.Web
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
 
+            var tokenValidation = new TokenValidationParameters
+            {
+                ValidateIssuer = false,
+                ValidateAudience = true,
+                ValidAudience = audience,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ClockSkew = TimeSpan.Zero
+            }; 
+
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
@@ -53,15 +64,7 @@ namespace Core.Web
                     options.RequireHttpsMetadata = false;
                     options.Audience = audience;
 
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = false,   
-                        ValidateAudience = true,
-                        ValidAudience = audience,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        ClockSkew = TimeSpan.Zero
-                    };
+                    options.TokenValidationParameters = tokenValidation;
 
                     options.Events = new JwtBearerEvents
                     {
@@ -114,6 +117,8 @@ namespace Core.Web
                     }
                 });
             });
+
+            builder.Services.AddSingleton<TransactionsWebSocketConnectionManager>();
 
             builder.Services.AddCors(options =>
             {
@@ -204,6 +209,11 @@ namespace Core.Web
 
             app.MapControllers();
             app.UseCors("AllowFrontend");
+
+            app.UseWebSockets(); // Включаем поддержку WebSocket
+
+            // Подключаем наш middleware
+            app.UseMiddleware<TransactionsWebSocketMiddleware>(tokenValidation, jwtAuthority, audience);
 
             app.Run();
         }

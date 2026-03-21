@@ -172,6 +172,16 @@ namespace Web
                        .UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"),
                                   b => b.MigrationsAssembly("CreditWeb")));
 
+
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowFrontend", policy => policy
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod());
+            });
+
             var app = builder.Build();
 
 

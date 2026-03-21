@@ -44,32 +44,270 @@ The content is organized as follows:
 </file_summary>
 
 <directory_structure>
-App.js
-components/layout/AppLayout.jsx
-components/privateRoute/PrivateRoute.jsx
-components/publicRoute/PublicRoute.jsx
-context/authContext.js
-index.js
-pages/accounts/AccountsPage.jsx
-pages/accounts/ui/DepositWithdrawModal.jsx
-pages/accounts/values/transactionTable.js
-pages/forbidden/ForbiddenPage.jsx
-pages/home/HomePage.jsx
-pages/login/LoginPage.jsx
-pages/notFound/NotFoundPage.jsx
-pages/profile/ProfilePage.jsx
-pages/tariffs/TariffsPage.jsx
-pages/users/UsersPage.jsx
-services/api.js
-services/core.js
-services/credit.js
-services/users.js
+.gitignore
+package.json
+public/index.html
+public/manifest.json
+public/robots.txt
+README.md
+src/App.js
+src/components/layout/AppLayout.jsx
+src/components/privateRoute/PrivateRoute.jsx
+src/components/publicRoute/PublicRoute.jsx
+src/config.js
+src/context/authContext.js
+src/index.js
+src/pages/accounts/AccountsPage.jsx
+src/pages/accounts/ui/DepositWithdrawModal.jsx
+src/pages/accounts/values/transactionTable.js
+src/pages/credits/CreditsPage.jsx
+src/pages/forbidden/ForbiddenPage.jsx
+src/pages/home/HomePage.jsx
+src/pages/login/Callback.jsx
+src/pages/login/LoginPage.jsx
+src/pages/notFound/NotFoundPage.jsx
+src/pages/profile/ProfilePage.jsx
+src/pages/tariffs/TariffsPage.jsx
+src/pages/users/UsersPage.jsx
+src/services/api.js
+src/services/authService.js
+src/services/core.js
+src/services/credit.js
+src/services/users.js
 </directory_structure>
 
 <files>
 This section contains the contents of the repository's files.
 
-<file path="App.js">
+<file path=".gitignore">
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+</file>
+
+<file path="package.json">
+{
+    "name": "frontend",
+    "version": "0.1.0",
+    "private": true,
+    "dependencies": {
+        "@ant-design/icons": "^6.1.0",
+        "@testing-library/dom": "^10.4.1",
+        "@testing-library/jest-dom": "^6.9.1",
+        "@testing-library/react": "^16.3.2",
+        "@testing-library/user-event": "^13.5.0",
+        "antd": "^6.3.1",
+        "dayjs": "^1.11.19",
+        "jwt-decode": "^4.0.0",
+        "lodash": "^4.17.23",
+        "oidc-client-ts": "^3.5.0",
+        "react": "^19.2.4",
+        "react-dom": "^19.2.4",
+        "react-router-dom": "^7.13.1",
+        "react-scripts": "5.0.1",
+        "web-vitals": "^2.1.4"
+    },
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject"
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ]
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    }
+}
+</file>
+
+<file path="public/index.html">
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>React App</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  </body>
+</html>
+</file>
+
+<file path="public/manifest.json">
+{
+  "short_name": "React App",
+  "name": "Create React App Sample",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
+</file>
+
+<file path="public/robots.txt">
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Disallow:
+</file>
+
+<file path="README.md">
+# Getting Started with Create React App
+
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+## Available Scripts
+
+In the project directory, you can run:
+
+### `npm start`
+
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+
+The page will reload when you make changes.\
+You may also see any lint errors in the console.
+
+### `npm test`
+
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+
+### `npm run build`
+
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
+
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
+
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+### `npm run eject`
+
+**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+
+If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+
+You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+
+## Learn More
+
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+
+To learn React, check out the [React documentation](https://reactjs.org/).
+
+### Code Splitting
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+
+### Analyzing the Bundle Size
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+
+### Making a Progressive Web App
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+
+### Advanced Configuration
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+
+### Deployment
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+
+### `npm run build` fails to minify
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+</file>
+
+<file path="src/App.js">
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/authContext';
@@ -85,6 +323,8 @@ import { ForbiddenPage } from './pages/forbidden/ForbiddenPage';
 import { AccountsPage } from './pages/accounts/AccountsPage';
 import { UsersPage } from './pages/users/UsersPage';
 import { TariffsPage } from './pages/tariffs/TariffsPage';
+import { CreditsPage } from './pages/credits/CreditsPage';
+import Callback from './pages/login/Callback';
 
 function AppRoutes() {
   const { loading } = useAuth();
@@ -145,6 +385,20 @@ function AppRoutes() {
           </PrivateRoute>
         }
       />
+      <Route
+        path="/credits"
+        element={
+          <PrivateRoute>
+            <CreditsPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/signin-oidc"
+        element={
+            <Callback />
+        }
+      />
       <Route path="/forbidden" element={<ForbiddenPage/>} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
@@ -166,12 +420,12 @@ function App() {
 export default App;
 </file>
 
-<file path="components/layout/AppLayout.jsx">
+<file path="src/components/layout/AppLayout.jsx">
 import React from 'react';
 import { Layout, Menu } from 'antd';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/authContext';
-import { AccountBookOutlined, ContactsOutlined, CreditCardOutlined, ExceptionOutlined, HomeOutlined, ProfileOutlined } from '@ant-design/icons';
+import { AccountBookOutlined, ContactsOutlined, CreditCardOutlined, ExceptionOutlined, HomeOutlined, ProfileOutlined, ReconciliationOutlined } from '@ant-design/icons';
 
 const { Header, Content, Footer } = Layout;
 
@@ -189,6 +443,7 @@ export const AppLayout = ({ children }) => {
     { key: '/users', icon: <ContactsOutlined/>, label: <Link to="/users">Пользователи</Link> },
     { key: '/accounts', icon: <AccountBookOutlined/>, label: <Link to="/accounts">Счета</Link> },
     { key: '/tariffs', icon: <CreditCardOutlined />, label: <Link to="/tariffs">Тарифы</Link> },
+    { key: '/credits', icon: <ReconciliationOutlined />, label: <Link to="/credits">Кредиты</Link> },
     user ? { key: '/profile', icon: <ProfileOutlined/>, label: <Link to="/profile">Профиль</Link> } : null,
     user
       ? { key: 'logout', icon: <ExceptionOutlined/>, label: <span onClick={logout}>Выйти</span> }
@@ -219,19 +474,20 @@ export const AppLayout = ({ children }) => {
 };
 </file>
 
-<file path="components/privateRoute/PrivateRoute.jsx">
+<file path="src/components/privateRoute/PrivateRoute.jsx">
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { getAccessToken, getRoleFromToken, isRoleAllowed } from '../../services/api';
+import { useAuth } from '../../context/authContext';
 
 export const PrivateRoute = ({ children }) => {
-  const token = getAccessToken();
+    const { user, loading } = useAuth();
 
-  if (!token) {
+  if (!user) {
     return <Navigate to="/login" />;
   }
 
-  const role = getRoleFromToken(token);
+  const role = getRoleFromToken(user.access_token);
   if (!isRoleAllowed(role)) {
     return <Navigate to="/forbidden" />;
   }
@@ -240,7 +496,7 @@ export const PrivateRoute = ({ children }) => {
 };
 </file>
 
-<file path="components/publicRoute/PublicRoute.jsx">
+<file path="src/components/publicRoute/PublicRoute.jsx">
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../context/authContext';
@@ -252,143 +508,56 @@ export const PublicRoute = ({ children }) => {
 };
 </file>
 
-<file path="context/authContext.js">
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import {
-  authApiRequest,
-  setTokens,
-  removeTokens,
-  getAccessToken,
-  getRoleFromToken,
-  isRoleAllowed,
-} from '../services/api';
+<file path="src/config.js">
+const config = {
+  authority: 'http://localhost:2280', // URL IdentityServer
+  client_id: 'web_client', // Client ID, зарегистрированный в IdentityServer
+  redirect_uri: 'http://localhost:3000/signin-oidc', // Адрес после логина
+  response_type: 'code',
+  scope: 'openid profile account_api credit_api',
+  post_logout_redirect_uri: 'http://localhost:3000/signout-callback-oidc',
+};
 
-const AuthContext = createContext(null);
+export default config;
+</file>
+
+<file path="src/context/authContext.js">
+import React, { createContext, useState, useEffect, useContext } from 'react';
+import { getUser, login, logout } from '../services/authService';
+
+const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadUser = async () => {
-      const token = getAccessToken();
-      if (token) {
-        const role = getRoleFromToken(token);
-        if (!isRoleAllowed(role)) {
-          // Роль Customer – удаляем токены и не загружаем пользователя
-          removeTokens();
-          setLoading(false);
-          return;
-        }
-        try {
-          const response = await authApiRequest('/api/users', { method: 'GET' });
-          if (response.ok) {
-            const userData = await response.json();
-            setUser(userData);
-          } else {
-            removeTokens();
-          }
-        } catch {
-          removeTokens();
-        }
+    const initAuth = async () => {
+      try {
+        const currentUser = await getUser();
+        setUser(currentUser);
+      } catch (error) {
+        console.error('Auth init error', error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
-    loadUser();
+    initAuth();
   }, []);
 
-  const login = async (email, password) => {
-    const response = await fetch(`${process.env.REACT_APP_AUTH_API_URL}/api/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      const role = getRoleFromToken(data.accessToken);
-      if (!isRoleAllowed(role)) {
-        // Роль Customer – не пускаем
-        removeTokens();
-        return { success: false, error: 'Доступ запрещён для данной роли' };
-      }
-      setTokens(data.accessToken, data.refreshToken);
-      const userResponse = await authApiRequest('/api/users', { method: 'GET' });
-      if (userResponse.ok) {
-        const userData = await userResponse.json();
-        setUser(userData);
-        return { success: true };
-      } else {
-        removeTokens();
-        return { success: false, error: 'Не удалось загрузить данные пользователя' };
-      }
-    } else {
-      const errorData = await response.json().catch(() => ({}));
-      return { success: false, error: errorData.message || 'Ошибка входа' };
-    }
+  const loginHandler = () => {
+    login();
   };
 
-  const register = async (email, password, credentials) => {
-    const response = await fetch(`${process.env.REACT_APP_AUTH_API_URL}/api/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, credentials }),
-    });
-
-    if (response.ok) {
-      return { success: true };
-    } else {
-      const errorData = await response.json().catch(() => ({}));
-      return { success: false, error: errorData.message || 'Ошибка регистрации' };
-    }
-  };
-
-  const logout = async () => {
-    try {
-      await authApiRequest('/api/auth/logout', { method: 'POST' });
-    } finally {
-      removeTokens();
-      setUser(null);
-    }
-  };
-
-  const updateProfile = async (data) => {
-    const response = await authApiRequest('/api/users', {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    });
-    if (response.ok) {
-      const userResponse = await authApiRequest('/api/users', { method: 'GET' });
-      const updatedUser = await userResponse.json();
-      setUser(updatedUser);
-      return { success: true };
-    } else {
-      const error = await response.json().catch(() => ({}));
-      return { success: false, error: error.message || 'Ошибка обновления' };
-    }
-  };
-
-  const changePassword = async (oldPassword, newPassword) => {
-    const response = await authApiRequest('/api/auth/change-password', {
-      method: 'POST',
-      body: JSON.stringify({ oldPassword, newPassword }),
-    });
-    if (response.ok) {
-      return { success: true };
-    } else {
-      const error = await response.json().catch(() => ({}));
-      return { success: false, error: error.message || 'Ошибка смены пароля' };
-    }
+  const logoutHandler = () => {
+    logout();
   };
 
   const value = {
     user,
-    login,
-    register,
-    logout,
-    updateProfile,
-    changePassword,
     loading,
+    login: loginHandler,
+    logout: logoutHandler,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
@@ -397,7 +566,7 @@ export const AuthProvider = ({ children }) => {
 export const useAuth = () => useContext(AuthContext);
 </file>
 
-<file path="index.js">
+<file path="src/index.js">
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
@@ -411,7 +580,7 @@ root.render(
 );
 </file>
 
-<file path="pages/accounts/AccountsPage.jsx">
+<file path="src/pages/accounts/AccountsPage.jsx">
 import React, { useEffect, useState } from 'react';
 import { Table, Tag, Button, message, Spin, Tooltip, Drawer, Space, Typography, Popconfirm } from 'antd';
 import { UserOutlined, DeleteOutlined, CloseOutlined, MoneyCollectOutlined, MinusCircleOutlined, PlusCircleOutlined, BlockOutlined, EyeFilled, EyeOutlined, BookOutlined } from '@ant-design/icons';
@@ -636,7 +805,7 @@ export const AccountsPage = () => {
 };
 </file>
 
-<file path="pages/accounts/ui/DepositWithdrawModal.jsx">
+<file path="src/pages/accounts/ui/DepositWithdrawModal.jsx">
 import { Modal, Form, Input, InputNumber, Button, message } from 'antd';
 import { useSubmit } from 'react-router-dom';
 import { useEffect } from 'react';
@@ -719,7 +888,7 @@ export const DepositWithdrawModal = ({ open, onClose, onInvalidate, type, accoun
 };
 </file>
 
-<file path="pages/accounts/values/transactionTable.js">
+<file path="src/pages/accounts/values/transactionTable.js">
 import { Tag } from 'antd';
 import dayjs from 'dayjs';
 
@@ -798,7 +967,371 @@ return[
 ]};
 </file>
 
-<file path="pages/forbidden/ForbiddenPage.jsx">
+<file path="src/pages/credits/CreditsPage.jsx">
+// pages/credits/CreditsPage.jsx
+import React, { useEffect, useState } from 'react';
+import {
+  Table,
+  Tag,
+  Button,
+  message,
+  Spin,
+  Drawer,
+  Space,
+  Typography,
+  Modal,
+  Form,
+  Input,
+  InputNumber,
+  Tooltip,
+} from 'antd';
+import {
+  EyeOutlined,
+  CheckOutlined,
+  CloseOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
+import { useAuth } from '../../context/authContext';
+import { getCredits, approveCredit, rejectCredit, getCreditById } from '../../services/credit';
+import { authApiRequest } from '../../services/api';
+import dayjs from 'dayjs';
+
+const { Text } = Typography;
+
+const statusColors = {
+  Pending: 'orange',
+  Approved: 'green',
+  Rejected: 'red',
+  Closed: 'gray',
+};
+
+export const CreditsPage = () => {
+  const [credits, setCredits] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [usersMap, setUsersMap] = useState({});
+
+  const [selectedCredit, setSelectedCredit] = useState(null);
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [detailsLoading, setDetailsLoading] = useState(false);
+
+  const [approveModalVisible, setApproveModalVisible] = useState(false);
+  const [rejectModalVisible, setRejectModalVisible] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
+
+  const [approveForm] = Form.useForm();
+  const [rejectForm] = Form.useForm();
+
+  const fetchCredits = async () => {
+    setLoading(true);
+    try {
+      const data = await getCredits();
+      setCredits(data);
+
+      // Загружаем данные владельцев
+      const uniqueUserIds = [...new Set(data.map(c => c.userId).filter(Boolean))];
+      if (uniqueUserIds.length > 0) {
+        const usersData = await Promise.all(
+          uniqueUserIds.map(async (id) => {
+            try {
+              const res = await authApiRequest(`/api/users/${id}`, { method: 'GET' });
+              if (res.ok) return await res.json();
+            } catch {
+              return null;
+            }
+            return null;
+          })
+        );
+        const map = {};
+        usersData.forEach(u => {
+          if (u && u.id) map[u.id] = u;
+        });
+        setUsersMap(map);
+      }
+    } catch (error) {
+      message.error('Не удалось загрузить кредиты: ' + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCredits();
+  }, []);
+
+  const handleRowClick = async (record) => {
+    setSelectedCredit(record);
+    setDrawerVisible(true);
+    // Можно загрузить свежие данные, но пока используем то, что есть
+    // Если нужно точнее, можно вызвать getCreditById(record.id)
+  };
+
+  const closeDrawer = () => {
+    setDrawerVisible(false);
+    setSelectedCredit(null);
+  };
+
+  const handleApprove = async (values) => {
+    setActionLoading(true);
+    try {
+      await approveCredit(selectedCredit.id, values);
+      message.success('Кредит одобрен');
+      setApproveModalVisible(false);
+      approveForm.resetFields();
+      // Обновляем список и детали
+      fetchCredits();
+      if (selectedCredit) {
+        const updated = await getCreditById(selectedCredit.id);
+        setSelectedCredit(updated);
+      }
+    } catch (error) {
+      message.error('Ошибка при одобрении: ' + error.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleReject = async (values) => {
+    setActionLoading(true);
+    try {
+      await rejectCredit(selectedCredit.id, values);
+      message.success('Кредит отклонён');
+      setRejectModalVisible(false);
+      rejectForm.resetFields();
+      fetchCredits();
+      if (selectedCredit) {
+        const updated = await getCreditById(selectedCredit.id);
+        setSelectedCredit(updated);
+      }
+    } catch (error) {
+      message.error('Ошибка при отклонении: ' + error.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const columns = [
+    {
+      title: 'ID кредита',
+      dataIndex: 'id',
+      key: 'id',
+      render: (id) => <code>{id.substring(0, 8)}...</code>,
+    },
+    {
+      title: 'Выдан',
+      key: 'user',
+      render: (_, record) => {
+        const owner = usersMap[record.userId];
+        if (!owner) return <Text type="secondary">—</Text>;
+        return (
+          <Tooltip title={owner.email}>
+            <Space>
+                <UserOutlined />
+                {owner.credentials || owner.email}
+            </Space>
+          </Tooltip>
+        );
+      },
+    },
+    {
+      title: 'Сумма',
+      dataIndex: 'amount',
+      key: 'amount',
+      render: (val) => `${val.toLocaleString()} ₽`,
+    },
+    {
+      title: 'Остаток долга',
+      dataIndex: 'remainingDebt',
+      key: 'remainingDebt',
+      render: (val) => `${val.toLocaleString()} ₽`,
+    },
+    {
+      title: 'Срок (дней)',
+      dataIndex: 'termDays',
+      key: 'termDays',
+    },
+    {
+      title: 'Статус',
+      dataIndex: 'status',
+      key: 'status',
+      render: (status) => <Tag color={statusColors[status]}>{status}</Tag>,
+    },
+    {
+      title: 'Дата создания',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render: (date) => dayjs(date).format('DD.MM.YYYY HH:mm'),
+    },
+    {
+      title: 'Действия',
+      key: 'actions',
+      render: (_, record) => (
+        <Button
+          icon={<EyeOutlined />}
+          size="small"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleRowClick(record);
+          }}
+        >
+          Просмотр
+        </Button>
+      ),
+    },
+  ];
+
+  return (
+    <div>
+      <h2>Управление кредитами</h2>
+      {loading ? (
+        <Spin size="large" style={{ display: 'block', margin: '50px auto' }} />
+      ) : (
+        <Table
+          dataSource={credits}
+          columns={columns}
+          rowKey="id"
+          pagination={{ pageSize: 10 }}
+          onRow={(record) => ({
+            onClick: () => handleRowClick(record),
+            style: { cursor: 'pointer' },
+          })}
+        />
+      )}
+
+      <Drawer
+        title={`Детали кредита ${selectedCredit?.id.substring(0, 8)}...`}
+        placement="right"
+        width={600}
+        onClose={closeDrawer}
+        open={drawerVisible}
+      >
+        {selectedCredit ? (
+          <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+            <div>
+              <Text strong>ID:</Text> <Text>{selectedCredit.id}</Text>
+            </div>
+            <div>
+              <Text strong>Владелец:</Text>{' '}
+              <Text>
+                {usersMap[selectedCredit.userId]?.email || selectedCredit.userId}
+              </Text>
+            </div>
+            <div>
+              <Text strong>Сумма:</Text> <Text>{selectedCredit.amount} ₽</Text>
+            </div>
+            <div>
+              <Text strong>Остаток долга:</Text> <Text>{selectedCredit.remainingDebt} ₽</Text>
+            </div>
+            <div>
+              <Text strong>Срок (дней):</Text> <Text>{selectedCredit.termDays}</Text>
+            </div>
+            <div>
+              <Text strong>Статус:</Text>{' '}
+              <Tag color={statusColors[selectedCredit.status]}>{selectedCredit.status}</Tag>
+            </div>
+            <div>
+              <Text strong>Дата создания:</Text>{' '}
+              <Text>{dayjs(selectedCredit.createdAt).format('DD.MM.YYYY HH:mm')}</Text>
+            </div>
+            {selectedCredit.approvedAmount && (
+              <div>
+                <Text strong>Одобренная сумма:</Text> <Text>{selectedCredit.approvedAmount} ₽</Text>
+              </div>
+            )}
+            {selectedCredit.approvedBy && (
+              <div>
+                <Text strong>Кем одобрен:</Text> <Text>{selectedCredit.approvedBy}</Text>
+              </div>
+            )}
+            {selectedCredit.rejectionReason && (
+              <div>
+                <Text strong>Причина отказа:</Text> <Text>{selectedCredit.rejectionReason}</Text>
+              </div>
+            )}
+
+            {selectedCredit.status === 'Pending' && (
+              <Space style={{ marginTop: 20 }}>
+                <Button
+                  type="primary"
+                  icon={<CheckOutlined />}
+                  onClick={() => setApproveModalVisible(true)}
+                >
+                  Одобрить
+                </Button>
+                <Button
+                  danger
+                  icon={<CloseOutlined />}
+                  onClick={() => setRejectModalVisible(true)}
+                >
+                  Отказать
+                </Button>
+              </Space>
+            )}
+          </Space>
+        ) : (
+          <Text>Кредит не выбран</Text>
+        )}
+      </Drawer>
+
+      {/* Модальное окно одобрения */}
+      <Modal
+        title="Одобрение кредита"
+        open={approveModalVisible}
+        onCancel={() => setApproveModalVisible(false)}
+        footer={null}
+        destroyOnClose
+      >
+        <Form form={approveForm} layout="vertical" onFinish={handleApprove}>
+          <Form.Item name="approvedAmount" label="Одобренная сумма (оставьте пустым для суммы заявки)">
+            <InputNumber
+              style={{ width: '100%' }}
+              placeholder="Сумма"
+              min={0.01}
+              step={0.01}
+              precision={2}
+            />
+          </Form.Item>
+          <Form.Item name="comment" label="Комментарий">
+            <Input.TextArea rows={3} placeholder="Комментарий (необязательно)" />
+          </Form.Item>
+          <Form.Item style={{ textAlign: 'right' }}>
+            <Space>
+              <Button onClick={() => setApproveModalVisible(false)}>Отмена</Button>
+              <Button type="primary" htmlType="submit" loading={actionLoading}>
+                Одобрить
+              </Button>
+            </Space>
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      {/* Модальное окно отказа */}
+      <Modal
+        title="Отказ в кредите"
+        open={rejectModalVisible}
+        onCancel={() => setRejectModalVisible(false)}
+        footer={null}
+        destroyOnClose
+      >
+        <Form form={rejectForm} layout="vertical" onFinish={handleReject}>
+          <Form.Item name="reason" label="Причина отказа" rules={[{ required: true, message: 'Введите причину' }]}>
+            <Input.TextArea rows={3} placeholder="Причина отказа" />
+          </Form.Item>
+          <Form.Item style={{ textAlign: 'right' }}>
+            <Space>
+              <Button onClick={() => setRejectModalVisible(false)}>Отмена</Button>
+              <Button type="primary" danger htmlType="submit" loading={actionLoading}>
+                Отказать
+              </Button>
+            </Space>
+          </Form.Item>
+        </Form>
+      </Modal>
+    </div>
+  );
+};
+</file>
+
+<file path="src/pages/forbidden/ForbiddenPage.jsx">
 import React from 'react';
 import { Result, Button } from 'antd';
 import { Link } from 'react-router-dom';
@@ -824,82 +1357,118 @@ export const ForbiddenPage = () => {
 };
 </file>
 
-<file path="pages/home/HomePage.jsx">
+<file path="src/pages/home/HomePage.jsx">
 import React from 'react';
-import { Typography } from 'antd';
+import { Typography, Card, Row, Col, Space } from 'antd';
+import { UserOutlined, AccountBookOutlined, CreditCardOutlined, ReconciliationOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/authContext';
 
 const { Title, Paragraph } = Typography;
 
 export const HomePage = () => {
   const { user } = useAuth();
+
+  const services = [
+    {
+      title: 'Пользователи',
+      icon: <UserOutlined style={{ fontSize: 48, color: '#1890ff' }} />,
+      link: '/users',
+      description: 'Управление пользователями, блокировка, назначение ролей',
+    },
+    {
+      title: 'Счета',
+      icon: <AccountBookOutlined style={{ fontSize: 48, color: '#52c41a' }} />,
+      link: '/accounts',
+      description: 'Просмотр счетов, транзакции, пополнение и снятие',
+    },
+    {
+      title: 'Тарифы',
+      icon: <CreditCardOutlined style={{ fontSize: 48, color: '#faad14' }} />,
+      link: '/tariffs',
+      description: 'Управление тарифами по кредитам',
+    },
+    {
+      title: 'Кредиты',
+      icon: <ReconciliationOutlined style={{ fontSize: 48, color: '#722ed1' }} />,
+      link: '/credits',
+      description: 'Просмотр кредитных заявок, одобрение и отказ',
+    },
+  ];
+
   return (
     <div>
-      <Title>Добро пожаловать, {user?.credentials}!</Title>
-      <Paragraph>
-        Это главная страница, доступная только авторизованным пользователям.
+      <Title level={2}>Добро пожаловать, {user?.credentials || user?.email}!</Title>
+      <Paragraph type="secondary">
+        Это панель управления банковской системой. Выберите раздел для работы.
       </Paragraph>
+
+      <Row gutter={[24, 24]} style={{ marginTop: 32 }}>
+        {services.map((service) => (
+          <Col xs={24} sm={12} md={8} lg={6} key={service.link}>
+            <Link to={service.link}>
+              <Card
+                hoverable
+                style={{ textAlign: 'center', height: '100%' }}
+                cover={<div style={{ padding: '20px 0' }}>{service.icon}</div>}
+              >
+                <Card.Meta
+                  title={service.title}
+                  description={service.description}
+                />
+              </Card>
+            </Link>
+          </Col>
+        ))}
+      </Row>
     </div>
   );
 };
 </file>
 
-<file path="pages/login/LoginPage.jsx">
+<file path="src/pages/login/Callback.jsx">
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { loginCallback } from '../../services/authService';
+
+const Callback = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleCallback = async () => {
+      try {
+        await loginCallback();
+        navigate('/');
+      } catch (error) {
+        console.error('Callback error', error);
+        navigate('/login');
+      }
+    };
+    handleCallback();
+  }, [navigate]);
+
+  return <div>Loading...</div>;
+};
+
+export default Callback;
+</file>
+
+<file path="src/pages/login/LoginPage.jsx">
 import React from 'react';
-import { Form, Input, Button, Card, message } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/authContext';
 
 export const LoginPage = () => {
-  const navigate = useNavigate();
   const { login } = useAuth();
-
-  const onFinish = async (values) => {
-    const { email, password } = values;
-    const result = await login(email, password);
-    if (result.success) {
-      message.success('Вход выполнен успешно');
-      navigate('/');
-    } else {
-      message.error(result.error || 'Ошибка входа');
-    }
-  };
-
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '50px' }}>
-      <Card title="Вход в систему" style={{ width: 400 }}>
-        <Form name="login" onFinish={onFinish} autoComplete="off">
-          <Form.Item
-            name="email"
-            rules={[
-              { required: true, message: 'Введите email' },
-              { type: 'email', message: 'Некорректный email' },
-            ]}
-          >
-            <Input prefix={<UserOutlined />} placeholder="Email" />
-          </Form.Item>
-
-          <Form.Item
-            name="password"
-            rules={[{ required: true, message: 'Введите пароль' }]}
-          >
-            <Input.Password prefix={<LockOutlined />} placeholder="Пароль" />
-          </Form.Item>
-
-          <Form.Item>
-            <Button type="primary" htmlType="submit" block>
-              Войти
-            </Button>
-          </Form.Item>
-        </Form>
-      </Card>
+    <div>
+      <h1>Login</h1>
+      <button onClick={login}>Sign in with IdentityServer</button>
     </div>
   );
 };
 </file>
 
-<file path="pages/notFound/NotFoundPage.jsx">
+<file path="src/pages/notFound/NotFoundPage.jsx">
 import React from 'react';
 import { Result, Button } from 'antd';
 import { Link } from 'react-router-dom';
@@ -916,7 +1485,7 @@ export const NotFoundPage = () => {
 };
 </file>
 
-<file path="pages/profile/ProfilePage.jsx">
+<file path="src/pages/profile/ProfilePage.jsx">
 import React, { useState } from 'react';
 import { Typography, Card, Button, Form, Input, message, Tabs } from 'antd';
 import { useAuth } from '../../context/authContext';
@@ -1028,7 +1597,7 @@ export const ProfilePage = () => {
 };
 </file>
 
-<file path="pages/tariffs/TariffsPage.jsx">
+<file path="src/pages/tariffs/TariffsPage.jsx">
 // pages/tariffs/TariffsPage.jsx
 import React, { useEffect, useState } from 'react';
 import {
@@ -1274,7 +1843,7 @@ export const TariffsPage = () => {
 };
 </file>
 
-<file path="pages/users/UsersPage.jsx">
+<file path="src/pages/users/UsersPage.jsx">
 // pages/users/UsersPage.jsx
 import React, { useEffect, useState, useCallback } from 'react';
 import { Table, Input, Button, Drawer, Spin, message, Typography, Space, Divider, Tag } from 'antd';
@@ -1570,9 +2139,10 @@ const handleUnblockUser = async (userId) => {
 };
 </file>
 
-<file path="services/api.js">
+<file path="src/services/api.js">
 // services/api.js
 import { jwtDecode } from 'jwt-decode';
+import { getUser } from './authService';
 
 // Функции для работы с токенами (общие)
 const getAccessToken = () => localStorage.getItem('accessToken');
@@ -1603,7 +2173,8 @@ const isRoleAllowed = (role) => role !== 'Customer';
 const createApiRequest = (baseURL) => {
   return async function apiRequest(endpoint, options = {}) {
     const url = `${baseURL}${endpoint}`;
-    const accessToken = getAccessToken();
+    const user = await getUser();
+    const accessToken = user.access_token;
 
     const headers = {
       'Content-Type': 'application/json',
@@ -1616,7 +2187,7 @@ const createApiRequest = (baseURL) => {
 
     let response = await fetch(url, { ...options, headers });
 
-    // Попытка обновить токен при 401
+    /*// Попытка обновить токен при 401
     if (response.status === 401 && getRefreshToken()) {
       const newTokens = await refreshAccessToken();
       if (newTokens) {
@@ -1627,7 +2198,7 @@ const createApiRequest = (baseURL) => {
         window.location.href = '/login';
         throw new Error('Session expired');
       }
-    }
+    }*/
 
     return response;
   };
@@ -1675,7 +2246,29 @@ export {
 };
 </file>
 
-<file path="services/core.js">
+<file path="src/services/authService.js">
+import { UserManager, WebStorageStateStore } from 'oidc-client-ts';
+import config from '../config';
+
+const userManager = new UserManager({
+  ...config,
+  userStore: new WebStorageStateStore({ store: window.localStorage })
+});
+
+export const getUser = async () => await userManager.getUser();
+
+export const login = () => userManager.signinRedirect();
+
+export const loginCallback = () => userManager.signinRedirectCallback();
+
+export const logout = () => userManager.signoutRedirect();
+
+export const renewToken = () => userManager.signinSilent();
+
+export default userManager;
+</file>
+
+<file path="src/services/core.js">
 // services/core.js
 import { coreApiRequest } from './api';
 
@@ -1752,7 +2345,7 @@ export const getAccountTransactions = async (accountId, from, to) => {
 };
 </file>
 
-<file path="services/credit.js">
+<file path="src/services/credit.js">
 // services/credit.js
 import { creditApiRequest } from './api';
 
@@ -1831,9 +2424,88 @@ export const deleteTariff = async (id) => {
   }
   // при успехе возвращается пустой ответ с кодом 200
 };
+
+/**
+ * Получить список кредитов (для сотрудника)
+ * @param {string} [userId] - опциональный фильтр по пользователю
+ * @returns {Promise<Array>} массив CreditDto
+ */
+export const getCredits = async (userId) => {
+  const url = userId ? `/api/credits?userId=${encodeURIComponent(userId)}` : '/api/credits';
+  const response = await creditApiRequest(url, { method: 'GET' });
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.message || 'Не удалось загрузить кредиты');
+  }
+  return response.json();
+};
+
+/**
+ * Получить кредит по ID
+ * @param {string} id
+ * @returns {Promise<Object>} CreditDto
+ */
+export const getCreditById = async (id) => {
+  const response = await creditApiRequest(`/api/credits/${id}`, { method: 'GET' });
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.message || 'Не удалось загрузить кредит');
+  }
+  return response.json();
+};
+
+/**
+ * Одобрить кредит
+ * @param {string} id
+ * @param {Object} data - { approvedAmount, comment }
+ * @returns {Promise<Object>} обновлённый CreditDto
+ */
+export const approveCredit = async (id, data) => {
+  const response = await creditApiRequest(`/api/credits/${id}/approve`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.message || 'Не удалось одобрить кредит');
+  }
+  return response.json();
+};
+
+/**
+ * Отклонить кредит
+ * @param {string} id
+ * @param {Object} data - { reason }
+ * @returns {Promise<Object>} обновлённый CreditDto
+ */
+export const rejectCredit = async (id, data) => {
+  const response = await creditApiRequest(`/api/credits/${id}/reject`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.message || 'Не удалось отклонить кредит');
+  }
+  return response.json();
+};
+
+/**
+ * Получить платежи по кредиту (опционально)
+ * @param {string} creditId
+ * @returns {Promise<Array>} массив PaymentDto
+ */
+export const getCreditPayments = async (creditId) => {
+  const response = await creditApiRequest(`/api/credits/${creditId}/payments`, { method: 'GET' });
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.message || 'Не удалось загрузить платежи');
+  }
+  return response.json();
+};
 </file>
 
-<file path="services/users.js">
+<file path="src/services/users.js">
 // services/users.js
 import { authApiRequest } from './api';
 

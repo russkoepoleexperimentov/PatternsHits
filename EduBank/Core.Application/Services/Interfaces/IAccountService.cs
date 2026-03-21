@@ -17,5 +17,6 @@ namespace Core.Application.Services.Interfaces
         Task<Account> GetAccountFromDbAsync(Guid value, Guid? currentUserId);
         Task<AccountDto> GetMasterAccountAsync();
         Task<List<AccountTransactionDto>> GetAccountTransactionsForDisplayAsync(Guid accountId, DateTime? from, DateTime? to, Guid? currentUserId);
+        AccountTransactionDto CreateTransactionDto(Guid accountId, Account account, Transaction t);
     }
 }

@@ -1,5 +1,6 @@
 // services/api.js
 import { jwtDecode } from 'jwt-decode';
+import { getUser } from './authService';
 
 // Функции для работы с токенами (общие)
 const getAccessToken = () => localStorage.getItem('accessToken');
@@ -30,7 +31,8 @@ const isRoleAllowed = (role) => role !== 'Customer';
 const createApiRequest = (baseURL) => {
   return async function apiRequest(endpoint, options = {}) {
     const url = `${baseURL}${endpoint}`;
-    const accessToken = getAccessToken();
+    const user = await getUser();
+    const accessToken = user.access_token;
 
     const headers = {
       'Content-Type': 'application/json',
@@ -43,7 +45,7 @@ const createApiRequest = (baseURL) => {
 
     let response = await fetch(url, { ...options, headers });
 
-    // Попытка обновить токен при 401
+    /*// Попытка обновить токен при 401
     if (response.status === 401 && getRefreshToken()) {
       const newTokens = await refreshAccessToken();
       if (newTokens) {
@@ -54,7 +56,7 @@ const createApiRequest = (baseURL) => {
         window.location.href = '/login';
         throw new Error('Session expired');
       }
-    }
+    }*/
 
     return response;
   };

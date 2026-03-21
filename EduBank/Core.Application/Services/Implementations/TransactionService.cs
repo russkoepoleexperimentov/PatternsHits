@@ -21,6 +21,7 @@ namespace Core.Application.Services.Implementations
         private readonly IMapper _mapper;
         private readonly ICurrencyRateService _currencyRateService;
         private readonly IRequestClient<ProcessTransactionCommand> _transactionRequestClient;
+        private readonly TransactionsWebSocketConnectionManager _transactionsWebSocketConnectionManager;
 
         public TransactionService(
             CoreDbContext context,
@@ -29,7 +30,8 @@ namespace Core.Application.Services.Implementations
             IMapper mapper,
             IRequestClient<ProcessExternalPaymentCommand> paymentClient,
             ICurrencyRateService currencyRateService,
-            IRequestClient<ProcessTransactionCommand> transactionRequestClient) 
+            IRequestClient<ProcessTransactionCommand> transactionRequestClient,
+            TransactionsWebSocketConnectionManager transactionsWebSocketConnectionManager)
         {
             _context = context;
             _accountService = accountService;
@@ -38,6 +40,7 @@ namespace Core.Application.Services.Implementations
             _paymentClient = paymentClient;
             _currencyRateService = currencyRateService;
             _transactionRequestClient = transactionRequestClient;
+            _transactionsWebSocketConnectionManager = transactionsWebSocketConnectionManager;
         }
 
         public async Task<TransactionDto> InitializeTransactionAsync(CreateTransactionDto dto, Guid currentUserId)
@@ -110,6 +113,14 @@ namespace Core.Application.Services.Implementations
             }
             else throw new InvalidOperationException();
 
+            // notify
+            var accounts = await _context.Accounts.Where(acc => transaction.SourceId == acc.Id || transaction.TargetId == acc.Id).ToListAsync();
+
+            foreach (var account in accounts) { 
+                var transactionDto = _accountService.CreateTransactionDto(account.Id, account, transaction);
+                _transactionsWebSocketConnectionManager.NotifyAllInterested(transactionDto, account);
+            }
+            
             _context.Transactions.Add(transaction);
             await _context.SaveChangesAsync();
 

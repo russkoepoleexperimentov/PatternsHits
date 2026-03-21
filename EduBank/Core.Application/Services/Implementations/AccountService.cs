@@ -105,46 +105,54 @@ namespace Core.Application.Services.Implementations
                 .OrderByDescending(t => t.CreateDateTime)
                 .ToListAsync();
 
-            var dtos = _mapper.Map<List<AccountTransactionDto>>(transactions);
+            var dtos = new List<AccountTransactionDto>(transactions.Count);
 
-            for (int i = 0; i < dtos.Count; i++)
+            for (int i = 0; i < transactions.Count; i++)
             {
                 var t = transactions[i];
-                var dto = dtos[i];
-
-                if (t.SourceId == accountId && t.SourceType == TransactionObjectType.Account)
-                {
-                    dto.Amount = -t.Amount;
-                    dto.Currency = t.FromCurrency ?? account.Currency;
-                }
-                else if (t.TargetId == accountId && t.TargetType == TransactionObjectType.Account)
-                {
-                    dto.Amount = t.ConvertedAmount ?? t.Amount;
-                    dto.Currency = t.ToCurrency ?? account.Currency;
-                }
-                else if (t.SourceType == TransactionObjectType.RealWorld)
-                {
-                    dto.Amount = t.Amount;
-                    dto.Currency = t.ToCurrency ?? account.Currency;
-                }
-                else if (t.TargetType == TransactionObjectType.RealWorld)
-                {
-                    dto.Amount = -t.Amount;
-                    dto.Currency = t.FromCurrency ?? account.Currency;
-                }
-                else
-                {
-                    dto.Amount = 0;
-                    dto.Currency = account.Currency;
-                }
+                AccountTransactionDto dto = CreateTransactionDto(accountId, account, t);
+                dtos[i] = dto;
             }
 
             return dtos;
         }
 
+        public AccountTransactionDto CreateTransactionDto(Guid accountId, Account account, Transaction t)
+        {
+            var dto = _mapper.Map<AccountTransactionDto>(t);
+
+            if (t.SourceId == accountId && t.SourceType == TransactionObjectType.Account)
+            {
+                dto.Amount = -t.Amount;
+                dto.Currency = t.FromCurrency ?? account.Currency;
+            }
+            else if (t.TargetId == accountId && t.TargetType == TransactionObjectType.Account)
+            {
+                dto.Amount = t.ConvertedAmount ?? t.Amount;
+                dto.Currency = t.ToCurrency ?? account.Currency;
+            }
+            else if (t.SourceType == TransactionObjectType.RealWorld)
+            {
+                dto.Amount = t.Amount;
+                dto.Currency = t.ToCurrency ?? account.Currency;
+            }
+            else if (t.TargetType == TransactionObjectType.RealWorld)
+            {
+                dto.Amount = -t.Amount;
+                dto.Currency = t.FromCurrency ?? account.Currency;
+            }
+            else
+            {
+                dto.Amount = 0;
+                dto.Currency = account.Currency;
+            }
+
+            return dto;
+        }
+
         public async Task<List<AccountDto>> GetAllAccountsAsync()
         {
-            var accounts = await _context.Accounts.ToListAsync();
+            var accounts = await _context.Accounts.Where(x => !x.IsMaster).ToListAsync();
             return accounts.Select(_mapper.Map<AccountDto>).ToList();
         }
 

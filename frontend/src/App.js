@@ -14,6 +14,7 @@ import { AccountsPage } from './pages/accounts/AccountsPage';
 import { UsersPage } from './pages/users/UsersPage';
 import { TariffsPage } from './pages/tariffs/TariffsPage';
 import { CreditsPage } from './pages/credits/CreditsPage';
+import Callback from './pages/login/Callback';
 
 function AppRoutes() {
   const { loading } = useAuth();
@@ -80,6 +81,12 @@ function AppRoutes() {
           <PrivateRoute>
             <CreditsPage />
           </PrivateRoute>
+        }
+      />
+      <Route
+        path="/signin-oidc"
+        element={
+            <Callback />
         }
       />
       <Route path="/forbidden" element={<ForbiddenPage/>} />
