@@ -110,45 +110,9 @@ namespace Core.Application.Services.Implementations
 
             foreach (var t in transactions)
             {
-                decimal amount;
-                string currency;
-                string description = t.Description ?? t.ResolutionMessage ?? "Транзакция";
-
-                if (t.SourceId == accountId && t.SourceType == TransactionObjectType.Account)
-                {
-                    amount = -t.Amount;
-                    currency = t.FromCurrency ?? account.Currency;
-                }
-                else if (t.TargetId == accountId && t.TargetType == TransactionObjectType.Account)
-                {
-                    amount = t.ConvertedAmount ?? t.Amount;
-                    currency = t.ToCurrency ?? account.Currency;
-                }
-                else if (t.SourceType == TransactionObjectType.RealWorld)
-                {
-                    amount = t.Amount;
-                    currency = t.ToCurrency ?? account.Currency;
-                }
-                else if (t.TargetType == TransactionObjectType.RealWorld)
-                {
-                    amount = -t.Amount;
-                    currency = t.FromCurrency ?? account.Currency;
-                }
-                else
-                {
-                    continue;
-                }
-
-                result.Add(new AccountTransactionDto
-                {
-                    Id = t.Id,
-                    Amount = amount,
-                    Currency = currency,
-                    Description = description,
-                    ResolutionMessage = t.ResolutionMessage,
-                    CreatedAt = t.CreateDateTime,
-                    Status = t.Status
-                });
+                var dto = CreateTransactionDto(accountId, account, t);
+                if (dto != null)
+                    result.Add(dto);
             }
 
             return result;
@@ -203,6 +167,48 @@ namespace Core.Application.Services.Implementations
             {
                 return new(false, ex.Message);
             }
+        }
+
+        public AccountTransactionDto? CreateTransactionDto(Guid accountId, Account account, Transaction t)
+        {
+            decimal amount;
+            string currency;
+            string description = t.Description ?? t.ResolutionMessage ?? "Транзакция";
+
+            if (t.SourceId == accountId && t.SourceType == TransactionObjectType.Account)
+            {
+                amount = -t.Amount;
+                currency = t.FromCurrency ?? account.Currency;
+            }
+            else if (t.TargetId == accountId && t.TargetType == TransactionObjectType.Account)
+            {
+                amount = t.ConvertedAmount ?? t.Amount;
+                currency = t.ToCurrency ?? account.Currency;
+            }
+            else if (t.SourceType == TransactionObjectType.RealWorld)
+            {
+                amount = t.Amount;
+                currency = t.ToCurrency ?? account.Currency;
+            }
+            else if (t.TargetType == TransactionObjectType.RealWorld)
+            {
+                amount = -t.Amount;
+                currency = t.FromCurrency ?? account.Currency;
+            }
+            else
+            {
+                return null;
+            }
+            return new AccountTransactionDto
+            {
+                Id = t.Id,
+                Amount = amount,
+                Currency = currency,
+                Description = description,
+                ResolutionMessage = t.ResolutionMessage,
+                CreatedAt = t.CreateDateTime,
+                Status = t.Status
+            };
         }
     }
 }
