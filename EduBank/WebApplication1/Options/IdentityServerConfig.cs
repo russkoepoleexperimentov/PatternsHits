@@ -7,6 +7,7 @@ public static class Config
         {
         new ApiScope("account_api", "Account API"),
         new ApiScope("credit_api", "Credit API"),
+        new ApiScope("options_api", "User Options API"),
         new ApiScope("currency_api", "Currency API")
         };
 
@@ -15,7 +16,8 @@ public static class Config
         {
         new ApiResource("account_api", "Account API") { Scopes = { "account_api" } },
         new ApiResource("credit_api", "Credit API") { Scopes = { "credit_api" } },
-        new ApiResource("currency_api", "Currency API") { Scopes = { "currency_api" } }
+        new ApiResource("currency_api", "Currency API") { Scopes = { "currency_api" } },
+        new ApiResource("options_api", "User Options API") { Scopes = { "options_api" } }
         };
 
     public static IEnumerable<IdentityResource> IdentityResources =>
@@ -87,6 +89,18 @@ public static class Config
 
             new Client
             {
+                ClientId = "options_service_swagger",
+                AllowedGrantTypes = GrantTypes.Code,
+                RequirePkce = false,
+                RequireClientSecret = false,
+                RedirectUris = { "http://37.21.130.4:5004/swagger/oauth2-redirect.html" },
+                AllowedCorsOrigins = { "http://37.21.130.4:5004" },
+                AllowedScopes = { "openid", "profile", "options_api" },
+                AllowAccessTokensViaBrowser = true
+            },
+
+            new Client
+            {
                 ClientId = auth["WebClientId"] ?? "web_client",
                 AllowedGrantTypes = GrantTypes.Code,
                 RequirePkce = true,
@@ -95,7 +109,7 @@ public static class Config
                 RedirectUris = { $"{auth["WebUrl"]}/signin-oidc" },
                 PostLogoutRedirectUris = { $"{auth["WebUrl"]}/signout-callback-oidc" },
                 AllowedCorsOrigins = { auth["WebUrl"] },
-                AllowedScopes = { "openid", "profile", "account_api", "credit_api" }
+                AllowedScopes = { "openid", "profile", "account_api", "credit_api", "currency_api", "options_api" }
             },
             new Client
             {
@@ -105,7 +119,7 @@ public static class Config
                 RequireClientSecret = false,
                 RequireConsent = false,
                 RedirectUris = { "bankclient://auth" },
-                AllowedScopes = { "openid", "profile", "account_api", "credit_api" }
+                AllowedScopes = { "openid", "profile", "account_api", "credit_api", "currency_api", "options_api" }
             },
             new Client
             {

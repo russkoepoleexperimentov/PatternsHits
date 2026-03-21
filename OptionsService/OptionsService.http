@@ -1,0 +1,6 @@
+@OptionsService_HostAddress = http://localhost:5200
+
+GET {{OptionsService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
