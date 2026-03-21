@@ -68,6 +68,8 @@ namespace Core.Web
                     return;
                 }
 
+                string? mode = context.Request.Query["fmt"];
+
                 _logger.LogInformation("Using WS token: " + token );
 
                 // Аутентифицируем
@@ -83,7 +85,7 @@ namespace Core.Web
                 var id = context!.GetUserId()!;
                 var isManager = context!.User.IsInRole("Employee");
                 WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync();
-                _manager.AddSocket(id.Value, isManager, webSocket);
+                _manager.AddSocket(id.Value, isManager, webSocket, (mode ?? "default") == "display");
 
                 /* Оповещаем всех о новом пользователе (опционально)
                 var connectMessage = new { type = "system", content = $"User {connectionId} connected" };

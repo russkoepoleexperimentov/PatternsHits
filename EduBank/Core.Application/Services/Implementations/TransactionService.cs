@@ -116,15 +116,17 @@ namespace Core.Application.Services.Implementations
             // notify
             var accounts = await _context.Accounts.Where(acc => transaction.SourceId == acc.Id || transaction.TargetId == acc.Id).ToListAsync();
 
-            foreach (var account in accounts) { 
-                var transactionDto = _accountService.CreateTransactionDto(account.Id, account, transaction);
-                _transactionsWebSocketConnectionManager.NotifyAllInterested(transactionDto, account);
+            var transactionDto = _mapper.Map<TransactionDto>(transaction);
+
+            foreach (var account in accounts) {
+                var displayDto = _accountService.CreateTransactionDto(account.Id, account, transaction);
+                await _transactionsWebSocketConnectionManager.NotifyAllInterested(transactionDto, displayDto, account);
             }
             
             _context.Transactions.Add(transaction);
             await _context.SaveChangesAsync();
 
-            return _mapper.Map<TransactionDto>(transaction);
+            return transactionDto;
         }
 
         public async Task<TransactionDto?> GetTransactionByIdIfExistsAsync(Guid transactionId)

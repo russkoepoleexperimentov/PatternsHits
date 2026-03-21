@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Core.Application.Dtos;
 using Core.Domain;
@@ -16,15 +17,16 @@ namespace Core.Application.Services.Implementations
     {
         class Connection
         {
+            public bool IsDisplayMode { get; set; }
             public bool IsManager { get; set; }
             public WebSocket Socket { get; set; } 
         }
 
         private readonly ConcurrentDictionary<Guid, Connection> _sockets = new();
 
-        public void AddSocket(Guid id, bool isManager, WebSocket socket)
+        public void AddSocket(Guid id, bool isManager, WebSocket socket, bool isDisplayMode)
         {
-            _sockets.TryAdd(id, new() { IsManager = isManager, Socket = socket});
+            _sockets.TryAdd(id, new() { IsManager = isManager, Socket = socket, IsDisplayMode = isDisplayMode });
         }
 
         public async Task RemoveSocket(Guid id)
@@ -65,15 +67,32 @@ namespace Core.Application.Services.Implementations
             }
         }
 
-        public async Task NotifyAllInterested(AccountTransactionDto dto, Account account)
+        public async Task NotifyAllInterested(TransactionDto dto, AccountTransactionDto displayDto, Account account)
         {
             foreach (var (id, connection) in _sockets)
             {
                 if(connection.IsManager || id == account.UserId)
                 {
-                    await SendToClientAsync(id, JsonSerializer.Serialize(dto));
+                    if (connection.IsDisplayMode)
+                    {
+                        await SendToClientAsync(id, Serialize(displayDto));
+                    }
+                    else
+                    {
+                        await SendToClientAsync(id, Serialize(dto));
+                    }
                 }
             }
+        }
+
+        private string Serialize<T>(T dto)
+        {
+            return JsonSerializer.Serialize(dto, typeof(T),
+                        new JsonSerializerOptions()
+                        {
+                            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                            Converters = { new JsonStringEnumConverter() }
+                        });
         }
     }
 }
