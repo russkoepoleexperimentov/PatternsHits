@@ -10,6 +10,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="14.0.0" />
+		<PackageReference Include="Duende.IdentityModel" Version="8.1.0" />
 		<PackageReference Include="FluentValidation" Version="11.11.0" />
 		<PackageReference Include="Quartz.AspNetCore" Version="3.16.1" />
 		<PackageReference Include="MassTransit" Version="8.4.0" />

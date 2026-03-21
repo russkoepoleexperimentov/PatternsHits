@@ -124,9 +124,9 @@ public static class Config
             new Client
             {
                 ClientId = "internal_service",
-                ClientSecrets = { new Secret("secret".Sha256()) },
+                ClientSecrets = { new Secret("500cigaretts".Sha256()) },
                 AllowedGrantTypes = GrantTypes.ClientCredentials,
-                AllowedScopes = { "account_api" }
+                AllowedScopes = { "account_api", "credit_api", "currency_api" }
             }
         };
     }

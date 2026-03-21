@@ -1,6 +1,7 @@
+using CurrencyService.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CurrencyService.Data;
 
 namespace CurrencyService.Controllers;
 
@@ -16,6 +17,7 @@ public class RatesController : ControllerBase
     }
 
     [HttpGet("latest")]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public async Task<ActionResult> GetLatestRates([FromQuery] string @base = "USD")
     {
         var rates = await _context.ExchangeRates
@@ -26,6 +28,7 @@ public class RatesController : ControllerBase
     }
 
     [HttpGet("{baseCurrency}/{targetCurrency}")]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public async Task<ActionResult> GetRate(string baseCurrency, string targetCurrency)
     {
         var rate = await _context.ExchangeRates

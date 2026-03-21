@@ -1,41 +1,70 @@
 ﻿using Core.Application.Services.Interfaces;
+using Duende.IdentityModel.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text.Json.Serialization;
 
-namespace Core.Application.Services.Implementations
+public class CurrencyRateService : ICurrencyRateService
 {
-    public class CurrencyRateService : ICurrencyRateService
+    private readonly HttpClient _httpClient;
+    private readonly IConfiguration _configuration;
+    private string _cachedToken;
+    private DateTime _tokenExpiry = DateTime.MinValue;
+
+    public CurrencyRateService(HttpClient httpClient, IConfiguration configuration, ILogger<CurrencyRateService> logger)
     {
-        private readonly HttpClient _httpClient;
+        _httpClient = httpClient;
+        _configuration = configuration;
+    }
 
-        public CurrencyRateService(HttpClient httpClient)
-        {
-            _httpClient = httpClient;
-        }
+    private async Task<string> GetAccessTokenAsync()
+    {
+        if (_cachedToken != null && _tokenExpiry > DateTime.UtcNow.AddSeconds(30))
+            return _cachedToken;
 
-        public async Task<decimal> GetExchangeRateAsync(string fromCurrency, string toCurrency)
-        {
-            if (fromCurrency == toCurrency) return 1m;
+        var authority = _configuration["IdentityServer:Authority"];
+        var clientId = _configuration["IdentityServer:ClientId"];
+        var clientSecret = _configuration["IdentityServer:ClientSecret"];
+        var scope = _configuration["IdentityServer:Scope"];
 
-            try
+        var discovery = await _httpClient.GetDiscoveryDocumentAsync(authority);
+        if (discovery.IsError)
+            throw new Exception(discovery.Error);
+
+        var tokenResponse = await _httpClient.RequestClientCredentialsTokenAsync(
+            new ClientCredentialsTokenRequest
             {
-                var response = await _httpClient.GetAsync($"/api/rates/{fromCurrency}/{toCurrency}");
-                response.EnsureSuccessStatusCode();
-                var result = await response.Content.ReadFromJsonAsync<RateResponse>();
-                return result.Rate;
-            }
-            catch (Exception ex)
-            {
-                throw new InvalidOperationException($"Unable to get exchange rate from {fromCurrency} to {toCurrency}");
-            }
-        }
+                Address = discovery.TokenEndpoint,
+                ClientId = clientId,
+                ClientSecret = clientSecret,
+                Scope = scope
+            });
 
-        private class RateResponse
-        {
-            public decimal Rate { get; set; }
-            public DateTime LastUpdated { get; set; }
-        }
+        if (tokenResponse.IsError)
+            throw new Exception(tokenResponse.Error);
+
+        _cachedToken = tokenResponse.AccessToken;
+        _tokenExpiry = DateTime.UtcNow.AddSeconds(tokenResponse.ExpiresIn);
+        return _cachedToken;
+    }
+
+    public async Task<decimal> GetExchangeRateAsync(string fromCurrency, string toCurrency)
+    {
+        if (fromCurrency == toCurrency) return 1m;
+
+        var token = await GetAccessTokenAsync();
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        var response = await _httpClient.GetAsync($"/api/rates/{fromCurrency}/{toCurrency}");
+        response.EnsureSuccessStatusCode();
+        var result = await response.Content.ReadFromJsonAsync<RateResponse>();
+        return result.Rate;
+    }
+
+    private class RateResponse
+    {
+        public decimal Rate { get; set; }
+        public DateTime LastUpdated { get; set; }
     }
 }
