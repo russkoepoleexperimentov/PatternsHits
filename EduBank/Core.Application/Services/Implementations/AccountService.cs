@@ -88,7 +88,8 @@ namespace Core.Application.Services.Implementations
             return account;
         }
 
-        public async Task<List<AccountTransactionDto>> GetAccountTransactionsForDisplayAsync(Guid accountId, DateTime? from, DateTime? to, Guid? currentUserId)
+        public async Task<List<AccountTransactionDto>> GetAccountTransactionsForDisplayAsync(
+            Guid accountId, DateTime? from, DateTime? to, Guid? currentUserId)
         {
             var account = await GetAccountFromDbAsync(accountId, currentUserId);
 
@@ -105,41 +106,52 @@ namespace Core.Application.Services.Implementations
                 .OrderByDescending(t => t.CreateDateTime)
                 .ToListAsync();
 
-            var dtos = _mapper.Map<List<AccountTransactionDto>>(transactions);
+            var result = new List<AccountTransactionDto>();
 
-            for (int i = 0; i < dtos.Count; i++)
+            foreach (var t in transactions)
             {
-                var t = transactions[i];
-                var dto = dtos[i];
+                decimal amount;
+                string currency;
+                string description = t.Description ?? t.ResolutionMessage ?? "Транзакция";
 
                 if (t.SourceId == accountId && t.SourceType == TransactionObjectType.Account)
                 {
-                    dto.Amount = -t.Amount;
-                    dto.Currency = t.FromCurrency ?? account.Currency;
+                    amount = -t.Amount;
+                    currency = t.FromCurrency ?? account.Currency;
                 }
                 else if (t.TargetId == accountId && t.TargetType == TransactionObjectType.Account)
                 {
-                    dto.Amount = t.ConvertedAmount ?? t.Amount;
-                    dto.Currency = t.ToCurrency ?? account.Currency;
+                    amount = t.ConvertedAmount ?? t.Amount;
+                    currency = t.ToCurrency ?? account.Currency;
                 }
                 else if (t.SourceType == TransactionObjectType.RealWorld)
                 {
-                    dto.Amount = t.Amount;
-                    dto.Currency = t.ToCurrency ?? account.Currency;
+                    amount = t.Amount;
+                    currency = t.ToCurrency ?? account.Currency;
                 }
                 else if (t.TargetType == TransactionObjectType.RealWorld)
                 {
-                    dto.Amount = -t.Amount;
-                    dto.Currency = t.FromCurrency ?? account.Currency;
+                    amount = -t.Amount;
+                    currency = t.FromCurrency ?? account.Currency;
                 }
                 else
                 {
-                    dto.Amount = 0;
-                    dto.Currency = account.Currency;
+                    continue;
                 }
+
+                result.Add(new AccountTransactionDto
+                {
+                    Id = t.Id,
+                    Amount = amount,
+                    Currency = currency,
+                    Description = description,
+                    ResolutionMessage = t.ResolutionMessage,
+                    CreatedAt = t.CreateDateTime,
+                    Status = t.Status
+                });
             }
 
-            return dtos;
+            return result;
         }
 
         public async Task<List<AccountDto>> GetAllAccountsAsync()
