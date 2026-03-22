@@ -143,25 +143,36 @@ namespace Core.Application.Services.Implementations
 
                 var master = await GetMasterAccountAsync();
 
-                decimal amountInCreditCurrency = command.Amount;
-                decimal amountForMaster;
-                decimal? exchangeRate = null;
+                decimal amountInTargetCurrency;
+                decimal amountFromMaster;
+                decimal? exchangeRate1 = null;
+                decimal? exchangeRate2 = null;
 
-                if (command.Currency != master.Currency)
+                if (command.Currency != targetAcc.Currency)
                 {
-                    exchangeRate = await _currencyRateService.GetExchangeRateAsync(command.Currency, master.Currency);
-                    amountForMaster = amountInCreditCurrency * exchangeRate.Value;
+                    exchangeRate1 = await _currencyRateService.GetExchangeRateAsync(command.Currency, targetAcc.Currency);
+                    amountInTargetCurrency = command.Amount * exchangeRate1.Value;
                 }
                 else
                 {
-                    amountForMaster = amountInCreditCurrency;
+                    amountInTargetCurrency = command.Amount;
                 }
 
-                if (master.Balance < amountForMaster)
+                if (command.Currency != master.Currency)
+                {
+                    exchangeRate2 = await _currencyRateService.GetExchangeRateAsync(command.Currency, master.Currency);
+                    amountFromMaster = command.Amount * exchangeRate2.Value;
+                }
+                else
+                {
+                    amountFromMaster = command.Amount;
+                }
+
+                if (master.Balance < amountFromMaster)
                     return new DepositFundsResponse(false, "Insufficient funds on master account");
 
-                master.Balance -= amountForMaster;
-                targetAcc.Balance += amountInCreditCurrency;
+                master.Balance -= amountFromMaster;
+                targetAcc.Balance += amountInTargetCurrency;
 
                 var transaction = new Transaction
                 {
@@ -170,14 +181,14 @@ namespace Core.Application.Services.Implementations
                     TargetId = targetAcc.Id,
                     TargetType = TransactionObjectType.Account,
                     Description = "Выдача кредита",
-                    Amount = amountInCreditCurrency,
+                    Amount = amountInTargetCurrency,
                     Status = TransactionStatus.Completed,
                     ResolvedAt = DateTime.UtcNow,
                     ResolutionMessage = "Кредит выдан",
-                    FromCurrency = master.Currency,
-                    ToCurrency = command.Currency,
-                    ConvertedAmount = amountForMaster,
-                    ExchangeRate = exchangeRate
+                    FromCurrency = master.Currency, 
+                    ToCurrency = targetAcc.Currency, 
+                    ConvertedAmount = amountFromMaster, 
+                    ExchangeRate = exchangeRate1 
                 };
 
                 _context.Transactions.Add(transaction);
