@@ -145,17 +145,17 @@ namespace Core.Application.Services.Implementations
 
                 var master = await GetMasterAccountAsync();
 
-                decimal amountInTargetCurrency;
-                decimal? exchangeRateToTarget = null;
+                decimal amountToCredit;
+                decimal? exchangeRateToAccount = null;
 
                 if (command.Currency != targetAcc.Currency)
                 {
-                    exchangeRateToTarget = await _currencyRateService.GetExchangeRateAsync(command.Currency, targetAcc.Currency);
-                    amountInTargetCurrency = command.Amount * exchangeRateToTarget.Value;
+                    exchangeRateToAccount = await _currencyRateService.GetExchangeRateAsync(command.Currency, targetAcc.Currency);
+                    amountToCredit = command.Amount * exchangeRateToAccount.Value;
                 }
                 else
                 {
-                    amountInTargetCurrency = command.Amount;
+                    amountToCredit = command.Amount;
                 }
 
                 decimal amountFromMaster;
@@ -173,7 +173,7 @@ namespace Core.Application.Services.Implementations
                     return new DepositFundsResponse(false, "Insufficient funds on master account");
 
                 master.Balance -= amountFromMaster;
-                targetAcc.Balance += amountInTargetCurrency;
+                targetAcc.Balance += amountToCredit;
 
                 var transaction = new Transaction
                 {
@@ -183,11 +183,11 @@ namespace Core.Application.Services.Implementations
                     TargetId = targetAcc.Id,
                     TargetType = TransactionObjectType.Account,
                     Description = "Выдача кредита",
-                    Amount = amountInTargetCurrency,
-                    ConvertedAmount = amountFromMaster,
-                    FromCurrency = master.Currency,
+                    Amount = command.Amount,
+                    ConvertedAmount = amountToCredit,
+                    FromCurrency = command.Currency,
                     ToCurrency = targetAcc.Currency,
-                    ExchangeRate = exchangeRateToTarget,
+                    ExchangeRate = exchangeRateToAccount,
                     Status = TransactionStatus.Completed,
                     ResolvedAt = DateTime.UtcNow,
                     ResolutionMessage = "Кредит выдан"
