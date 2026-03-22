@@ -80,15 +80,15 @@
 
             <div class="form-check mb-3">
                 <input name="RememberMe" 
-                       type="checkbox" 
+                       type="hidden" 
                        class="form-check-input" 
                        value="true" />
-                <label class="form-check-label">Запомнить меня</label>
+                <!--<label class="form-check-label">Запомнить меня</label>-->
             </div>
 
             <button type="submit" class="btn-login">Войти</button>
 
-            <div asp-validation-summary="All" class="validation-summary-errors"></div>
+            <div asp-validation-summary="All"></div>
         </form>
     </div>
 </body>
