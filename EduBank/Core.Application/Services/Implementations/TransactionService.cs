@@ -146,24 +146,23 @@ namespace Core.Application.Services.Implementations
                 var master = await GetMasterAccountAsync();
 
                 decimal amountInTargetCurrency;
-                decimal amountFromMaster;
-                decimal? exchangeRate1 = null;
-                decimal? exchangeRate2 = null;
+                decimal? exchangeRateToTarget = null;
 
                 if (command.Currency != targetAcc.Currency)
                 {
-                    exchangeRate1 = await _currencyRateService.GetExchangeRateAsync(command.Currency, targetAcc.Currency);
-                    amountInTargetCurrency = command.Amount * exchangeRate1.Value;
+                    exchangeRateToTarget = await _currencyRateService.GetExchangeRateAsync(command.Currency, targetAcc.Currency);
+                    amountInTargetCurrency = command.Amount * exchangeRateToTarget.Value;
                 }
                 else
                 {
                     amountInTargetCurrency = command.Amount;
                 }
 
+                decimal amountFromMaster;
                 if (command.Currency != master.Currency)
                 {
-                    exchangeRate2 = await _currencyRateService.GetExchangeRateAsync(command.Currency, master.Currency);
-                    amountFromMaster = command.Amount * exchangeRate2.Value;
+                    var rateToMaster = await _currencyRateService.GetExchangeRateAsync(command.Currency, master.Currency);
+                    amountFromMaster = command.Amount * rateToMaster;
                 }
                 else
                 {
@@ -178,19 +177,20 @@ namespace Core.Application.Services.Implementations
 
                 var transaction = new Transaction
                 {
+                    CreateDateTime = DateTime.UtcNow,
                     SourceId = master.Id,
                     SourceType = TransactionObjectType.Account,
                     TargetId = targetAcc.Id,
                     TargetType = TransactionObjectType.Account,
                     Description = "Выдача кредита",
                     Amount = amountInTargetCurrency,
+                    ConvertedAmount = amountFromMaster,
+                    FromCurrency = master.Currency,
+                    ToCurrency = targetAcc.Currency,
+                    ExchangeRate = exchangeRateToTarget,
                     Status = TransactionStatus.Completed,
                     ResolvedAt = DateTime.UtcNow,
-                    ResolutionMessage = "Кредит выдан",
-                    FromCurrency = master.Currency, 
-                    ToCurrency = targetAcc.Currency, 
-                    ConvertedAmount = amountFromMaster, 
-                    ExchangeRate = exchangeRate1 
+                    ResolutionMessage = "Кредит выдан"
                 };
 
                 _context.Transactions.Add(transaction);
