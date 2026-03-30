@@ -1,22 +1,27 @@
-﻿using CreditApplication.Services.Interfaces;
+﻿using Common.Policies;
+using CreditApplication.Services.Interfaces;
 using Duende.IdentityModel.Client;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+using Polly;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
 namespace CreditApplication.Services.Implementations;
+
 public class CurrencyRateService : ICurrencyRateService
 {
     private readonly HttpClient _httpClient;
     private readonly IConfiguration _configuration;
     private string _cachedToken;
     private DateTime _tokenExpiry = DateTime.MinValue;
+    private static readonly AsyncPolicy<HttpResponseMessage> _policy = HttpPolicy.GetCombinedPolicy();
 
-    public CurrencyRateService(HttpClient httpClient, IConfiguration configuration, ILogger<CurrencyRateService> logger)
+    public CurrencyRateService(
+        HttpClient httpClient,
+        IConfiguration configuration)
     {
         _httpClient = httpClient;
-        _configuration = configuration;
+
     }
 
     private async Task<string> GetAccessTokenAsync()
@@ -55,7 +60,17 @@ public class CurrencyRateService : ICurrencyRateService
         var token = await GetAccessTokenAsync();
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var response = await _httpClient.GetAsync($"/api/rates/{fromCurrency}/{toCurrency}");
+        var url = $"/api/rates/{fromCurrency}/{toCurrency}";
+
+        var response = await _policy.ExecuteAsync(async () =>
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+            var resp = await _httpClient.SendAsync(request);
+            if (!resp.IsSuccessStatusCode)
+                return resp;
+            return resp;
+        });
+
         response.EnsureSuccessStatusCode();
         var result = await response.Content.ReadFromJsonAsync<RateResponse>();
         return result.Rate;

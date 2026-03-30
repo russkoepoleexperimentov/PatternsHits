@@ -127,7 +127,14 @@ namespace Web
             builder.Services.AddMassTransit(x =>
             {
                 x.SetKebabCaseEndpointNameFormatter();
-                x.AddConsumer<ProcessExternalPaymentConsumer>();
+                x.AddConsumer<ProcessExternalPaymentConsumer>(cfg =>
+                {
+                    cfg.UseMessageRetry(r => r.Exponential(
+                        retryLimit: 3,
+                        minInterval: TimeSpan.FromSeconds(2),
+                        maxInterval: TimeSpan.FromSeconds(10),
+                        intervalDelta: TimeSpan.FromSeconds(2)));
+                });
                 x.AddRequestClient<DepositFundsCommand>();
                 x.UsingRabbitMq((context, cfg) =>
                 {

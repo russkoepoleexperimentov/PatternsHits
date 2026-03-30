@@ -167,9 +167,30 @@ namespace Core.Web
             builder.Services.AddMassTransit(x =>
             {
                 x.SetKebabCaseEndpointNameFormatter();
-                x.AddConsumer<DepositFundsConsumer>();
-                x.AddConsumer<UserBlockConsumer>();
-                x.AddConsumer<UserUnblockConsumer>();
+                x.AddConsumer<DepositFundsConsumer>(cfg =>
+                {
+                    cfg.UseMessageRetry(r => r.Exponential(
+                        retryLimit: 3,
+                        minInterval: TimeSpan.FromSeconds(2),
+                        maxInterval: TimeSpan.FromSeconds(10),
+                        intervalDelta: TimeSpan.FromSeconds(2)));
+                });
+                x.AddConsumer<UserBlockConsumer>(cfg =>
+                {
+                    cfg.UseMessageRetry(r => r.Exponential(
+                        retryLimit: 3,
+                        minInterval: TimeSpan.FromSeconds(2),
+                        maxInterval: TimeSpan.FromSeconds(10),
+                        intervalDelta: TimeSpan.FromSeconds(2)));
+                });
+                x.AddConsumer<UserUnblockConsumer>(cfg =>
+                {
+                    cfg.UseMessageRetry(r => r.Exponential(
+                        retryLimit: 3,
+                        minInterval: TimeSpan.FromSeconds(2),
+                        maxInterval: TimeSpan.FromSeconds(10),
+                        intervalDelta: TimeSpan.FromSeconds(2)));
+                });
                 x.AddRequestClient<ProcessExternalPaymentCommand>();
                 x.AddConsumer<ProcessTransactionConsumer>();
                 x.AddRequestClient<ProcessTransactionCommand>();

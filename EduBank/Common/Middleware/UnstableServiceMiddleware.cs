@@ -36,7 +36,6 @@ namespace Common.Middlewares
             var random = new Random();
             if (random.NextDouble() < errorRate)
             {
-                context.Request.Path, now.Minute, errorRate);
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                 await context.Response.WriteAsync("Simulated service instability");
                 return;
