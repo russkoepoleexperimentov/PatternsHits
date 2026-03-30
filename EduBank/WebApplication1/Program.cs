@@ -226,6 +226,7 @@ public class Program
         app.UseCookiePolicy();
         app.UseIdentityServer();
         app.UseMiddleware<ExceptionCatchMiddleware>();
+        app.UseMiddleware<UnstableServiceMiddleware>();
         app.UseAuthentication();
         app.UseAuthorization();
         app.UseCors("AllowAll");

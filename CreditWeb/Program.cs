@@ -199,7 +199,7 @@ namespace Web
                 options.OAuthClientId("credit_service_swagger");
                 options.OAuthScopes(new[] { audience, "openid", "profile" });
             });
-
+            app.UseMiddleware<UnstableServiceMiddleware>();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseCors("AllowFrontend");

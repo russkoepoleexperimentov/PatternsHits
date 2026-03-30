@@ -1,3 +1,4 @@
+using Common.Middlewares;
 using Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -113,6 +114,7 @@ public class Program
             options.OAuthScopes(new[] { audience, "openid", "profile" });
         });
 
+        app.UseMiddleware<UnstableServiceMiddleware>();
         app.UseAuthentication();
         app.UseAuthorization();
         app.UseCors("AllowAll");

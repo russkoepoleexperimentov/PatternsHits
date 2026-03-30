@@ -1,4 +1,5 @@
 using Common.Contracts;
+using Common.Middlewares;
 using Common.Options;
 using Core.Application.Consumers;
 using Core.Application.Dtos;
@@ -209,7 +210,7 @@ namespace Core.Web
 
             app.MapControllers();
             app.UseCors("AllowFrontend");
-
+            app.UseMiddleware<UnstableServiceMiddleware>();
             app.UseWebSockets(); // Включаем поддержку WebSocket
 
             // Подключаем наш middleware

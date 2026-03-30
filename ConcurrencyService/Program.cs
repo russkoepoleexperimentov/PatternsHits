@@ -1,3 +1,4 @@
+using Common.Middlewares;
 using ConcurrencyService.Services.Interfaces;
 using CurrencyService.Data;
 using CurrencyService.Jobs;
@@ -129,7 +130,8 @@ public class Program
             options.OAuthClientId("currency_service_swagger");
             options.OAuthScopes(new[] { audience, "openid", "profile" });
         });
-
+        app.UseMiddleware<UnstableServiceMiddleware>();
+        app.UseMiddleware<ExceptionCatchMiddleware>();
         app.UseAuthentication();
         app.UseAuthorization();
 
