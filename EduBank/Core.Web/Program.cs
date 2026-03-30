@@ -1,6 +1,7 @@
 using Common.Contracts;
 using Common.Middlewares;
 using Common.Options;
+using Common.Services;
 using Core.Application.Consumers;
 using Core.Application.Dtos;
 using Core.Application.Mapping;
@@ -107,6 +108,25 @@ namespace Core.Web
                     }
                 });
 
+                config.AddSecurityDefinition("IdempotencyKey", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Name = "Idempotency-Key",
+                    Type = SecuritySchemeType.ApiKey,
+                    Description = "Уникальный ключ для идемпотентности запроса"
+                });
+
+                config.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "IdempotencyKey" }
+                        },
+                        new List<string>()
+                    }
+                });
+
                 config.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
@@ -132,7 +152,7 @@ namespace Core.Web
                               .AllowCredentials();
                     });
             });
-
+            builder.Services.AddScoped<IIdempotencyService, IdempotencyCacheService>();
             builder.Services
                 .AddTransient<IAccountService, AccountService>()
                 .AddTransient<ITransactionService, TransactionService>()
@@ -211,6 +231,7 @@ namespace Core.Web
             app.MapControllers();
             app.UseCors("AllowFrontend");
             app.UseMiddleware<UnstableServiceMiddleware>();
+            app.UseMiddleware<IdempotencyMiddleware>();
             app.UseWebSockets(); // Включаем поддержку WebSocket
 
             // Подключаем наш middleware

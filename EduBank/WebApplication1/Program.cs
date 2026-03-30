@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography;
-using Microsoft.IdentityModel.Tokens;
-using Application.Dtos;
+﻿using Application.Dtos;
 using Application.Profiles;
 using Application.Services.Abstractions;
 using Application.Services.Implementations;
@@ -10,6 +8,7 @@ using Common.Contracts.AuthServiceContracts;
 using Common.Enums.Common.Enums;
 using Common.Middlewares;
 using Common.Options;
+using Common.Services;
 using Domain.Entities;
 using Duende.IdentityServer;
 using Duende.IdentityServer.Configuration;
@@ -19,7 +18,9 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Security.Cryptography;
 using System.Text.Json.Serialization;
 using Web.Options;
 
@@ -153,7 +154,7 @@ public class Program
             .AddScoped<IValidator<UserLoginDto>, UserLoginValidator>()
             .AddScoped<IValidator<UserChangePassword>, ChangePasswordValidator>()
             .AddAutoMapper(typeof(UserMapProfile));
-
+        builder.Services.AddScoped<IIdempotencyService, IdempotencyCacheService>();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(options =>
         {
@@ -173,6 +174,25 @@ public class Program
                             { "profile", "Profile" }
                         }
                     }
+                }
+            });
+
+            options.AddSecurityDefinition("IdempotencyKey", new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                Name = "Idempotency-Key",
+                Type = SecuritySchemeType.ApiKey,
+                Description = "Уникальный ключ для идемпотентности запроса"
+            });
+
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "IdempotencyKey" }
+                    },
+                    new List<string>()
                 }
             });
             options.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -226,6 +246,7 @@ public class Program
         app.UseCookiePolicy();
         app.UseIdentityServer();
         app.UseMiddleware<ExceptionCatchMiddleware>();
+        app.UseMiddleware<IdempotencyMiddleware>();
         app.UseMiddleware<UnstableServiceMiddleware>();
         app.UseAuthentication();
         app.UseAuthorization();

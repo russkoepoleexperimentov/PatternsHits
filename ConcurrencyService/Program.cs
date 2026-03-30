@@ -1,4 +1,5 @@
 using Common.Middlewares;
+using Common.Services;
 using ConcurrencyService.Services.Interfaces;
 using CurrencyService.Data;
 using CurrencyService.Jobs;
@@ -74,6 +75,25 @@ public class Program
                 }
             });
 
+            config.AddSecurityDefinition("IdempotencyKey", new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                Name = "Idempotency-Key",
+                Type = SecuritySchemeType.ApiKey,
+                Description = "”никальный ключ дл€ идемпотентности запроса"
+            });
+
+            config.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "IdempotencyKey" }
+                    },
+                    new List<string>()
+                }
+            });
+
             config.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
                 {
@@ -109,7 +129,7 @@ public class Program
                         .WithIntervalInMinutes(builder.Configuration.GetValue<int>("CurrencyApi:UpdateIntervalMinutes", 96))
                         .RepeatForever()));
         });
-
+        builder.Services.AddScoped<IIdempotencyService, IdempotencyCacheService>();
         builder.Services.AddQuartzHostedService(options =>
         {
             options.WaitForJobsToComplete = true;
@@ -131,6 +151,7 @@ public class Program
             options.OAuthScopes(new[] { audience, "openid", "profile" });
         });
         app.UseMiddleware<UnstableServiceMiddleware>();
+        app.UseMiddleware<IdempotencyMiddleware>();
         app.UseMiddleware<ExceptionCatchMiddleware>();
         app.UseAuthentication();
         app.UseAuthorization();

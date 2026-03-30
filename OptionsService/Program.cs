@@ -1,4 +1,5 @@
 using Common.Middlewares;
+using Common.Services;
 using Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -48,7 +49,7 @@ public class Program
             });
 
         builder.Services.AddAuthorization();
-
+        builder.Services.AddScoped<IIdempotencyService, IdempotencyCacheService>();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(config =>
         {
@@ -68,6 +69,25 @@ public class Program
                             { "profile", "Profile" }
                         }
                     }
+                }
+            });
+
+            config.AddSecurityDefinition("IdempotencyKey", new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                Name = "Idempotency-Key",
+                Type = SecuritySchemeType.ApiKey,
+                Description = "”никальный ключ дл€ идемпотентности запроса"
+            });
+
+            config.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "IdempotencyKey" }
+                    },
+                    new List<string>()
                 }
             });
 
@@ -115,6 +135,7 @@ public class Program
         });
 
         app.UseMiddleware<UnstableServiceMiddleware>();
+        app.UseMiddleware<IdempotencyMiddleware>();
         app.UseAuthentication();
         app.UseAuthorization();
         app.UseCors("AllowAll");

@@ -1,6 +1,7 @@
 using Common.Contracts;
 using Common.Middlewares;
 using Common.Options;
+using Common.Services;
 using CreditApplication.Consumers;
 using CreditApplication.Dtos;
 using CreditApplication.Profiles;
@@ -93,6 +94,25 @@ namespace Web
                     }
                 });
 
+                config.AddSecurityDefinition("IdempotencyKey", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Name = "Idempotency-Key",
+                    Type = SecuritySchemeType.ApiKey,
+                    Description = "”никальный ключ дл€ идемпотентности запроса"
+                });
+
+                config.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "IdempotencyKey" }
+                        },
+                        new List<string>()
+                    }
+                });
+
                 config.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
@@ -119,7 +139,7 @@ namespace Web
                     cfg.ConfigureEndpoints(context);
                 });
             });
-
+            builder.Services.AddScoped<IIdempotencyService, IdempotencyCacheService>();
             builder.Services.AddHttpClient<ICurrencyRateService, CurrencyRateService>(client =>
             {
                 client.BaseAddress = new Uri(builder.Configuration["CurrencyService:BaseUrl"]);
@@ -199,6 +219,7 @@ namespace Web
                 options.OAuthClientId("credit_service_swagger");
                 options.OAuthScopes(new[] { audience, "openid", "profile" });
             });
+            app.UseMiddleware<IdempotencyMiddleware>();
             app.UseMiddleware<UnstableServiceMiddleware>();
             app.UseAuthentication();
             app.UseAuthorization();
