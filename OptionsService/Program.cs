@@ -1,3 +1,4 @@
+using Common.Extensions;
 using Common.Middlewares;
 using Common.Services;
 using Context;
@@ -22,6 +23,7 @@ public class Program
         var audience = authConfig["Audience"];
 
         builder.Services.AddLogging(logging => logging.AddConsole());
+        builder.Services.AddTracing(builder.Configuration);
 
         builder.Services.AddControllers()
             .AddJsonOptions(options =>
@@ -77,7 +79,7 @@ public class Program
                 In = ParameterLocation.Header,
                 Name = "Idempotency-Key",
                 Type = SecuritySchemeType.ApiKey,
-                Description = "Уникальный ключ для идемпотентности запроса"
+                Description = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ"
             });
 
             config.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -127,6 +129,7 @@ public class Program
                 context.Database.Migrate();
         }
 
+        app.UseMiddleware<TracingMiddleware>();
         app.UseSwagger();
         app.UseSwaggerUI(options =>
         {

@@ -49,6 +49,16 @@ services:
     ports:
     - "5004:8080"
 
+  monitoringweb:
+    image: ${DOCKER_REGISTRY-}monitoringweb
+    build:
+      context: .
+      dockerfile: MonitoringService/Dockerfile
+    depends_on:
+      - db
+    ports:
+      - "5005:8080"
+
   db:
     image: postgres:15-alpine
     container_name: db

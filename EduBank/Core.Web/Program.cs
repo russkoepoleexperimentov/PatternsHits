@@ -1,4 +1,5 @@
 using Common.Contracts;
+using Common.Extensions;
 using Common.Middlewares;
 using Common.Options;
 using Common.Services;
@@ -113,7 +114,7 @@ namespace Core.Web
                     In = ParameterLocation.Header,
                     Name = "Idempotency-Key",
                     Type = SecuritySchemeType.ApiKey,
-                    Description = "Уникальный ключ для идемпотентности запроса"
+                    Description = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ"
                 });
 
                 config.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -138,6 +139,8 @@ namespace Core.Web
                     }
                 });
             });
+
+            builder.Services.AddTracing(builder.Configuration);
 
             builder.Services.AddSingleton<TransactionsWebSocketConnectionManager>();
 
@@ -239,6 +242,8 @@ namespace Core.Web
                 await context.SaveChangesAsync();
             }
 
+            app.UseMiddleware<TracingMiddleware>();
+
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
@@ -253,9 +258,9 @@ namespace Core.Web
             app.UseCors("AllowFrontend");
             app.UseMiddleware<UnstableServiceMiddleware>();
             app.UseMiddleware<IdempotencyMiddleware>();
-            app.UseWebSockets(); // Включаем поддержку WebSocket
+            app.UseWebSockets(); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ WebSocket
 
-            // Подключаем наш middleware
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ middleware
             app.UseMiddleware<TransactionsWebSocketMiddleware>(tokenValidation, jwtAuthority, audience);
 
             app.Run();

@@ -127,6 +127,26 @@ public static class Config
                 ClientSecrets = { new Secret("500cigaretts".Sha256()) },
                 AllowedGrantTypes = GrantTypes.ClientCredentials,
                 AllowedScopes = { "account_api", "credit_api", "currency_api" }
+            },
+
+            new Client
+            {
+                ClientId = "monitoring_web",
+                ClientSecrets = { new Secret("monitoring_secret".Sha256()) },
+                AllowedGrantTypes = GrantTypes.Code,
+                RequirePkce = false,
+                RequireConsent = false,
+                RedirectUris =
+                {
+                    $"{auth["MonitoringUrl"] ?? "http://localhost:5005"}/signin-oidc",
+                    "http://monitoringweb:8080/signin-oidc"
+                },
+                PostLogoutRedirectUris =
+                {
+                    $"{auth["MonitoringUrl"] ?? "http://localhost:5005"}/signout-callback-oidc",
+                    "http://monitoringweb:8080/signout-callback-oidc"
+                },
+                AllowedScopes = { "openid", "profile", "account_api" }
             }
         };
     }

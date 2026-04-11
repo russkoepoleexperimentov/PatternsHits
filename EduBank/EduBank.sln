@@ -48,6 +48,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConcurrencyService", "..\Co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OptionsService", "..\OptionsService\OptionsService.csproj", "{C992DEB1-7733-40DD-8BE1-A795C33C3858}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonitoringService", "MonitoringService\MonitoringService.csproj", "{B1A2C3D4-E5F6-47A8-B9C0-D1E2F3A4B5C6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -118,6 +120,10 @@ Global
 		{C992DEB1-7733-40DD-8BE1-A795C33C3858}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C992DEB1-7733-40DD-8BE1-A795C33C3858}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C992DEB1-7733-40DD-8BE1-A795C33C3858}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1A2C3D4-E5F6-47A8-B9C0-D1E2F3A4B5C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1A2C3D4-E5F6-47A8-B9C0-D1E2F3A4B5C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1A2C3D4-E5F6-47A8-B9C0-D1E2F3A4B5C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1A2C3D4-E5F6-47A8-B9C0-D1E2F3A4B5C6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -136,6 +142,7 @@ Global
 		{4C3755B0-FD45-46A0-9B54-7B854E8AB251} = {426DFD4A-5D86-4427-9AA1-EFA1C24BA97B}
 		{57CB2E85-BC46-4853-B9E0-FBDB01296443} = {426DFD4A-5D86-4427-9AA1-EFA1C24BA97B}
 		{BB06A3C0-4A72-49B4-B3B9-F2BDE8EEC7AE} = {426DFD4A-5D86-4427-9AA1-EFA1C24BA97B}
+		{B1A2C3D4-E5F6-47A8-B9C0-D1E2F3A4B5C6} = {36D591C7-65C7-A0D1-1CBC-10CDE441BDC8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DC2E40BC-851A-48E6-9893-AB0F190704AE}

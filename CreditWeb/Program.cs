@@ -1,4 +1,5 @@
 using Common.Contracts;
+using Common.Extensions;
 using Common.Middlewares;
 using Common.Options;
 using Common.Services;
@@ -43,6 +44,7 @@ namespace Web
             var audience = authConfig["Audience"];
 
             builder.Services.AddLogging(logging => logging.AddConsole());
+            builder.Services.AddTracing(builder.Configuration);
 
             builder.Services
                 .AddControllers()
@@ -99,7 +101,7 @@ namespace Web
                     In = ParameterLocation.Header,
                     Name = "Idempotency-Key",
                     Type = SecuritySchemeType.ApiKey,
-                    Description = "Уникальный ключ для идемпотентности запроса"
+                    Description = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ"
                 });
 
                 config.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -219,6 +221,7 @@ namespace Web
                     context.Database.Migrate();
             }
 
+            app.UseMiddleware<TracingMiddleware>();
             app.UseMiddleware<ExceptionCatchMiddleware>();
             app.UseSwagger();
             app.UseSwaggerUI(options =>

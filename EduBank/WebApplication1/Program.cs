@@ -1,4 +1,5 @@
 ﻿using Application.Dtos;
+using Common.Extensions;
 using Application.Profiles;
 using Application.Services.Abstractions;
 using Application.Services.Implementations;
@@ -155,6 +156,7 @@ public class Program
             .AddScoped<IValidator<UserChangePassword>, ChangePasswordValidator>()
             .AddAutoMapper(typeof(UserMapProfile));
         builder.Services.AddScoped<IIdempotencyService, IdempotencyCacheService>();
+        builder.Services.AddTracing(configuration);
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(options =>
         {
@@ -233,6 +235,7 @@ public class Program
             }
         }
 
+        app.UseMiddleware<TracingMiddleware>();
         app.UseSwagger();
         app.UseSwaggerUI(options =>
         {
