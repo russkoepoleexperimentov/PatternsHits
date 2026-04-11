@@ -155,6 +155,7 @@ public class Program
             .AddScoped<IValidator<UserLoginDto>, UserLoginValidator>()
             .AddScoped<IValidator<UserChangePassword>, ChangePasswordValidator>()
             .AddAutoMapper(typeof(UserMapProfile));
+        builder.Services.AddMemoryCache();
         builder.Services.AddScoped<IIdempotencyService, IdempotencyCacheService>();
         builder.Services.AddTracing(configuration);
         builder.Services.AddEndpointsApiExplorer();

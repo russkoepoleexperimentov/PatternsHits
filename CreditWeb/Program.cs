@@ -148,6 +148,7 @@ namespace Web
                     cfg.ConfigureEndpoints(context);
                 });
             });
+            builder.Services.AddMemoryCache();
             builder.Services.AddScoped<IIdempotencyService, IdempotencyCacheService>();
             builder.Services.AddHttpClient<ICurrencyRateService, CurrencyRateService>(client =>
             {

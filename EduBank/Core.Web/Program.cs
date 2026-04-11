@@ -155,6 +155,7 @@ namespace Core.Web
                               .AllowCredentials();
                     });
             });
+            builder.Services.AddMemoryCache();
             builder.Services.AddScoped<IIdempotencyService, IdempotencyCacheService>();
             builder.Services
                 .AddTransient<IAccountService, AccountService>()

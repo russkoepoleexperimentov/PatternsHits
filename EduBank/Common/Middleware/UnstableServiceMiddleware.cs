@@ -24,12 +24,12 @@ namespace Common.Middlewares
         private static readonly string[] _skipPrefixes =
         [
             "/health",
-            "/connect",      // IdentityServer: /connect/token, /connect/authorize, etc.
-            "/account",      // Login / Logout views
-            "/.well-known",  // OIDC discovery
-            "/api/auth",     // AuthController endpoints
-            "/signin",       // OIDC callback
-            "/signout",      // OIDC logout callback
+            "/connect",   
+            "/account",
+            "/.well-known",
+            "/api/auth",
+            "/signin",
+            "/signout",
         ];
 
         public async Task InvokeAsync(HttpContext context)

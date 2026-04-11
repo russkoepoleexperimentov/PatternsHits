@@ -51,6 +51,7 @@ public class Program
             });
 
         builder.Services.AddAuthorization();
+        builder.Services.AddMemoryCache();
         builder.Services.AddScoped<IIdempotencyService, IdempotencyCacheService>();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(config =>

@@ -131,6 +131,7 @@ public class Program
                         .WithIntervalInMinutes(builder.Configuration.GetValue<int>("CurrencyApi:UpdateIntervalMinutes", 96))
                         .RepeatForever()));
         });
+        builder.Services.AddMemoryCache();
         builder.Services.AddScoped<IIdempotencyService, IdempotencyCacheService>();
         builder.Services.AddQuartzHostedService(options =>
         {
