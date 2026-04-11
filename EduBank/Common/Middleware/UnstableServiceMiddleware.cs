@@ -21,12 +21,27 @@ namespace Common.Middlewares
             _evenMinuteErrorRate = evenMinuteErrorRate;
         }
 
+        private static readonly string[] _skipPrefixes =
+        [
+            "/health",
+            "/connect",      // IdentityServer: /connect/token, /connect/authorize, etc.
+            "/account",      // Login / Logout views
+            "/.well-known",  // OIDC discovery
+            "/api/auth",     // AuthController endpoints
+            "/signin",       // OIDC callback
+            "/signout",      // OIDC logout callback
+        ];
+
         public async Task InvokeAsync(HttpContext context)
         {
-            if (context.Request.Path.StartsWithSegments("/health"))
+            var path = context.Request.Path.Value ?? string.Empty;
+            foreach (var prefix in _skipPrefixes)
             {
-                await _next(context);
-                return;
+                if (path.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+                {
+                    await _next(context);
+                    return;
+                }
             }
 
             var now = DateTime.UtcNow;
