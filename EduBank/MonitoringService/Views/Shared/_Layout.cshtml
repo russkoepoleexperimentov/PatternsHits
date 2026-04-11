@@ -36,44 +36,6 @@
             animation: pulse 1.5s infinite;
         }
         @@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
-        .user-info {
-            display: flex; align-items: center; gap: 10px;
-            font-size: 13px; color: #94a3b8;
-        }
-        .user-avatar {
-            width: 30px; height: 30px; border-radius: 50%;
-            background: #334155; display: flex; align-items: center;
-            justify-content: center; font-size: 13px; font-weight: 600; color: #38bdf8;
-        }
-        .user-name { color: #e2e8f0; font-weight: 500; }
-        .btn-logout {
-            background: transparent;
-            border: 1px solid #334155;
-            color: #94a3b8;
-            border-radius: 6px;
-            padding: 5px 12px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all .15s;
-        }
-        .btn-logout:hover { border-color: #f87171; color: #f87171; }
-
-        /* ── Access Denied page ── */
-        .denied-wrap {
-            display: flex; flex-direction: column; align-items: center;
-            justify-content: center; min-height: calc(100vh - 56px);
-            gap: 16px; text-align: center; padding: 32px;
-        }
-        .denied-code { font-size: 72px; font-weight: 800; color: #f87171; line-height: 1; }
-        .denied-msg  { font-size: 18px; color: #94a3b8; }
-        .denied-sub  { font-size: 13px; color: #475569; }
-        .btn-back {
-            margin-top: 8px; padding: 10px 24px;
-            background: #0ea5e9; color: #fff;
-            border: none; border-radius: 8px;
-            font-size: 14px; font-weight: 600;
-            cursor: pointer; text-decoration: none;
-        }
     </style>
     @RenderSection("Styles", required: false)
 </head>
@@ -83,18 +45,6 @@
     <h1>EduBank <span>Monitoring</span></h1>
     <div class="badge-live">Live</div>
 
-    @if (User.Identity?.IsAuthenticated == true)
-    {
-        <div class="user-info">
-            <div class="user-avatar">@(((string)(ViewBag.UserName ?? "?"))[0].ToString().ToUpper())</div>
-            <span class="user-name">@ViewBag.UserName</span>
-            <span style="color:#475569">@ViewBag.UserEmail</span>
-        </div>
-        <form asp-controller="Dashboard" asp-action="Logout" method="post" style="display:inline">
-            @Html.AntiForgeryToken()
-            <button type="submit" class="btn-logout">Выйти</button>
-        </form>
-    }
 </header>
 
 @RenderBody()

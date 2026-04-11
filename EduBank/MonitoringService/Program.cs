@@ -1,6 +1,4 @@
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MonitoringService.Data;
@@ -8,7 +6,9 @@ using MonitoringService.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 var authConfig = builder.Configuration.GetSection("Auth");
-
+var jwtAuthority = authConfig["JwtAuthority"];
+var swaggerAuthority = authConfig["SwaggerAuthority"];
+var audience = authConfig["Audience"];
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
@@ -17,46 +17,24 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<MonitoringDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-})
-.AddCookie(options =>
-{
-    options.LoginPath = "/signin";
-    options.AccessDeniedPath = "/access-denied";
-    options.Cookie.HttpOnly = true;
-    options.Cookie.SameSite = SameSiteMode.Lax;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.None;
-})
-.AddOpenIdConnect(options =>
-{
-    options.Authority = authConfig["Authority"];
-    options.MetadataAddress = $"{authConfig["Authority"]}/.well-known/openid-configuration";
-    options.ClientId = authConfig["ClientId"];
-    options.ClientSecret = authConfig["ClientSecret"];
-    options.ResponseType = "code";
-    options.UsePkce = false;
-    options.RequireHttpsMetadata = false;
-    options.SaveTokens = true;
-    options.GetClaimsFromUserInfoEndpoint = true;
-
-    options.Scope.Clear();
-    options.Scope.Add("openid");
-    options.Scope.Add("profile");
-    options.Scope.Add("account_api");
-
-    options.TokenValidationParameters = new TokenValidationParameters
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
     {
-        NameClaimType = "name",
-        RoleClaimType = "role"
-    };
+        options.Authority = jwtAuthority;
+        options.MetadataAddress = $"{jwtAuthority}/.well-known/openid-configuration";
+        options.RequireHttpsMetadata = false;
+        options.Audience = audience;
 
-    options.ClaimActions.MapJsonKey("role", "role");
-    options.ClaimActions.MapJsonKey("name", "name");
-    options.ClaimActions.MapJsonKey("email", "email");
-});
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = false,
+            ValidateAudience = true,
+            ValidAudience = audience,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ClockSkew = TimeSpan.Zero
+        };
+    });
 
 builder.Services.AddAuthorization();
 
@@ -79,12 +57,6 @@ using (var scope = app.Services.CreateScope())
 app.UseStaticFiles();
 app.UseSwagger();
 app.UseSwaggerUI();
-
-app.UseCookiePolicy(new CookiePolicyOptions
-{
-    MinimumSameSitePolicy = SameSiteMode.Lax,
-    Secure = CookieSecurePolicy.None
-});
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -40,7 +40,6 @@ namespace MonitoringService.Controllers
             return Ok();
         }
 
-        [Authorize]
         [HttpGet("recent")]
         public async Task<IActionResult> Recent([FromQuery] int limit = 100, [FromQuery] string? service = null)
         {

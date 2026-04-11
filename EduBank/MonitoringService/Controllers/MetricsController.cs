@@ -5,7 +5,6 @@ using MonitoringService.Data;
 
 namespace MonitoringService.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/metrics")]
     public class MetricsController : ControllerBase

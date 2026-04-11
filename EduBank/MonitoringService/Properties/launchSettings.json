@@ -3,10 +3,11 @@
     "MonitoringService": {
       "commandName": "Project",
       "launchBrowser": true,
+      "launchUrl": "",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:54144;http://localhost:54145"
+      "applicationUrl": "http://localhost:5005"
     }
   }
 }
