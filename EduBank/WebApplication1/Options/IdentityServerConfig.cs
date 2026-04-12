@@ -136,16 +136,8 @@ public static class Config
                 AllowedGrantTypes = GrantTypes.Code,
                 RequirePkce = false,
                 RequireConsent = false,
-                RedirectUris =
-                {
-                    $"{auth["MonitoringUrl"] ?? "http://localhost:5005"}/signin-oidc",
-                    "http://monitoringweb:8080/signin-oidc"
-                },
-                PostLogoutRedirectUris =
-                {
-                    $"{auth["MonitoringUrl"] ?? "http://localhost:5005"}/signout-callback-oidc",
-                    "http://monitoringweb:8080/signout-callback-oidc"
-                },
+                RedirectUris = { "http://37.21.130.4:5005/swagger/oauth2-redirect.html" },
+                AllowedCorsOrigins = { "http://37.21.130.4:5005" },
                 AllowedScopes = { "openid", "profile", "account_api" }
             }
         };
