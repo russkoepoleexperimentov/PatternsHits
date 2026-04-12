@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MonitoringService.Data;
@@ -9,7 +8,6 @@ namespace MonitoringService.Controllers
 {
     [ApiController]
     [Route("api/traces")]
-    [Authorize(Roles = "Employee")]
     public class TracesController : ControllerBase
     {
         private readonly MonitoringDbContext _db;
@@ -19,7 +17,6 @@ namespace MonitoringService.Controllers
             _db = db;
         }
 
-        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Ingest([FromBody] IncomingTraceDto dto)
         {

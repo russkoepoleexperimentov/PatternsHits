@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MonitoringService.Data;
@@ -7,7 +6,6 @@ namespace MonitoringService.Controllers
 {
     [ApiController]
     [Route("api/metrics")]
-    [Authorize(Roles = "Employee")]
     public class MetricsController : ControllerBase
     {
         private readonly MonitoringDbContext _db;
