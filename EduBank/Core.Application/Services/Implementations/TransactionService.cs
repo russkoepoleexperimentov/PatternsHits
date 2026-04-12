@@ -22,6 +22,7 @@ namespace Core.Application.Services.Implementations
         private readonly ICurrencyRateService _currencyRateService;
         private readonly IRequestClient<ProcessTransactionCommand> _transactionRequestClient;
         private readonly TransactionsWebSocketConnectionManager _transactionsWebSocketConnectionManager;
+        private readonly IPushService _pushService;
 
         public TransactionService(
             CoreDbContext context,
@@ -31,7 +32,8 @@ namespace Core.Application.Services.Implementations
             IRequestClient<ProcessExternalPaymentCommand> paymentClient,
             ICurrencyRateService currencyRateService,
             IRequestClient<ProcessTransactionCommand> transactionRequestClient,
-            TransactionsWebSocketConnectionManager transactionsWebSocketConnectionManager)
+            TransactionsWebSocketConnectionManager transactionsWebSocketConnectionManager,
+            IPushService pushService)
         {
             _context = context;
             _accountService = accountService;
@@ -41,6 +43,7 @@ namespace Core.Application.Services.Implementations
             _currencyRateService = currencyRateService;
             _transactionRequestClient = transactionRequestClient;
             _transactionsWebSocketConnectionManager = transactionsWebSocketConnectionManager;
+            _pushService = pushService;
         }
 
         public async Task<TransactionDto> InitializeTransactionAsync(CreateTransactionDto dto, Guid currentUserId)
@@ -126,6 +129,25 @@ namespace Core.Application.Services.Implementations
             _context.Transactions.Add(transaction);
             await _context.SaveChangesAsync();
 
+            // Push-уведомления для владельцев счетов (customer)
+            foreach (var account in accounts)
+            {
+                var statusText = transaction.Status == TransactionStatus.Completed
+                    ? "успешно выполнена"
+                    : $"завершилась ошибкой: {transaction.ResolutionMessage}";
+                await _pushService.SendPushToAllCustomerDevices(
+                    account.UserId,
+                    "Статус транзакции",
+                    $"Транзакция на сумму {transaction.Amount} {statusText}"
+                );
+            }
+
+            // Push-уведомление для сотрудников (employee)
+            await _pushService.SendPushToEmployee(
+                "Новая транзакция",
+                $"Транзакция {transaction.Id}: {transaction.Description}, сумма {transaction.Amount}, статус {transaction.Status}"
+            );
+
             return transactionDto;
         }
 
@@ -198,6 +220,9 @@ namespace Core.Application.Services.Implementations
                 _context.Accounts.Update(targetAcc);
                 await _context.SaveChangesAsync();
 
+                await _pushService.SendPushToAllCustomerDevices(command.UserId, "Кредит одобрен", $"Вам одобрен кредит в размере {command.Amount} {command.Currency}.");
+                await _pushService.SendPushToEmployee("Кредит одобрен", $"{command.UserId} одобрен кредит в размере {command.Amount} {command.Currency}.");
+
                 return new DepositFundsResponse(true, null);
             }
             catch (Exception ex)
@@ -229,6 +254,12 @@ namespace Core.Application.Services.Implementations
                 transaction.Status = TransactionStatus.Failed;
                 transaction.ResolutionMessage = response.Message.Message;
                 transaction.ResolvedAt = DateTime.UtcNow;
+
+                await _pushService.SendPushToEmployee(
+                    "Ошибка оплаты кредита",
+                    $"Не удалось обработать внешний платёж для транзакции {transaction.Id}: {response.Message.Message}"
+                );
+                await _pushService.SendPushToAllCustomerDevices(source.UserId, "Ошибка оплаты кредита", transaction.ResolutionMessage ?? "Не удалось выполнить платеж");
             }
             else
             {
@@ -238,6 +269,12 @@ namespace Core.Application.Services.Implementations
                     transaction.Status = TransactionStatus.Failed;
                     transaction.ResolutionMessage = "Master account not found";
                     transaction.ResolvedAt = DateTime.UtcNow;
+
+                    await _pushService.SendPushToEmployee(
+                        "Ошибка оплаты кредита",
+                        $"Master-счёт не найден при обработке кредитного платежа {transaction.Id}"
+                    );
+                    await _pushService.SendPushToAllCustomerDevices(source.UserId, "Ошибка оплаты кредита", transaction.ResolutionMessage ?? "Не удалось выполнить платеж");
                     return;
                 }
 
@@ -265,6 +302,9 @@ namespace Core.Application.Services.Implementations
                 _context.Accounts.Update(source);
                 _context.Accounts.Update(master);
             }
+
+            await _pushService.SendPushToAllCustomerDevices(source.UserId, "Оплата кредита", $"Кредит оплачен на сумму {transaction.Amount} {transaction.FromCurrency}.");
+
         }
         private void ApplyTransferWithConversion(Transaction transaction, Account source, Account target, decimal convertedAmount)
         {
