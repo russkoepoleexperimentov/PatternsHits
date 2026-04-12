@@ -38,6 +38,7 @@ builder.Services.AddAuthentication(options =>
     options.ClientId = "monitoring_web";
     options.ClientSecret = "monitoring_secret";
     options.ResponseType = OpenIdConnectResponseType.Code;
+    options.PushedAuthorizationBehavior = PushedAuthorizationBehavior.Disable;
     options.RequireHttpsMetadata = false;
     options.SaveTokens = true;
     options.GetClaimsFromUserInfoEndpoint = true;
