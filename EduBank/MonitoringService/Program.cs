@@ -9,7 +9,8 @@ using System.Security.Claims;
 var builder = WebApplication.CreateBuilder(args);
 
 var authConfig = builder.Configuration.GetSection("Auth");
-var authority = authConfig["JwtAuthority"];
+var jwtAuthority = authConfig["JwtAuthority"];
+var browserAuthority = authConfig["SwaggerAuthority"];
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
@@ -31,11 +32,12 @@ builder.Services.AddAuthentication(options =>
 })
 .AddOpenIdConnect(options =>
 {
-    options.Authority = authority;
-    options.MetadataAddress = $"{authority}/.well-known/openid-configuration";
+    options.Authority = browserAuthority;
+    options.MetadataAddress = $"{jwtAuthority}/.well-known/openid-configuration";
     options.ClientId = "monitoring_web";
     options.ClientSecret = "monitoring_secret";
     options.ResponseType = OpenIdConnectResponseType.Code;
+    options.PushedAuthorizationBehavior = PushedAuthorizationBehavior.Disabled;
     options.RequireHttpsMetadata = false;
     options.SaveTokens = true;
     options.GetClaimsFromUserInfoEndpoint = true;
