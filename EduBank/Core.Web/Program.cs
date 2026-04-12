@@ -11,7 +11,9 @@ using Core.Application.Services.Interfaces;
 using Core.Application.Validity;
 using Core.Domain;
 using Core.Infrastructure;
+using FirebaseAdmin;
 using FluentValidation;
+using Google.Apis.Auth.OAuth2;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -41,6 +43,15 @@ namespace Core.Web
             var jwtAuthority = authConfig["JwtAuthority"]; 
             var swaggerAuthority = authConfig["SwaggerAuthority"]; 
             var audience = authConfig["Audience"];
+
+            // Укажите путь к вашему JSON-файлу с секретным ключом
+            string pathToServiceAccountKey = "firebase-cred.json";
+
+            // Инициализация Firebase App
+            FirebaseApp.Create(new AppOptions()
+            {
+                Credential = GoogleCredential.FromFile(pathToServiceAccountKey)
+            });
 
             builder.Services
                 .AddControllers()
@@ -215,6 +226,8 @@ namespace Core.Web
             {
                 client.BaseAddress = new Uri(builder.Configuration["CurrencyService:BaseUrl"]);
             });
+
+            builder.Services.AddScoped<IPushService, PushService>();
 
             var app = builder.Build();
 

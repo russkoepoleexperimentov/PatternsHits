@@ -9,6 +9,7 @@ namespace Core.Infrastructure
 
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<UserDevice> Devices { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -27,4 +27,5 @@ RUN dotnet publish "./Core.Web.csproj" -c $BUILD_CONFIGURATION -o /app/publish /
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+COPY firebase-cred.json /app/firebase-cred.json
 ENTRYPOINT ["dotnet", "Core.Web.dll"]
