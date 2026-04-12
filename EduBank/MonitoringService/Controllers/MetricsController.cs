@@ -7,6 +7,7 @@ namespace MonitoringService.Controllers
 {
     [ApiController]
     [Route("api/metrics")]
+    [Authorize(Roles = "Employee")]
     public class MetricsController : ControllerBase
     {
         private readonly MonitoringDbContext _db;
@@ -16,9 +17,6 @@ namespace MonitoringService.Controllers
             _db = db;
         }
 
-        /// <summary>
-        /// Сводка по каждому сервису за последние N минут.
-        /// </summary>
         [HttpGet("summary")]
         public async Task<IActionResult> Summary([FromQuery] int minutes = 60)
         {
@@ -50,9 +48,6 @@ namespace MonitoringService.Controllers
             return Ok(result);
         }
 
-        /// <summary>
-        /// Данные по минутам для построения графиков (группировка по минуте + сервис).
-        /// </summary>
         [HttpGet("timeline")]
         public async Task<IActionResult> Timeline([FromQuery] int minutes = 60)
         {
@@ -92,9 +87,6 @@ namespace MonitoringService.Controllers
             return Ok(grouped);
         }
 
-        /// <summary>
-        /// Список всех известных сервисов.
-        /// </summary>
         [HttpGet("services")]
         public async Task<IActionResult> Services()
         {

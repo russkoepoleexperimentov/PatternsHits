@@ -9,6 +9,7 @@ namespace MonitoringService.Controllers
 {
     [ApiController]
     [Route("api/traces")]
+    [Authorize(Roles = "Employee")]
     public class TracesController : ControllerBase
     {
         private readonly MonitoringDbContext _db;

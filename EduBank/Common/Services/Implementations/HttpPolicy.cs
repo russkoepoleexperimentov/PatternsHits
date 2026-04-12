@@ -23,8 +23,10 @@ namespace Common.Policies
             return Policy
                 .HandleResult<HttpResponseMessage>(r => !r.IsSuccessStatusCode && (int)r.StatusCode >= 500)
                 .Or<HttpRequestException>()
-                .CircuitBreakerAsync(
-                    handledEventsAllowedBeforeBreaking: 5,
+                .AdvancedCircuitBreakerAsync(
+                    failureThreshold: 0.7,
+                    samplingDuration: TimeSpan.FromSeconds(60),
+                    minimumThroughput: 5,
                     durationOfBreak: TimeSpan.FromSeconds(30));
         }
 
