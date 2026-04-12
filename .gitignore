@@ -28,3 +28,5 @@ publish/
 .DS_Store
 Thumbs.db
 /EduBank/repomix-output.xml
+/EduBank/firebase-cred.json
+/EduBank/Core.Web/firebase-cred.json
