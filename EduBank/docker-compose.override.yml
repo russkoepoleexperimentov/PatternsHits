@@ -4,6 +4,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
+      - Auth__InternalAuthority=http://localhost:2280
+      - Auth__SwaggerUrl=http://localhost:2280
     ports:
       - "8080"
       - "8081"
